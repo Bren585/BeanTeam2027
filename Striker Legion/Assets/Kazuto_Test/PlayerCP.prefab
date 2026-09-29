@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 3587323244923649907}
   - component: {fileID: 2866324557156355578}
   - component: {fileID: -891996949468990701}
-  m_Layer: 0
+  - component: {fileID: 5939280733780450176}
+  m_Layer: 6
   m_Name: PlayerCP
-  m_TagString: Untagged
+  m_TagString: PlayerCP
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -127,3 +128,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SampleCharacter
   ballObject: {fileID: 0}
   isHoldingBall: 0
+--- !u!114 &5939280733780450176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2887874105960231806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0038c16c34866b4f9e25c9c0dc0f7e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Behavior::Unity.Behavior.BehaviorGraphAgent
+  m_Graph: {fileID: 2725612632926343315, guid: bca3794c38669c64dbb512375420bcc7, type: 2}
+  m_BlackboardVariableOverridesList:
+  - rid: 8400545474901704837
+  - rid: 8400545474901705544
+  m_OriginalGraph: {fileID: 0}
+  m_IsInitialised: 0
+  m_IsStarted: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 8400545474901704837
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 1
+          m_Value1: 0
+        Name: Self
+        m_Value: {fileID: 2887874105960231806}
+    - rid: 8400545474901705544
+      type: {class: 'BlackboardVariable`1[[SampleCharacter, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 2611167951295443512
+          m_Value1: 15602928367384338501
+        Name: CharacterComponent
+        m_Value: {fileID: -891996949468990701}

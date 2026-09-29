@@ -15,22 +15,35 @@ public partial class PassAction : ActionBase
 
     protected override Status OnStart()
     {
-        return Status.Running;
+		Debug.Log(self.Value.name + ": PassAction started.");
+		return Status.Running;
     }
 
     protected override Status OnUpdate()
     {
+		if(self.Value == null)
+		{
+			//Debug.Log("Self is null");
+			return Status.Failure;
+		}
+		if(!self.Value.GetComponent<SampleCharacter>().isHoldingBall)
+		{
+			//Debug.Log("Self is not holding the ball");
+			return Status.Failure;
+		}
+
 		Transform transform = self.Value.transform;
 		float searchRadius = 50f; // 検索範囲の半径
+		GameObject objectToPassTo = null;
 		Vector3 searchVec = new Vector3(searchRadius, searchRadius, searchRadius);
 
+		float minDistanceSqr = Mathf.Infinity;
+#if false
 		// 指定したレイヤーのコライダーのみを取得
 		Collider[] hitColliders = Physics.OverlapBox(transform.position, searchVec);
 		//Collider[] hitColliders = Physics.OverlapSphere(transform.position, searchRadius);
 
 		Transform nearestEnemy = null;
-		float minDistanceSqr = Mathf.Infinity;
-		GameObject objectToPassTo = null;
 		Vector3 currentPosition = transform.position;
 
 		foreach (Collider hitCollider in hitColliders)
@@ -49,20 +62,35 @@ public partial class PassAction : ActionBase
 				objectToPassTo = hitCollider.gameObject;
 			}
 		}
-
-		if(objectToPassTo == null)
+#else
+		GameObject[] objects = GameObject.FindGameObjectsWithTag(self.Value.tag);
+		for(int i = 0; i < objects.Length; i++)
 		{
-			Debug.Log("No target to pass to");
-			//return Status.Failure;
+			if (objects[i] == self.Value) continue;
+			float distance = Vector3.Distance(transform.position, objects[i].transform.position);
+			if (distance <= searchRadius && distance < minDistanceSqr)
+			{
+				objectToPassTo = objects[i];
+				minDistanceSqr = distance;
+			}
+		}
+
+#endif
+		if (objectToPassTo == null)
+		{
+			//Debug.Log("No target to pass to");
+			return Status.Failure;
 		}
 		else
 		{
-			Debug.Log("Nearest target: " + objectToPassTo.name);
-			//objectToPassTo.GetComponentInChildren<SampleCharacter>().isHoldingBall = true;
+			//Debug.Log("Nearest target: " + objectToPassTo.name);
+			objectToPassTo.GetComponentInChildren<SampleCharacter>().isHoldingBall = true;
 			self.Value.GetComponent<SampleCharacter>().isHoldingBall = false;
-			Debug.Log("Passing to: " + objectToPassTo.name);
+			//Debug.Log("Passing to: " + objectToPassTo.name);
 		}
 
+		// 何回もパスしないよう、パスをしたらスタンする
+		characterComponent.Value.StartStan();
 		return Status.Success;
     }
 

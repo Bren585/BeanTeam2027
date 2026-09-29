@@ -10,6 +10,7 @@ public partial class ActionBase : Action
 	// 割り込み可能フラグ
 	[SerializeReference] public BlackboardVariable<bool> isInterrupted = new BlackboardVariable<bool>(false);
 	[SerializeReference] public BlackboardVariable<GameObject> self;
+	[SerializeReference] public BlackboardVariable<SampleCharacter> characterComponent;
 
 	
 	protected override Status OnStart()

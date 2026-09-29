@@ -17,7 +17,7 @@ public partial class ActionWaitAction : ActionBase
     {
         isInterrupted.Value = true;
 
-        Debug.Log("isInterrupted: " + isInterrupted.Value);
+        //Debug.Log("isInterrupted: " + isInterrupted.Value);
 
         return Status.Running;
     }
