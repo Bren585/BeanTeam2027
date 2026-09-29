@@ -4,6 +4,10 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private CharacterBase playerCharacter;
+    [SerializeField] private Camera playerCamera;
+
+    [SerializeField] private Vector3 cameraOffset;
+    [SerializeField] private Quaternion cameraAngle;
 
     Vector2 moveInput;
 
@@ -17,7 +21,14 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         if (playerCharacter == null) { return; }
-        playerCharacter.Move(new Vector3(moveInput.x, 0, moveInput.y), strafing);
+
+        Quaternion cameraYaw = Quaternion.Euler(0, cameraAngle.eulerAngles.y, 0);
+        Vector3 rotatedInput = cameraYaw * new Vector3(moveInput.x, 0, moveInput.y);
+        playerCharacter.Move(rotatedInput);
+
+        if (playerCamera == null) { return; }
+        playerCamera.transform.position = playerCharacter.transform.position + cameraOffset;
+
     }
 
     public void PossessCharacter(CharacterBase character) 
