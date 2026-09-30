@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using Unity.Collections;
+using Unity.Collections.Tests.CoreCLR.TestJobs;
 using UnityEngine;
 using static UnityEngine.Mathf;
 
@@ -19,6 +22,8 @@ public class CharacterBase : MonoBehaviour
     [SerializeField] float tackleHitboxDuration = 0.25f;
     [SerializeField] float tackleCooldown = 1.0f;
 
+    [SerializeField] float maxDownTime = 2.0f;
+
     // キャラパラメータ **************************************************************************************
 
     [Header("継承パラメータ")]
@@ -34,15 +39,17 @@ public class CharacterBase : MonoBehaviour
 
     /// <summary>
     ///                                             復活力
+    ///                                             <br/>
+    ///                                             値は0.0（弱い、早く治らない）から１．０（強い、早く治る）までとします。
     /// </summary>
-    [SerializeField] protected float recovery;
+    [SerializeField, Range(0f, 1f)] protected float constition;
 
     /// <summary>
     ///                                             ボールの扱いやすさ
     ///                                             <br/>
-    ///                                             値は0.0（攻撃されたら絶対落とす）から１．０（ボール落とさない）までとします。
+    ///                                             値は0.0（攻撃されたら絶対落とすなど）から１．０（ボール落とさないなど）までとします。
     /// </summary>
-    [SerializeField, Range(0f, 1f)] protected float evasion;
+    [SerializeField, Range(0f, 1f)] protected float ballHandling;
 
     /// <summary>
     ///                                             走るときの小回り力、横移動スピード、アクセル                      
@@ -74,17 +81,11 @@ public class CharacterBase : MonoBehaviour
 
     // キャラ状態 *******************************************************************************************
 
-    [Header("状態")]
+    [field: Header("状態")]
 
-    /// <summary>
-    ///                                             マックス体力
-    /// </summary>
-    [SerializeField] protected float maxStamina;
+    [field: SerializeField] public int teamNo { get; private set; }
 
-    /// <summary>
-    ///                                             体力
-    /// </summary>
-    protected float stamina;
+    [field: SerializeField] public bool hasBall { get; private set; } = false;
 
     Vector3 velocity;
 
@@ -105,11 +106,10 @@ public class CharacterBase : MonoBehaviour
         } 
     }
 
-    [SerializeField] public bool hasBall;
-    //public bool hasBall { get; private set; } = false;
-
     float tackleTimer;
-    
+    float downTimer;
+
+    CharacterBase passTarget = null;
 
     // 関数 *******************************************************************************************
 
@@ -117,19 +117,28 @@ public class CharacterBase : MonoBehaviour
     {
         body = GetComponent<CharacterController>();
         ball = transform.Find("Ball").gameObject;
+        ball.SetActive(false);
         tackleHitbox = transform.Find("TackleHitbox").gameObject;
         tackleHitbox.SetActive(false);
     }
 
     void Start()
     {
-        stamina = maxStamina;
         tackleTimer = tackleCooldown;
     }
 
     void Update()
     {
-        ball.SetActive(hasBall);
+        if (hasBall)
+        {
+            CharacterBase newPassTarget = PassTarget();
+            if (passTarget != newPassTarget)
+            {
+                if (passTarget) passTarget.MarkAsPassTarget(false);
+                if (newPassTarget) newPassTarget.MarkAsPassTarget(true);
+                passTarget = newPassTarget;
+            }
+        }
 
         if (tackleTimer < tackleCooldown)
         {
@@ -138,6 +147,13 @@ public class CharacterBase : MonoBehaviour
             {
                 if (tackleTimer > tackleHitboxDuration) { tackleHitbox.SetActive(false); }
             }
+        }
+
+        if (downTimer > 0)
+        {
+            downTimer -= Time.deltaTime;
+            velocity = Vector3.zero;
+            return;
         }
 
         if (flying) // 飛んでる
@@ -228,16 +244,14 @@ public class CharacterBase : MonoBehaviour
         tackleHitbox.SetActive(true);
     }
 
-    /// <summary>
-    /// 攻撃される
-    /// </summary>
-    /// <returns>ボール落としたらtrue</returns>
-    public bool DropBall()
+    bool BallHandlingFail()
     {
-        if (!hasBall) { return false; }
-        bool dropped = Random.value > evasion;
-        if (dropped) { hasBall = false; }
-        return dropped;
+        return Random.value > ballHandling;
+    }
+
+    bool BallHandlingSucess()
+    {
+        return Random.value < ballHandling;
     }
 
     public void GetBall()
@@ -249,15 +263,137 @@ public class CharacterBase : MonoBehaviour
     {
         if (other.gameObject.name == "TackleHitbox")
         {
-            if (DropBall())
+            CharacterBase opponent = other.GetComponentInParent<CharacterBase>();
+            if (BallHandlingFail())
             {
-                other.GetComponentInParent<CharacterBase>().GetBall();
+                //if (opponent.teamNo == teamNo) { return; } // テストしやすいためオッフ
+
+                GameBall gameBall = FindAnyObjectByType<GameBall>();
+
+                gameBall.Kick(new GameBall.flight(this, opponent, 0, 20));
+                gameBall.SetOwner(opponent);
+                hasBall = false;
+                ClearPassTarget();
+
+                // ダウン
+                downTimer = maxDownTime * (1 - constition);
             }
         }
+        else if (other.gameObject.name == "GoalZone")
+        {
+            // Enter Shooting Mode
+            //
+            // Shooting Mode is a separate script
+            // Camera moves close into the shooter, and time slows down
+            // Shooter moves a cursor (speed based on speed) to aim
+            // If the defender is a player, they also have a cursor to aim their defense
+            // Shooter shoots
+            // Defender uses speed stat to attempt to close the distance (time limit emposed by shooter power)
+            // If defender reaches, they use they're constitution (and maybe ballhandle) to try to block
+            // Player defender gets a bonus in speed and block if they aimed correctly 
+            //
+            // 日本語 (機械翻訳)
+            // シュートモードは別スクリプトで処理
+            // カメラがシューターに接近し、時間の流れが遅くなる
+            // シューターはカーソルを動かして狙いを定める（カーソルの移動速度はステータスの「スピード」に依存）
+            // ディフェンダーがプレイヤーの場合、同様にカーソルを使って守備位置を狙う
+            // シューターがシュートを放つ
+            // ディフェンダーは「スピード」のステータスを活かして距離を詰めようとする（制限時間はシューターのパワーに依存）
+            // ディフェンダーが到達した場合、「スタミナ（Constitution）」（および場合によっては「ボールハンドリング」）を使ってブロックを試みる
+            // プレイヤーがディフェンダーの場合、狙いが正確であればスピードとブロックにボーナスが加算される
+            // 
+        }
+    }
+
+    public CharacterBase PassTarget(out List<RaycastHit> outBlockers)
+    {
+        CharacterBase bestCandidate = null;
+        float bestDistance = float.MaxValue;
+        List<RaycastHit> blockers = null;
+
+        CharacterBase[] characters = FindObjectsByType<CharacterBase>();
+
+        foreach (CharacterBase character in characters)
+        {
+            if (character == this) continue;
+            if (character.teamNo != teamNo) continue;
+
+            Vector3 toCharacter = character.transform.position - transform.position;
+            float dot = Vector3.Dot(transform.forward, toCharacter.normalized);
+
+            if (dot <= 0.7071) continue; // cosf(PI/4)
+
+            float distance = toCharacter.magnitude;
+
+            if (distance > bestDistance && blockers == null) { continue; }
+
+            List<RaycastHit> hits = new(Physics.SphereCastAll(new Ray(transform.position, toCharacter), 0.5f, distance));
+            hits.RemoveAll(hit =>
+            {
+                CharacterBase hitCharacter = hit.transform.GetComponent<CharacterBase>();
+                return hitCharacter == null || hitCharacter.teamNo == teamNo;
+            });
+
+
+            if (blockers != null) { if (hits.Count > blockers.Count) { continue; } }
+
+            if (distance < bestDistance)
+            {
+                bestCandidate = character;
+                bestDistance = distance;
+                blockers = hits;
+                continue;
+            }
+        }
+
+        outBlockers = blockers;
+        return bestCandidate;
+    }
+
+    public CharacterBase PassTarget() { return PassTarget(out _); }
+
+    public void MarkAsPassTarget(bool isTarget)
+    {
+        ball.SetActive(isTarget);
+    }
+
+    void ClearPassTarget()
+    {
+        if (passTarget == null) return;
+        passTarget.MarkAsPassTarget(false);
+        passTarget = null;
     }
 
     public void Shoot()
     {
+        if (!hasBall) return;
+
+        // Check Pass Or Goal
+
+        List<RaycastHit> blockers = null;
+        CharacterBase target = PassTarget(out blockers);
+
+        if (target == null) return;
+
+        // See if blocked or not
+        if (blockers != null)
+        {
+            blockers.Sort((a, b) => a.distance.CompareTo(b.distance));
+            foreach (RaycastHit blocker in blockers) { 
+                CharacterBase character = blocker.collider.GetComponent<CharacterBase>();
+                if (character == null) continue;
+                if (character.BallHandlingSucess())
+                {
+                    target = character;
+                    break;
+                }
+            }
+        }
+
+        GameBall gameBall = FindAnyObjectByType<GameBall>();
+        gameBall.Kick(new GameBall.flight(this, target, 1.5f, 20));
+        gameBall.SetOwner(target);
+        ClearPassTarget();
         hasBall = false;
     }
 

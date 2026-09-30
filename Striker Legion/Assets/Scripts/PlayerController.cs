@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Cinemachine;
+
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private CharacterBase playerCharacter;
-    [SerializeField] private Camera playerCamera;
+    [SerializeField] private CinemachineCamera playerCamera;
 
     [SerializeField] private Vector3 cameraOffset;
     [SerializeField] private Quaternion cameraAngle;
@@ -14,7 +16,7 @@ public class PlayerController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        PossessCharacter(playerCharacter);
     }
 
     // Update is called once per frame
@@ -26,14 +28,15 @@ public class PlayerController : MonoBehaviour
         Vector3 rotatedInput = cameraYaw * new Vector3(moveInput.x, 0, moveInput.y);
         playerCharacter.Move(rotatedInput);
 
-        if (playerCamera == null) { return; }
-        playerCamera.transform.position = playerCharacter.transform.position + cameraOffset;
+        //if (playerCamera == null) { return; }
+        //playerCamera.transform.position = playerCharacter.transform.position + cameraOffset;
 
     }
 
     public void PossessCharacter(CharacterBase character) 
     { 
         playerCharacter = character;
+        playerCamera.Follow = playerCharacter.transform;
     }
 
     public void OnMove(InputValue input)
