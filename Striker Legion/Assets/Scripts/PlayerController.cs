@@ -5,38 +5,93 @@ using Unity.Cinemachine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private CharacterBase playerCharacter;
-    [SerializeField] private CinemachineCamera playerCamera;
+    [SerializeField] int                teamNo;
+    [SerializeField] GameBall           gameBall; 
 
-    [SerializeField] private Vector3 cameraOffset;
-    [SerializeField] private Quaternion cameraAngle;
+    CharacterBase                       playerCharacter;
+    [SerializeField] CinemachineCamera  playerCamera;
 
+    [SerializeField] float              cameraMaxSpeed;
+    Transform                           cameraTarget;
+    
     Vector2 moveInput;
+
+    CharacterBase GetClosestPossessableCharacter()
+    {
+        Vector3 target;
+        {
+            CharacterBase ballOwner = gameBall.GetOwner();
+            if (ballOwner == null) { target = gameBall.transform.position; }
+            else if (ballOwner.teamNo == teamNo) { return ballOwner; }
+            else { target = ballOwner.transform.position; }
+        }
+
+        CharacterBase closestCharacter = null;
+        float closest = float.MaxValue;
+
+        CharacterBase[] allCharacters = FindObjectsByType<CharacterBase>();
+
+        foreach (CharacterBase character in allCharacters)
+        {
+            if (character.teamNo != teamNo) { continue; }
+            float distance = (character.transform.position - target).magnitude;
+            if (distance < closest)
+            {
+                closest = distance;
+                closestCharacter = character;
+            }
+        }
+
+        return closestCharacter;
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        PossessCharacter(playerCharacter);
+        gameBall = FindAnyObjectByType<GameBall>();
+        if (gameBall)
+        {
+            PossessCharacter(GetClosestPossessableCharacter());
+        }
+        transform.position = cameraTarget.position;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (playerCharacter == null) { return; }
+        if (playerCharacter != null)
+        {
 
-        Quaternion cameraYaw = Quaternion.Euler(0, cameraAngle.eulerAngles.y, 0);
-        Vector3 rotatedInput = cameraYaw * new Vector3(moveInput.x, 0, moveInput.y);
-        playerCharacter.Move(rotatedInput);
+            Quaternion cameraYaw = Quaternion.Euler(0, playerCamera.transform.rotation.eulerAngles.y, 0);
+            Vector3 rotatedInput = cameraYaw * new Vector3(moveInput.x, 0, moveInput.y);
+            playerCharacter.Move(rotatedInput);
+        }
+        else
+        {
+            cameraTarget = gameBall.transform;
+        }
 
-        //if (playerCamera == null) { return; }
-        //playerCamera.transform.position = playerCharacter.transform.position + cameraOffset;
-
+        Vector3 toTarget = cameraTarget.position - transform.position;
+        float distance = toTarget.magnitude;
+        float speedTime = Time.deltaTime * cameraMaxSpeed;
+        if (distance > speedTime) {
+            toTarget *= (speedTime / distance); 
+        }
+        toTarget.y = 0;
+        transform.position += toTarget;
     }
 
     public void PossessCharacter(CharacterBase character) 
     { 
         playerCharacter = character;
-        playerCamera.Follow = playerCharacter.transform;
+        if (playerCharacter == null)
+        {
+            cameraTarget = gameBall.transform;
+        }
+        else
+        {
+            cameraTarget = playerCharacter.transform;
+        }
     }
 
     public void OnMove(InputValue input)
@@ -58,13 +113,29 @@ public class PlayerController : MonoBehaviour
 
     public void OnShoot()
     {
-        if (playerCharacter == null) { return; }
-        playerCharacter.Shoot();
+        if (playerCharacter == null) { PossessCharacter(GetClosestPossessableCharacter()); }
+        if (playerCharacter.hasBall)
+        {
+            playerCharacter.Shoot();
+
+            CharacterBase ballOwner = gameBall.GetOwner();
+            if (ballOwner != playerCharacter && ballOwner != null)
+            {
+                if (ballOwner.teamNo == teamNo)
+                {
+                    PossessCharacter(ballOwner);
+                }
+            }
+        }
+        else
+        {
+            PossessCharacter(GetClosestPossessableCharacter());
+        }
     }
 
     public void OnTackle()
     {
-        if (playerCharacter == null) { return; }
+        if (playerCharacter == null) { PossessCharacter(GetClosestPossessableCharacter()); }
         playerCharacter.Tackle();
     }
 

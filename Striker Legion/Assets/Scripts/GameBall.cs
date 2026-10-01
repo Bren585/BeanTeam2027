@@ -1,3 +1,4 @@
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class GameBall : MonoBehaviour
@@ -13,7 +14,7 @@ public class GameBall : MonoBehaviour
         public flight(CharacterBase from, CharacterBase to, float height, float speed)
         {
             start = from.transform.Find("Feet").position;
-            end = to.transform.Find("Feet").position;
+            end = to.transform.Find("Feet").position + to.velocity;
             maxHeight = height;
             float distance = (start - end).magnitude;
             duration = distance / speed;
@@ -40,6 +41,8 @@ public class GameBall : MonoBehaviour
 
     bool inFlight = false;
     flight currentFlight;
+
+    [SerializeField] float maxCatchupSpeed = 40;
 
     [SerializeField] CharacterBase owner = null;
     Transform ownerFeet;
@@ -70,7 +73,16 @@ public class GameBall : MonoBehaviour
         } 
         else
         {
-            transform.position = ownerFeet.position;
+            Vector3 toTarget = ownerFeet.position - transform.position;
+            float distance = toTarget.magnitude;
+            float speedTimme = maxCatchupSpeed * Time.deltaTime;
+            if (distance > speedTimme)
+            {
+                toTarget *= (speedTimme / distance);
+            }
+            toTarget.y = 0;
+            transform.position += toTarget;
+
         }
     }
 

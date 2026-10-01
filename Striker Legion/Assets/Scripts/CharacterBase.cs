@@ -87,14 +87,15 @@ public class CharacterBase : MonoBehaviour
 
     [field: SerializeField] public bool hasBall { get; private set; } = false;
 
-    Vector3 velocity;
+    public Vector3 velocity { get; private set; }
 
     /// <summary>
     /// trueÇ»ÇÁìÆÇ¢ÇƒÇ¢ÇÈå¸Ç´Ç…âÒÇÈÅAfalseÇ»ÇÁå¸Ç©Ç»Ç¢
     /// </summary>
-    bool moving = false;
     bool strafing = false;
+    bool moving = false;
     bool flying = false;
+    bool moveLocked = false;
 
     private float maxSpeed 
     { 
@@ -108,6 +109,8 @@ public class CharacterBase : MonoBehaviour
 
     float tackleTimer;
     float downTimer;
+
+    public bool isDown { get { return downTimer > 0; } }
 
     CharacterBase passTarget = null;
 
@@ -149,7 +152,7 @@ public class CharacterBase : MonoBehaviour
             }
         }
 
-        if (downTimer > 0)
+        if (isDown)
         {
             downTimer -= Time.deltaTime;
             velocity = Vector3.zero;
@@ -178,7 +181,7 @@ public class CharacterBase : MonoBehaviour
             }
             else // ïÅí Ç…ëñÇÈ
             {
-                if (moving)
+                if (moving && !moveLocked)
                 {
                     Quaternion targetRotation = Quaternion.LookRotation(groundVelocity.normalized);
 
@@ -197,7 +200,7 @@ public class CharacterBase : MonoBehaviour
             // velocity += gravity
             // body.move(down)
         }
-        if (!moving) { velocity = velocity * Clamp01(1.0f - Time.deltaTime / 0.25f); }
+        if (!moving && !moveLocked) { velocity = velocity * Clamp01(1.0f - Time.deltaTime / 0.25f); }
     }
 
     /// <summary>
@@ -206,6 +209,7 @@ public class CharacterBase : MonoBehaviour
     /// <param name="input">ë¨ìx</param>
     public void Move(Vector3 input)
     {
+        if (moveLocked) { return; }
         velocity += input * maxSpeed * Time.deltaTime;
         moving = (input != Vector3.zero);
     }
@@ -257,6 +261,7 @@ public class CharacterBase : MonoBehaviour
     public void GetBall()
     {
         hasBall = true;
+        unlockMove();
     }
 
     public void OnTriggerEnter(Collider other)
@@ -272,6 +277,7 @@ public class CharacterBase : MonoBehaviour
 
                 gameBall.Kick(new GameBall.flight(this, opponent, 0, 20));
                 gameBall.SetOwner(opponent);
+                opponent.lockMove();
                 hasBall = false;
                 ClearPassTarget();
 
@@ -393,6 +399,7 @@ public class CharacterBase : MonoBehaviour
         GameBall gameBall = FindAnyObjectByType<GameBall>();
         gameBall.Kick(new GameBall.flight(this, target, 1.5f, 20));
         gameBall.SetOwner(target);
+        target.lockMove();
         ClearPassTarget();
         hasBall = false;
     }
@@ -401,4 +408,7 @@ public class CharacterBase : MonoBehaviour
     {
 
     }
+
+    public void lockMove() { moveLocked = true; }
+    public void unlockMove() { moveLocked = false; }
 }
