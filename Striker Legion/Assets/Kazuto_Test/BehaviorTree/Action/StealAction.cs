@@ -11,18 +11,21 @@ using Unity.VisualScripting;
     category: "Action", id: "b68009142807c675678dae36c9dc9b2c")]
 public partial class StealAction : ActionBase
 {
-    protected override Status OnStart()
-    {
-        Debug.Log(self.Value.name + ": StealAction started.");
+	protected override Status OnStart()
+	{
+		base.OnStart();
+
+		Debug.Log(GameObject.name + ": StealAction started.");
+
 		return Status.Running;
-    }
+	}
 
-    protected override Status OnUpdate()
-    {
-        // ボールを持っているキャラクターを取得
-        characterComponent.Value.CharacterSensor.GetCharacterHavingBall("", 1.0f, out SampleCharacter characterWithBall);
+	protected override Status OnUpdate()
+	{
+		// ボールを持っているキャラクターを取得
+		characterComponent.CharacterSensor.GetCharacterHavingBall("", 1.0f, out SampleCharacter characterWithBall);
 
-        if(characterWithBall == null)
+		if (characterWithBall == null)
 		{
 			Debug.Log("No character is holding the ball.");
 			return Status.Failure;
@@ -33,12 +36,12 @@ public partial class StealAction : ActionBase
 
 		// ボールを奪う処理
 		characterWithBall.isHoldingBall = false;
-        characterComponent.Value.isHoldingBall = true;
+		characterComponent.isHoldingBall = true;
 
 		return Status.Success;
-    }
+	}
 
-    protected override void OnEnd()
+	protected override void OnEnd()
     {
     }
 }

@@ -24,11 +24,18 @@ public class TeamManager : MonoBehaviour
 		{
 			Debug.Log(gameObject.name + " Child Object: " + child.name);
 		}
+
+		UpdateAllBehaviorGraph();
 	}
 
     // Update is called once per frame
     void Update()
     {
+		UpdateAllBehaviorGraph();
+	}
+
+	private void UpdateAllBehaviorGraph()
+	{
 		bool isAnyHoldingBall = teamObjects.Any(obj => obj.isHoldingBall);
 		// チーム内の全てのオブジェクトに対して、BehaviorGraphAgentのチームがボールを保持しているかの変数を更新
 		foreach (SampleCharacter obj in teamObjects)

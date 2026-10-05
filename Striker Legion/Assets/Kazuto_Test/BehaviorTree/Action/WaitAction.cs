@@ -15,7 +15,10 @@ public partial class ActionWaitAction : ActionBase
 
     protected override Status OnStart()
     {
-        isInterrupted.Value = true;
+
+        base.OnStart();
+
+        //isInterrupted.Value = true;
 
         //Debug.Log("isInterrupted: " + isInterrupted.Value);
 

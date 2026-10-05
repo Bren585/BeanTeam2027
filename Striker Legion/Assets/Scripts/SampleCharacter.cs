@@ -30,11 +30,32 @@ public class SampleCharacter : MonoBehaviour
 		get { return characterSensor; }
 	}
 
+	// ステアリング制御用のコントローラー
+	SteeringController steeringController;
+	public SteeringController SteeringController{
+		get { return steeringController; }
+	}
+
+	void Awake()
+	{
+		// キャラクターセンサーを生成
+		characterSensor = gameObject.AddComponent<CharacterSensor>();
+		// ステアリング制御コントローラを生成
+		steeringController = gameObject.AddComponent<SteeringController>();
+
+		
+		// BehaviorGraphAgentの取得
+		behaviorGraphAgent = GetComponent<BehaviorGraphAgent>();
+
+		// 初期化前に動かないようにする
+		behaviorGraphAgent.enabled = false;
+	}
+
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
     {
 		// BehaviorGraphAgentの取得
-		behaviorGraphAgent = GetComponent<BehaviorGraphAgent>();
+		//behaviorGraphAgent = GetComponent<BehaviorGraphAgent>();
         if(behaviorGraphAgent == null)
 		{
 			Debug.Log(name + ": BehaviorGraphAgentの取得に失敗");
@@ -44,8 +65,11 @@ public class SampleCharacter : MonoBehaviour
             Debug.Log(name + ": ボールのオブジェクトの登録忘れ");
         }
 
-		// キャラクターセンサーを生成
-		characterSensor = gameObject.AddComponent<CharacterSensor>();
+		// BehaviorGraphの値を初期設定する
+		UpdateBehaviorGraph();
+
+		// ビヘイビアツリー開始
+		behaviorGraphAgent.enabled = true;
 	}
 
 	// Update is called once per frame
@@ -65,11 +89,19 @@ public class SampleCharacter : MonoBehaviour
 			//Debug.Log("ボールの位置更新");
 		}
 
+		// BehaviorGraphの値を更新する
+		UpdateBehaviorGraph();
+	}
+
+	private void UpdateBehaviorGraph()
+	{
 		if (behaviorGraphAgent)
 		{
 			// BehaviorGraphAgentの変数を更新
 			behaviorGraphAgent.SetVariableValue("HavingBall", isHoldingBall);
-			behaviorGraphAgent.SetVariableValue("DistanceFromBall", GetDistanceToBall());
+			float value = GetDistanceToBall();
+			//Debug.Log(name + "のボールとの距離：" + value);
+			behaviorGraphAgent.SetVariableValue("DistanceFromBall", value);
 			behaviorGraphAgent.SetVariableValue("StanTime", stanTime);
 		}
 	}
@@ -81,7 +113,16 @@ public class SampleCharacter : MonoBehaviour
 			Debug.Log(name + ": ボールのオブジェクトが未登録");
 			return float.MaxValue;
 		}
+
+		float value = Vector3.Distance(transform.position, ballObject.transform.position);
 		return Vector3.Distance(transform.position, ballObject.transform.position);
+	}
+
+	// ボールをステアリング制御のターゲットとする
+	public void SetTargetIsBall()
+	{
+
+		steeringController.TargetPosition = ballObject.transform.position;
 	}
 
 	public void StartStan()

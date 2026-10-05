@@ -23,6 +23,11 @@ public class CharacterSensor : MonoBehaviour
 
 		for (int i = 0; i < numFound; i++)
 		{
+			if(hitColliders[i].GetComponent<SampleCharacter>() == null)
+				continue;
+			if (hitColliders[i].GetComponent<SampleCharacter>() == this.GetComponent<SampleCharacter>())
+				continue;
+
 			float dist = Vector3.Distance(transform.position, hitColliders[i].transform.position);
 			// 最も近いキャラクターのみ対象
 			if (dist < minDist)
@@ -35,15 +40,40 @@ public class CharacterSensor : MonoBehaviour
 		return closest != null;
 	}
 
-	// ボールを持っているキャラクターを取得
+	// ボールのオブジェクトまでの距離
+	public float GetBallDistance()
+	{
+		if (GetComponent<SampleCharacter>().isHoldingBall)
+			return 0.0f;
+		else
+		{
+			GameObject ball = GameObject.FindGameObjectWithTag("Ball");
+			if (ball != null)
+				return Vector3.Distance(transform.position, ball.transform.position);
+			else
+				return float.MaxValue;
+		}
+	}
+
+	/// <summary>
+	/// ボールを持ってるキャラクターを探す。
+	/// ゲーム性として、キャラの探知範囲に制限をかけている
+	/// </summary>
 	public bool GetCharacterHavingBall(string Layer, float radius, out SampleCharacter character)
 	{
+		// 対象のレイヤー
 		LayerMask enemyLayer = LayerMask.GetMask(Layer);
+
+		// 検出数を保存する変数
 		int numFound = 0;
+
+		// 検出処理
 		if (Layer != null && Layer != "")
 			numFound = Physics.OverlapSphereNonAlloc(transform.position, radius, hitColliders, enemyLayer);
 		else
 			numFound = Physics.OverlapSphereNonAlloc(transform.position, radius, hitColliders);
+
+		// ボールを持っている対象
 		SampleCharacter havingBall = null;
 
 		// 検出されたキャラクターの回数回す
@@ -59,6 +89,34 @@ public class CharacterSensor : MonoBehaviour
 		}
 		character = havingBall;
 		return havingBall != null;
+	}
+
+	/// <summary>
+	/// 敵でボールを持っているキャラクターを探す。
+	/// 距離による判定はなし
+	/// </summary>
+	/// <param name="tag">自分のタグ</param>
+	/// <returns></returns>
+	public SampleCharacter GetEnemyHavingBall(string tag)
+	{
+		// 相手のタグをサーチする(マジックナンバーなので、修正予定)
+		string SearchTag = (tag == "PlayerCP") ? "EnemyCP" : "PlayerCP";
+
+		// タグから対象を見つける
+		GameObject[] objects = GameObject.FindGameObjectsWithTag(SearchTag);
+
+		foreach(GameObject o in objects)
+		{
+			SampleCharacter characterComponent = o.GetComponent<SampleCharacter>();
+
+			// ボール持ちを探す
+			if (characterComponent.isHoldingBall)
+				return characterComponent;
+
+		}
+
+		Debug.Log("Enemy Having Ball is Null");
+		return null;
 	}
 }
 
