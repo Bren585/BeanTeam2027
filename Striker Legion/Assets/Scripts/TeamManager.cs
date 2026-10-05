@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class TeamManager : MonoBehaviour
 {
+	// 同じチームのオブジェクトを格納する
 	private List<SampleCharacter> teamObjects;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

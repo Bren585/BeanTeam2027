@@ -6,9 +6,9 @@ public class PitchHeatmapVisualizer : MonoBehaviour
 	int gridX = 14;
 	int gridZ = 20;
 
-	[Header("Visualization Settings")]
-	[Tooltip("ヒートマップの色グラデーション")]
-	public Gradient heatmapGradient = new Gradient();
+	//[Header("Visualization Settings")]
+	//[Tooltip("ヒートマップの色グラデーション")]
+	private Gradient heatmapGradient;
 
 	[Range(0f, 1f)]
 	public float surfaceAlpha = 0.4f; // セルの透明度
@@ -24,6 +24,7 @@ public class PitchHeatmapVisualizer : MonoBehaviour
 		this.gridZ = gridZ;
 		this.pitchSize = pitchSize;
 
+		heatmapGradient = new Gradient();
 		gridScores = new float[gridX, gridZ];
 		InitDefaultGradient();
 	}
@@ -37,7 +38,13 @@ public class PitchHeatmapVisualizer : MonoBehaviour
 	// デフォルトのカラーグラデーション（青 -> 緑 -> 黄 -> 赤）をセットアップ
 	void InitDefaultGradient()
 	{
-		if (heatmapGradient.colorKeys.Length > 0) return;
+		// 既にグラデーションが設定されている場合は初期化しない
+		// キーの数が仕様により常に２以上になるため、２より大きい場合は初期化しない
+		if (heatmapGradient.colorKeys.Length > 2)
+		{
+			Debug.Log("Heatmapのグラデーションは既に入力されています。Length：" + heatmapGradient.colorKeys.Length);
+			return;
+		}
 
 		GradientColorKey[] gck = new GradientColorKey[4];
 		gck[0] = new GradientColorKey(Color.blue, 0.0f);   // 低スコア（危険・価値なし）
@@ -50,6 +57,7 @@ public class PitchHeatmapVisualizer : MonoBehaviour
 		gak[1] = new GradientAlphaKey(1.0f, 1.0f);
 
 		heatmapGradient.SetKeys(gck, gak);
+			Debug.Log("Heatmapのグラデーションの初期化");
 	}
 
 	void OnDrawGizmos()
@@ -67,7 +75,7 @@ public class PitchHeatmapVisualizer : MonoBehaviour
 		float maxScore = -1f;
 		Vector3 bestPos = Vector3.zero;
 
-		// 1. 各セルのヒートマップ描画
+		// 各セルのヒートマップ描画
 		for (int x = 0; x < gridX; x++)
 		{
 			for (int z = 0; z < gridZ; z++)
@@ -76,9 +84,11 @@ public class PitchHeatmapVisualizer : MonoBehaviour
 				float score = gridScores[x, z];
 
 				// スコアに基づいてグラデーション色を取得
-				Color cellColor = heatmapGradient.Evaluate(score);
+				//Color cellColor = heatmapGradient.Evaluate(Mathf.Clamp01(1.0f));
+				Color cellColor = heatmapGradient.Evaluate(Mathf.Clamp01(score));
 
 				// 面の描画（半透明）
+				//Gizmos.color = Color.red;
 				Gizmos.color = new Color(cellColor.r, cellColor.g, cellColor.b, surfaceAlpha);
 				Gizmos.DrawCube(cellPos, new Vector3(cellWidth * 0.95f, 0.01f, cellHeight * 0.95f));
 
@@ -95,7 +105,7 @@ public class PitchHeatmapVisualizer : MonoBehaviour
 			}
 		}
 
-		// 2. ベストポジションの強調表示
+		// ベストポジションの強調表示
 		if (showBestPosition && maxScore >= 0f)
 		{
 			Gizmos.color = Color.magenta;
@@ -117,5 +127,17 @@ public class PitchHeatmapVisualizer : MonoBehaviour
 	public void UpdateScores(float[,] scores)
 	{
 		gridScores = scores;
+		//TestUpdate();
+	}
+
+	void TestUpdate()
+	{
+		for (int x = 0; x < gridX; x++)
+		{
+			for (int z = 0; z < gridZ; z++)
+			{
+				gridScores[x, z] = Random.Range(0.0f, 1.0f);
+			}
+		}
 	}
 }

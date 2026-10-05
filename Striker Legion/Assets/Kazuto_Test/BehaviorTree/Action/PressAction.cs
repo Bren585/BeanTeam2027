@@ -20,6 +20,7 @@ public partial class PressAction : ActionBase
     {
         base.OnStart();
 
+        // 移動開始
         characterComponent.SteeringController.StartMove();
 
         Debug.Log(GameObject.name + " : Start Press");
@@ -33,10 +34,10 @@ public partial class PressAction : ActionBase
 
     protected override Status OnUpdate()
     {
-        // 対象を設定する
-        //characterComponent.SetTargetIsBall();
+        // 追跡する座標をターゲットの位置に更新
         characterComponent.SteeringController.TargetPosition = TargetCharacter.transform.position;
 
+		// ターゲットまでの距離を取得
 		if (distanceFromBall.Value <= PressDistance)
 		{
             Debug.Log(GameObject.name + ": Success Press. Distance : " + distanceFromBall.Value);

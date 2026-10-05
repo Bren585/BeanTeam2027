@@ -19,12 +19,18 @@ public struct TeamObject
 	public float[,] gridScores;
 
 	public TeamType teamType;
+
+	public Vector3 bestPosition;
 }
 
 
 // ピッチの状態を評価する
 public class PitchEvaluator : MonoBehaviour
 {
+	// シングルトンのインスタンス
+	public static PitchEvaluator Instance { get; private set; }
+
+
 	//[Header("Grid Settings")]
 	public Vector2 pitchSize = new Vector2(10f, 20f); // 標準的なサッカー場サイズ
 	public int gridX = 5;
@@ -39,12 +45,24 @@ public class PitchEvaluator : MonoBehaviour
 	// デバッグ用の描画コンポーネント
 	private PitchHeatmapVisualizer DebugVisualizer;
 
+	private void Awake()
+	{
+		if (Instance != null && Instance != this)
+		{
+			Debug.LogWarning("PitchEvaluatorのインスタンスが既に存在します。新しいインスタンスを破棄します。");
+			Destroy(this.gameObject);
+			return;
+		}
+		// インスタンスを設定
+		// シーンを跨いだら消える
+		Instance = this;
+	}
 	void Start()
 	{
 		Players.gridScores = new float[gridX, gridZ];
 		Players.teamType = TeamType.Player;
 
-		
+
 		Enemies.gridScores = new float[gridX, gridZ];
 		Enemies.teamType = TeamType.Enemy;
 
@@ -66,6 +84,11 @@ public class PitchEvaluator : MonoBehaviour
 		float cellWidth = pitchSize.x / gridX;
 		float cellHeight = pitchSize.y / gridZ;
 
+		int[] playersMaxScoreIndex = new int[2];
+		int[] enemiesMaxScoreIndex = new int[2];
+		float playersMaxScore = -1f;
+		float enemiesMaxScore = -1f;
+
 		for (int x = 0; x < gridX; x++)
 		{
 			for (int z = 0; z < gridZ; z++)
@@ -75,33 +98,58 @@ public class PitchEvaluator : MonoBehaviour
 
 				// プレイヤーチームのスコア計算
 				Players.gridScores[x, z] = CalculateCellScore(cellPos, Players.teamType);
+				if (Players.gridScores[x, z] > playersMaxScore)
+				{
+					playersMaxScore = Players.gridScores[x, z];
+					playersMaxScoreIndex[0] = x;
+					playersMaxScoreIndex[1] = z;
+				}
 
 				// 敵チームのスコア計算
 				Enemies.gridScores[x, z] = CalculateCellScore(cellPos, Enemies.teamType);
+				if (Enemies.gridScores[x, z] > enemiesMaxScore)
+				{
+					enemiesMaxScore = Enemies.gridScores[x, z];
+					enemiesMaxScoreIndex[0] = x;
+					enemiesMaxScoreIndex[1] = z;
+				}
 			}
 		}
+
+		// 最適な位置を更新
+		Players.bestPosition = GetCellWorldPosition(playersMaxScoreIndex[0], playersMaxScoreIndex[1], cellWidth, cellHeight);
+		Enemies.bestPosition = GetCellWorldPosition(enemiesMaxScoreIndex[0], enemiesMaxScoreIndex[1], cellWidth, cellHeight);
 	}
 
 	float CalculateCellScore(Vector3 cellPos, TeamType teamType)
 	{
-		// 敵対しているチームを元に計算する
-		TeamObject HostileTeam = (teamType == TeamType.Player) ? Enemies : Players; 
+		const float MaxDist = 10.0f;
+		const float GoalWeight = 0.6f;
+		const float SpaceWeight = 0.4f;
 
-		// ゴールへの近さ（ゴールに近いほどハイスコア）
+		// 敵対しているチームを元に計算する
+		TeamObject HostileTeam = (teamType == TeamType.Player) ? Enemies : Players;
+
+		// ゴールに近いほどハイスコア
 		float distToGoal = Vector3.Distance(cellPos, HostileTeam.Goal.position);
 		float goalScore = Mathf.Clamp01(1.0f - (distToGoal / pitchSize.y));
 
-		// 敵との距離（周囲の敵が離れているほどハイスコア）
+		// 周囲の敵が離れているほどハイスコア
 		float nearestEnemyDist = float.MaxValue;
 		foreach (var enemy in HostileTeam.characters)
 		{
 			float d = Vector3.Distance(cellPos, enemy.position);
-			if (d < nearestEnemyDist) nearestEnemyDist = d;
+
+			// 最も近い場所を更新
+			if (d < nearestEnemyDist)
+				nearestEnemyDist = d;
 		}
-		float spaceScore = Mathf.Clamp01(nearestEnemyDist / 10f); // 10m以上離れていれば満点
+
+		// 最大距離以上離れていれば満点
+		float spaceScore = Mathf.Clamp01(nearestEnemyDist / MaxDist);
 
 		// 重み付けして合算
-		return (goalScore * 0.6f) + (spaceScore * 0.4f);
+		return (goalScore * GoalWeight) + (spaceScore * SpaceWeight);
 	}
 
 	// 最もスコアが高いマスのワールド座標を取得する
@@ -110,23 +158,34 @@ public class PitchEvaluator : MonoBehaviour
 		// 敵対しているチームを元に計算する
 		TeamObject Team = (teamType == TeamType.Player) ? Players : Enemies;
 
-		float maxScore = -1f;
-		Vector3 bestPos = Vector3.zero;
-		float cellWidth = pitchSize.x / gridX;
-		float cellHeight = pitchSize.y / gridZ;
+		return Team.bestPosition;
+	}
 
-		for (int x = 0; x < gridX; x++)
+	public Vector3 CuluBestPosition(TeamType teamType, Vector3 Position)
+	{
+		// 敵対しているチームを元に計算する
+		TeamObject Team = (teamType == TeamType.Player) ? Players : Enemies;
+
+		// 引数の座標からグリッドの番号を取得
+		int TargetX, TargetZ;
+		GetCellIndexByWorldPosition(Position, out TargetX, out TargetZ);
+
+		float MaxScore = 0.0f;
+		Vector3 BestPosition = Vector3.zero;
+
+		for(int x = 0; x < gridX; x++)
 		{
 			for (int z = 0; z < gridZ; z++)
 			{
-				if (Team.gridScores[x, z] > maxScore)
-				{
-					maxScore = Team.gridScores[x, z];
-					bestPos = GetCellWorldPosition(x, z, cellWidth, cellHeight);
-				}
+				// 対象のグリッドとの距離
+				int distX = Math.Abs(TargetX - x);
+				int distZ = Math.Abs(TargetZ - z);
+
+				// 距離が近いほどスコアを高くする
 			}
 		}
-		return bestPos;
+
+		return BestPosition;
 	}
 
 	Vector3 GetCellWorldPosition(int x, int z, float w, float h)
@@ -135,23 +194,11 @@ public class PitchEvaluator : MonoBehaviour
 		float worldZ = (z * h) - (pitchSize.y / 2f) + (h / 2f);
 		return new Vector3(worldX, 0, worldZ);
 	}
-
-	// デバッグ表示用（Sceneビューで各マスの評価値を可視化）
-	//void OnDrawGizmosSelected()
-	//{
-	//	if (gridScores == null) return;
-	//	float cellWidth = pitchSize.x / gridX;
-	//	float cellHeight = pitchSize.y / gridZ;
-
-	//	for (int x = 0; x < gridX; x++)
-	//	{
-	//		for (int z = 0; z < gridZ; z++)
-	//		{
-	//			Vector3 pos = GetCellWorldPosition(x, z, cellWidth, cellHeight);
-	//			float score = gridScores[x, z];
-	//			Gizmos.color = Color.Lerp(Color.red, Color.green, score);
-	//			Gizmos.DrawWireCube(pos, new Vector3(cellWidth * 0.9f, 0.1f, cellHeight * 0.9f));
-	//		}
-	//	}
-	//}
+	void GetCellIndexByWorldPosition(Vector3 worldPosition, out int x, out int z)
+	{
+		float cellWidth = pitchSize.x / gridX;
+		float cellHeight = pitchSize.y / gridZ;
+		x = Mathf.Clamp(Mathf.FloorToInt((worldPosition.x + (pitchSize.x / 2f)) / cellWidth), 0, gridX - 1);
+		z = Mathf.Clamp(Mathf.FloorToInt((worldPosition.z + (pitchSize.y / 2f)) / cellHeight), 0, gridZ - 1);
+	}
 }

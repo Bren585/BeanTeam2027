@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class SampleCharacter : MonoBehaviour
 {
+	// キャラクターのロール
+	[SerializeField] public CharacterRole characterRole;
+
     // ボールのオブジェクト
     [SerializeField] private GameObject ballObject;
 
@@ -103,6 +106,8 @@ public class SampleCharacter : MonoBehaviour
 			//Debug.Log(name + "のボールとの距離：" + value);
 			behaviorGraphAgent.SetVariableValue("DistanceFromBall", value);
 			behaviorGraphAgent.SetVariableValue("StanTime", stanTime);
+			behaviorGraphAgent.SetVariableValue("CharacterRole", characterRole);
+			behaviorGraphAgent.SetVariableValue("DistanceFromOpponentGoal", characterSensor.GetDistanceToGoal(false));
 		}
 	}
 

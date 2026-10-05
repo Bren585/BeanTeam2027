@@ -45,13 +45,6 @@ public partial class ActionBase : Action
 			Initialized = true;
 		}
 
-		//// Behaviorエージェントを取得
-		//if (!GameObject.TryGetComponent<BehaviorGraphAgent>(out var agent))
-		//{
-		//	Debug.LogError(GameObject.name + ": Action開始時にBehaviorエージェントの取得に失敗");
-		//	return Status.Failure;
-		//}
-
 		// SampleCharacterコンポーネントを取得
 		if (GameObject.TryGetComponent<SampleCharacter>(out var character))
 		//if (agent.GetVariable<SampleCharacter>("CharacterComponent", out var character))

@@ -118,5 +118,45 @@ public class CharacterSensor : MonoBehaviour
 		Debug.Log("Enemy Having Ball is Null");
 		return null;
 	}
+
+	public float GetDistanceToGoal(bool isPlayerGoal)
+	{
+		// ゴールのオブジェクトを取得する（2つあるはず）
+		GameObject[] goalObjects = GameObject.FindGameObjectsWithTag("Goal");
+
+		// ゴールの種類を決定する
+		GameObject targetGoal = null;
+		foreach(GameObject goalObject in goalObjects)
+		{
+			if(LayerMask.LayerToName(goalObject.layer) == (isPlayerGoal ? "Player" : "Enemy"))
+			{
+				targetGoal = goalObject;
+				break;
+			}
+		}
+
+		if (targetGoal == null)
+		{
+			Debug.Log("ゴールが見つかりませんでした");
+			return float.MaxValue;
+		}
+		// 距離を計算
+		return Vector3.Distance(transform.position, targetGoal.transform.position);
+	}
+
+	public bool IsEnemyInRange(string targetLayer, float radius)
+	{
+		// プレイヤーの正面方向に Ray を発射
+		Ray ray = new Ray(transform.position, transform.forward);
+
+		LayerMask enemyLayer = LayerMask.GetMask(targetLayer);
+
+		if (!Physics.Raycast(ray, out RaycastHit hit, radius, enemyLayer))
+			return false;
+		if (!hit.collider.CompareTag(targetLayer == "PlayerCP" ? "EnemyCP" : "PlayerCP"))
+			return false;
+
+		return true;
+	}
 }
 

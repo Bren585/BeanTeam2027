@@ -420,6 +420,10 @@ PrefabInstance:
       propertyPath: ballObject
       value: 
       objectReference: {fileID: 2059711727}
+    - target: {fileID: 7603249284082552527, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
+      propertyPath: characterRole
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -579,6 +583,10 @@ PrefabInstance:
       propertyPath: ballObject
       value: 
       objectReference: {fileID: 2059711727}
+    - target: {fileID: -891996949468990701, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
+      propertyPath: characterRole
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2887874105960231806, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: m_Name
       value: Player02
@@ -725,6 +733,10 @@ PrefabInstance:
       propertyPath: ballObject
       value: 
       objectReference: {fileID: 2059711727}
+    - target: {fileID: 7603249284082552527, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
+      propertyPath: characterRole
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -742,9 +754,9 @@ GameObject:
   - component: {fileID: 1593952614}
   - component: {fileID: 1593952613}
   - component: {fileID: 1593952612}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: EnemyGoal
-  m_TagString: Untagged
+  m_TagString: Goal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -854,7 +866,7 @@ GameObject:
   - component: {fileID: 1668515502}
   m_Layer: 0
   m_Name: PitchEvaluator
-  m_TagString: Untagged
+  m_TagString: PitchManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -881,6 +893,7 @@ MonoBehaviour:
     - {fileID: 861767095}
     - {fileID: 119536366}
     teamType: 0
+    bestPosition: {x: 0, y: 0, z: 0}
   Enemies:
     Goal: {fileID: 1593952615}
     characters:
@@ -888,6 +901,7 @@ MonoBehaviour:
     - {fileID: 1362458745}
     - {fileID: 1216319782}
     teamType: 1
+    bestPosition: {x: 0, y: 0, z: 0}
 --- !u!4 &1668515503
 Transform:
   m_ObjectHideFlags: 0
@@ -915,9 +929,9 @@ GameObject:
   - component: {fileID: 1751610589}
   - component: {fileID: 1751610588}
   - component: {fileID: 1751610587}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PlayerGoal
-  m_TagString: Untagged
+  m_TagString: Goal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1027,6 +1041,10 @@ PrefabInstance:
       propertyPath: ballObject
       value: 
       objectReference: {fileID: 2059711727}
+    - target: {fileID: -891996949468990701, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
+      propertyPath: characterRole
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2887874105960231806, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: m_Name
       value: Player03
