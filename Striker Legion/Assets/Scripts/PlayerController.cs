@@ -45,7 +45,6 @@ public class PlayerController : MonoBehaviour
         return closestCharacter;
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         gameBall = FindAnyObjectByType<GameBall>();
@@ -56,9 +55,9 @@ public class PlayerController : MonoBehaviour
         transform.position = cameraTarget.position;
     }
 
-    // Update is called once per frame
     void Update()
     {
+        // Player Move Input, rotated to Camera
         if (playerCharacter != null)
         {
 
@@ -68,9 +67,11 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            // No player? Follow the ball as a fallback.
             cameraTarget = gameBall.transform;
         }
 
+        // Move the Camera.
         Vector3 toTarget = cameraTarget.position - transform.position;
         float distance = toTarget.magnitude;
         float speedTime = Time.deltaTime * cameraMaxSpeed;
@@ -129,7 +130,13 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            PossessCharacter(GetClosestPossessableCharacter());
+            if (gameBall.GetOwner() == playerCharacter) { return; }
+            CharacterBase possesionTarget = playerCharacter.PassTarget();
+            if (possesionTarget == null)
+            {
+                possesionTarget = GetClosestPossessableCharacter();
+            }
+            PossessCharacter(possesionTarget);
         }
     }
 

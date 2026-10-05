@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Collections.Tests.CoreCLR.TestJobs;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.Mathf;
 
@@ -23,6 +24,8 @@ public class CharacterBase : MonoBehaviour
     [SerializeField] float tackleCooldown = 1.0f;
 
     [SerializeField] float maxDownTime = 2.0f;
+
+    [SerializeField] float gravity = 10.0f;
 
     // キャラパラメータ **************************************************************************************
 
@@ -197,6 +200,11 @@ public class CharacterBase : MonoBehaviour
                 body.Move(forward * (Clamp01(dot) * speed * Time.deltaTime));
             }
             // 重力
+            if (!body.isGrounded)
+            {
+                Vector3 gravityVector = new(0, -gravity * Time.deltaTime, 0);
+                body.Move(gravityVector);
+            }
             // velocity += gravity
             // body.move(down)
         }
@@ -357,6 +365,8 @@ public class CharacterBase : MonoBehaviour
     }
 
     public CharacterBase PassTarget() { return PassTarget(out _); }
+
+    //public CharacterBase GetPassTarget() { return passTarget; }
 
     public void MarkAsPassTarget(bool isTarget)
     {

@@ -1,4 +1,5 @@
 using Unity.Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameBall : MonoBehaviour
@@ -14,11 +15,66 @@ public class GameBall : MonoBehaviour
         public flight(CharacterBase from, CharacterBase to, float height, float speed)
         {
             start = from.transform.Find("Feet").position;
-            end = to.transform.Find("Feet").position + to.velocity;
+            Vector3 target = to.transform.Find("Feet").position;
+            Vector3 velocity = new Vector3(to.velocity.x, 0, to.velocity.z);
+            Vector3 offset = target - start;
+
+            duration = Mathf.Infinity;
+            do
+            {
+                float a = Vector3.Dot(velocity, velocity) - (speed * speed);
+                float b = 2f * Vector3.Dot(offset, velocity);
+                float c = Vector3.Dot(offset, offset);
+
+                if (Mathf.Approximately(a, 0))
+                {
+                    if (!Mathf.Approximately(b, 0))
+                    {
+                        float t = -c / b;
+                        if (t > 0)
+                        {
+                            duration = t;
+                        }
+                    }
+                }
+                else
+                {
+                    float discriminant = b * b - 4f * a * c;
+
+                    if (discriminant >= 0)
+                    {
+                        float sqrt = Mathf.Sqrt(discriminant);
+                        float t1 = (-b - sqrt) / (2f * a);
+                        float t2 = (-b + sqrt) / (2f * a);
+
+                        if (t1 > 0f) { duration = t1; }
+                        if (t2 > 0f && t2 < duration) { duration = t2; }
+                    }
+                }
+                if (duration == Mathf.Infinity)
+                {
+                    // No valid intercept.
+                    // Adjust speed to make it possible.
+                    float offsetSqr = Vector3.Dot(offset, offset);
+                    float velocitySqr = Vector3.Dot(velocity, velocity);
+                    float dot = Vector3.Dot(offset, velocity);
+                    float minSpeed;
+                    if (dot < 0.0f)
+                        minSpeed = Mathf.Sqrt(velocitySqr - (dot * dot / offsetSqr));
+                    else
+                        minSpeed = Mathf.Sqrt(velocitySqr);
+                    speed = minSpeed + 1f;
+
+                }
+            }
+            while (duration == Mathf.Infinity);
+
+            end = target + velocity * duration;
             maxHeight = height;
-            float distance = (start - end).magnitude;
-            duration = distance / speed;
             t = 0;
+
+            float expectedDistance = speed * duration;
+            float actualDistance = Vector3.Distance(start, end);
         }
 
         public bool update(out Vector3 position)
