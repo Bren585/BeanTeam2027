@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
 using Unity.Collections;
 using Unity.Collections.Tests.CoreCLR.TestJobs;
 using Unity.VisualScripting;
@@ -25,7 +26,13 @@ public class CharacterBase : MonoBehaviour
 
     [SerializeField] float maxDownTime = 2.0f;
 
-    [SerializeField] float gravity = 10.0f;
+    [SerializeField] float gravity = 5.0f;
+
+    /// <summary>
+    ///                                             ジャンプ力
+    /// </summary>
+    [SerializeField] protected float jumpStrength = 2.0f;
+
 
     // キャラパラメータ **************************************************************************************
 
@@ -34,11 +41,6 @@ public class CharacterBase : MonoBehaviour
     ///                                             走るマックススピード
     /// </summary>
     [SerializeField] protected float maxRunSpeed;
-
-    /// <summary>
-    ///                                             ジャンプ力
-    /// </summary>
-    [SerializeField] protected float jumpStrength;
 
     /// <summary>
     ///                                             復活力
@@ -80,7 +82,7 @@ public class CharacterBase : MonoBehaviour
     /// <summary>
     ///                                             飛ぶときの小回り力、横移動スピード、アクセル
     /// </summary>
-    [SerializeField] protected float airMobility = 0;
+    [SerializeField, Range(0f, 1f)] protected float airMobility = 0.1f;
 
     // キャラ状態 *******************************************************************************************
 
@@ -177,14 +179,14 @@ public class CharacterBase : MonoBehaviour
                 groundVelocity.Scale(new Vector3(m, 1, m));
                 speed = maxSpeed;
             }
-
+            Vector3 groundMovement = Vector3.zero;
             if (strafing) // 横移動
             {
-                body.Move(groundVelocity * Time.deltaTime);
+                groundMovement = (groundVelocity * Time.deltaTime);
             }
             else // 普通に走る
             {
-                if (moving && !moveLocked)
+                if (moving && !moveLocked && groundVelocity != Vector3.zero)
                 {
                     Quaternion targetRotation = Quaternion.LookRotation(groundVelocity.normalized);
 
@@ -197,18 +199,34 @@ public class CharacterBase : MonoBehaviour
                 }
                 Vector3 forward = body.transform.forward.normalized;
                 float dot = Vector3.Dot(groundVelocity.normalized, forward);
-                body.Move(forward * (Clamp01(dot) * speed * Time.deltaTime));
+                groundMovement = (forward * (Clamp01(dot) * speed * Time.deltaTime));
             }
+
             // 重力
+            Vector3 airMovement = Vector3.zero;
+            Vector3 airVelocity = Vector3.zero;
+            airVelocity.y = velocity.y;
             if (!body.isGrounded)
             {
                 Vector3 gravityVector = new(0, -gravity * Time.deltaTime, 0);
-                body.Move(gravityVector);
+                velocity += gravityVector;
+                airVelocity += gravityVector;
+                airMovement = (airVelocity * Time.deltaTime);
+            } 
+            else
+            {
+                if (velocity.y > 0)
+                {
+                    airMovement = (airVelocity * Time.deltaTime);
+                }
             }
-            // velocity += gravity
-            // body.move(down)
+
+            body.Move(groundMovement + airMovement);
         }
-        if (!moving && !moveLocked) { velocity = velocity * Clamp01(1.0f - Time.deltaTime / 0.25f); }
+        if (!moving && !moveLocked) {
+            float drag = Clamp01(1.0f - Time.deltaTime / 0.25f);
+            velocity = Vector3.Scale(velocity, new Vector3(drag, 1, drag)); 
+        }
     }
 
     /// <summary>
@@ -218,8 +236,25 @@ public class CharacterBase : MonoBehaviour
     public void Move(Vector3 input)
     {
         if (moveLocked) { return; }
-        velocity += input * maxSpeed * Time.deltaTime;
-        moving = (input != Vector3.zero);
+
+        moving = (input != Vector3.zero) || !body.isGrounded;
+        if (!moving) { return; }
+
+        float mobility = body.isGrounded ? groundMobility : airMobility;
+
+        float accelerationModifier = Mathf.Pow(2, (mobility - 1));
+
+        Vector3 inputVelocity = input * maxSpeed * Time.deltaTime * accelerationModifier;
+        Vector3 groundVelocity = new Vector3(velocity.x, 0, velocity.z);
+        float dot = Vector3.Dot(inputVelocity.normalized, groundVelocity.normalized);
+
+        if (dot < 0) // 移動先が動いている向きと違う
+        {
+            // 向きが違う分、早く向けるため、早くなる。
+            inputVelocity += groundVelocity * dot * mobility;
+        }
+
+        velocity += inputVelocity;
     }
 
     /// <summary>
@@ -234,17 +269,17 @@ public class CharacterBase : MonoBehaviour
 
     public void Jump()
     {
+        if (!body.isGrounded) { return; }
         if (canFly) 
         { 
             // 飛び始めて
         }
         else 
         {
-            return;
-            //Vector3 jump;
-            //jump.x = jump.z = 0;
-            //jump.y = jumpStrength;
-            //velocity += jump;
+            Vector3 jump;
+            jump.x = jump.z = 0;
+            jump.y = jumpStrength - velocity.y;
+            velocity += jump;
         }
     }
 
