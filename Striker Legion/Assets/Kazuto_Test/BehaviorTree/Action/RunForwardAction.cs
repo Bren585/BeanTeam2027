@@ -43,12 +43,12 @@ public partial class RunForwardAction : ActionBase
 
     protected override Status OnUpdate()
     {
-        characterComponent.SteeringController.TargetPosition = GameObject.transform.position + GameObject.transform.forward * 10.0f;
+        characterComponent.SteeringController.TargetPosition = GameObject.transform.position + GameObject.transform.forward * 1.5f;
 		//characterComponent.SteeringController.TargetPosition = pitchEvaluator.GetBestPosition(teamType); 
 		//characterComponent.SteeringController.TargetPosition = new Vector3(0, 0, 0);
 
 		timer += Time.deltaTime;
-        if(timer >= 1.5f)
+        if(timer >= 0.5f)
 		{
 			Debug.Log(GameObject.name + ": Success RunForwardAction.");
 			return Status.Success;

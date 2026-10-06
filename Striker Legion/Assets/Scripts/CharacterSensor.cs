@@ -1,5 +1,7 @@
 using Unity.AppUI.UI;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class CharacterSensor : MonoBehaviour
 {
@@ -119,16 +121,20 @@ public class CharacterSensor : MonoBehaviour
 		return null;
 	}
 
-	public float GetDistanceToGoal(bool isPlayerGoal)
+	public float GetDistanceToGoal(bool isMyGoal)
 	{
 		// ゴールのオブジェクトを取得する（2つあるはず）
 		GameObject[] goalObjects = GameObject.FindGameObjectsWithTag("Goal");
+
+		// 対象のレイヤー番号
+		// 自分のゴールか相手のゴールかでレイヤーを決定する
+		int Layer = isMyGoal ? gameObject.layer : (gameObject.layer == LayerMask.NameToLayer("Player") ? LayerMask.NameToLayer("Enemy") : LayerMask.NameToLayer("Player"));
 
 		// ゴールの種類を決定する
 		GameObject targetGoal = null;
 		foreach(GameObject goalObject in goalObjects)
 		{
-			if(LayerMask.LayerToName(goalObject.layer) == (isPlayerGoal ? "Player" : "Enemy"))
+			if(goalObject.layer == Layer)
 			{
 				targetGoal = goalObject;
 				break;
@@ -149,14 +155,87 @@ public class CharacterSensor : MonoBehaviour
 		// プレイヤーの正面方向に Ray を発射
 		Ray ray = new Ray(transform.position, transform.forward);
 
-		LayerMask enemyLayer = LayerMask.GetMask(targetLayer);
+		string enemyLayerStr = (targetLayer == "Player") ? "Enemy" : "Player";
+		LayerMask enemyLayer = LayerMask.GetMask(enemyLayerStr);
 
+		// レイがヒットしたか
 		if (!Physics.Raycast(ray, out RaycastHit hit, radius, enemyLayer))
-			return false;
-		if (!hit.collider.CompareTag(targetLayer == "PlayerCP" ? "EnemyCP" : "PlayerCP"))
-			return false;
+		{
+			Debug.Log("敵が見つかりませんでした");
 
+			return false;
+		}
+		// ヒットしたオブジェクトが敵かどうかを判定
+		if (!hit.collider.CompareTag(enemyLayerStr == "Player" ? "PlayerCP" : "EnemyCP"))
+		{
+			return false;
+		}
 		return true;
+	}
+
+	// 味方の指定したロールのキャラクターを探す
+	public SampleCharacter GetAllyByRole(CharacterRole role)
+	{
+		// 自身のタグを味方のタグとして使用する
+		string allyTag = gameObject.tag;
+
+		// 味方のオブジェクトを取得する
+		GameObject[] allies = GameObject.FindGameObjectsWithTag(allyTag);
+		foreach (GameObject ally in allies)
+		{
+			SampleCharacter sampleChar = ally.GetComponent<SampleCharacter>();
+
+			// キャラクターのコンポーネントをヌルチェック
+			if (sampleChar == null)
+				continue;
+
+			// ロールが指定したものかチェックする
+			if (sampleChar.characterRole == role)
+				return sampleChar;
+			
+		}
+		return null;
+	}
+
+	// パスが成功するかどうかをレイキャストで判定する
+	public bool IsPassSuccess(Transform TargetTransform)
+	{
+		// 引数の位置に向けてのレイを作成
+		Ray ray = new Ray(transform.position, Vector3.Normalize(TargetTransform.position - transform.position));
+
+		float rayDistance = Vector3.Distance(TargetTransform.position ,transform.position);
+
+		// 敵のレイヤー
+		string enemyLayerStr = (LayerMask.LayerToName(gameObject.layer) == "Player") ? "Enemy" : "Player";
+		LayerMask enemyLayer = LayerMask.GetMask(enemyLayerStr);
+
+		// レイがヒットしたか
+		if (!Physics.Raycast(ray, out RaycastHit hit, rayDistance, enemyLayer))
+		{
+			Debug.Log("敵が見つかりませんでした");
+
+			return false;
+		}
+		// ヒットしたオブジェクトが敵かどうかを判定
+		if (!hit.collider.CompareTag(enemyLayerStr == "Player" ? "PlayerCP" : "EnemyCP"))
+		{
+			return false;
+		}
+		return true;
+	}
+
+	public bool IsNearbyOpponent(float radius)
+	{
+		int OpponentLayer = LayerMask.GetMask(LayerMask.LayerToName(gameObject.layer) == "Player" ? "Enemy" : "Player"); 
+
+		//LayerMask enemyLayer = LayerMask.GetMask(gameObject.layer);
+		int numFound = 0;
+
+		// 近くにいるか判定する
+		numFound = Physics.OverlapSphereNonAlloc(transform.position, radius, hitColliders, OpponentLayer);
+		
+		// 検出された数が1以上ならtrue
+		return (numFound > 0) ? true : false;
 	}
 }
 
