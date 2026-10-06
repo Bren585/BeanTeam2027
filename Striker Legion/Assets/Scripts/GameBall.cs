@@ -11,6 +11,7 @@ public class GameBall : MonoBehaviour
         public float maxHeight;
         public float duration;
         public float t; // ƒ^ƒCƒ€
+        public const float MAX_DURATION = 3f;
 
         public flight(CharacterBase from, CharacterBase to, float height, float speed)
         {
@@ -18,6 +19,7 @@ public class GameBall : MonoBehaviour
             Vector3 target = to.transform.Find("Feet").position;
             Vector3 velocity = new Vector3(to.velocity.x, 0, to.velocity.z);
             Vector3 offset = target - start;
+            offset.y = 0;
 
             duration = Mathf.Infinity;
             do
@@ -64,17 +66,16 @@ public class GameBall : MonoBehaviour
                     else
                         minSpeed = Mathf.Sqrt(velocitySqr);
                     speed = minSpeed + 1f;
-
                 }
             }
             while (duration == Mathf.Infinity);
 
+            //duration‚ð§ŒÀ‚·‚é
+            duration = Mathf.Min(duration, MAX_DURATION);
+
             end = target + velocity * duration;
             maxHeight = height;
             t = 0;
-
-            float expectedDistance = speed * duration;
-            float actualDistance = Vector3.Distance(start, end);
         }
 
         public bool update(out Vector3 position)
@@ -130,13 +131,13 @@ public class GameBall : MonoBehaviour
         else
         {
             Vector3 toTarget = ownerFeet.position - transform.position;
+            toTarget.y = 0;
             float distance = toTarget.magnitude;
             float speedTimme = maxCatchupSpeed * Time.deltaTime;
             if (distance > speedTimme)
             {
                 toTarget *= (speedTimme / distance);
             }
-            toTarget.y = 0;
             transform.position += toTarget;
 
         }
