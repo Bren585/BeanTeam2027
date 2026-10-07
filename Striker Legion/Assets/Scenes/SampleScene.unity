@@ -247,7 +247,7 @@ MonoBehaviour:
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
-  FollowOffset: {x: 0, y: 4, z: -10}
+  FollowOffset: {x: 0, y: 20, z: -20}
 --- !u!114 &73280707
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -299,8 +299,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 73280704}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.18910754, y: 0.000000013285725, z: -6.978122e-10, w: 0.9819564}
-  m_LocalPosition: {x: 4.26134, y: 4, z: -7.48689}
+  m_LocalRotation: {x: 0.38268346, y: -0.000000011680701, z: 0.000000004838301, w: 0.92387956}
+  m_LocalPosition: {x: 4.26134, y: 20, z: -17.48689}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -364,21 +364,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd2498d6b10955e43b90da69872b7482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
-  minTurnSpeed: 90
-  maxTurnSpeed: 360
-  tackleHitboxDuration: 0.25
-  tackleCooldown: 1
-  maxDownTime: 2
-  gravity: 5
-  jumpStrength: 2
+  baseInfo: {fileID: 0}
   maxRunSpeed: 20
   constition: 0
   ballHandling: 0
-  groundMobility: 0.901
-  power: 10
+  groundMobility: 0.9
+  power: 1
   canFly: 0
   maxFlySpeed: 0
-  airMobility: 0
+  airMobility: 0.25
   <teamNo>k__BackingField: 0
   <hasBall>k__BackingField: 1
 --- !u!143 &296223719
@@ -614,8 +608,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.18910757, y: 0.000000013657883, z: -0.0000000026302684, w: 0.9819564}
-  m_LocalPosition: {x: 4.26134, y: 4, z: -7.48689}
+  m_LocalRotation: {x: 0.3826835, y: -0.000000011680705, z: 0.0000000048383066, w: 0.92387956}
+  m_LocalPosition: {x: 4.26134, y: 20, z: -17.48689}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -790,13 +784,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd2498d6b10955e43b90da69872b7482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
-  minTurnSpeed: 90
-  maxTurnSpeed: 360
-  tackleHitboxDuration: 0.25
-  tackleCooldown: 1
-  maxDownTime: 2
-  gravity: 10
-  jumpStrength: 5
+  baseInfo: {fileID: 0}
   maxRunSpeed: 20
   constition: 0
   ballHandling: 0
@@ -950,13 +938,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: -0.57818466, y: 0.38746333, z: -0.55474865, w: -0.45588225}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 73.148, y: 83.832, z: -191.491}
 --- !u!114 &410087042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1487,13 +1475,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd2498d6b10955e43b90da69872b7482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
-  minTurnSpeed: 90
-  maxTurnSpeed: 360
-  tackleHitboxDuration: 0.25
-  tackleCooldown: 1
-  maxDownTime: 2
-  gravity: 10
-  jumpStrength: 5
+  baseInfo: {fileID: 0}
   maxRunSpeed: 20
   constition: 0
   ballHandling: 0
