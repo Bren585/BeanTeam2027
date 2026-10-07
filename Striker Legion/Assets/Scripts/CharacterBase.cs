@@ -18,20 +18,24 @@ public class CharacterBase : MonoBehaviour
     // キャラ定義 *******************************************************************************************
 
     [Header("ベース設定")]
-    [SerializeField] float minTurnSpeed = 90;
-    [SerializeField] float maxTurnSpeed = 360;
+    [SerializeField] protected CharacterBaseInfo baseInfo;
 
-    [SerializeField] float tackleHitboxDuration = 0.25f;
-    [SerializeField] float tackleCooldown = 1.0f;
+    //[SerializeField] float minTurnSpeed = 90;
+    //[SerializeField] float maxTurnSpeed = 360;
 
-    [SerializeField] float maxDownTime = 2.0f;
+    //[SerializeField] float tackleHitboxDuration = 0.25f;
+    //[SerializeField] float tackleCooldown = 1.0f;
 
-    [SerializeField] float gravity = 5.0f;
+    //[SerializeField] float maxDownTime = 2.0f;
 
-    /// <summary>
-    ///                                             ジャンプ力
-    /// </summary>
-    [SerializeField] protected float jumpStrength = 2.0f;
+    //[SerializeField] float maxPassDistance = 10.0f;
+
+    //[SerializeField] float gravity = 5.0f;
+
+    ///// <summary>
+    /////                                             ジャンプ力
+    ///// </summary>
+    //[SerializeField] protected float jumpStrength = 2.0f;
 
 
     // キャラパラメータ **************************************************************************************
@@ -66,7 +70,7 @@ public class CharacterBase : MonoBehaviour
     /// <summary>
     ///                                             ショート力
     /// </summary>
-    [SerializeField] protected float power;
+    [SerializeField, Range(0f, 1f)] protected float power;
 
     [Header("鳥系")]
     /// <summary>
@@ -132,7 +136,7 @@ public class CharacterBase : MonoBehaviour
 
     void Start()
     {
-        tackleTimer = tackleCooldown;
+        tackleTimer = baseInfo.tackleCooldown;
     }
 
     void Update()
@@ -148,12 +152,12 @@ public class CharacterBase : MonoBehaviour
             }
         }
 
-        if (tackleTimer < tackleCooldown)
+        if (tackleTimer < baseInfo.tackleCooldown)
         {
             tackleTimer += Time.deltaTime;
             if (tackleHitbox.activeSelf)
             {
-                if (tackleTimer > tackleHitboxDuration) { tackleHitbox.SetActive(false); }
+                if (tackleTimer > baseInfo.tackleHitboxDuration) { tackleHitbox.SetActive(false); }
             }
         }
 
@@ -193,7 +197,7 @@ public class CharacterBase : MonoBehaviour
                     body.transform.rotation = Quaternion.RotateTowards(
                         body.transform.rotation,
                         targetRotation,
-                        (minTurnSpeed + Lerp(minTurnSpeed, maxTurnSpeed, groundMobility)) * Time.deltaTime
+                        (baseInfo.minTurnSpeed + Lerp(baseInfo.minTurnSpeed, baseInfo.maxTurnSpeed, groundMobility)) * Time.deltaTime
                     );
 
                 }
@@ -208,7 +212,7 @@ public class CharacterBase : MonoBehaviour
             airVelocity.y = velocity.y;
             if (!body.isGrounded)
             {
-                Vector3 gravityVector = new(0, -gravity * Time.deltaTime, 0);
+                Vector3 gravityVector = new(0, -baseInfo.gravity * Time.deltaTime, 0);
                 velocity += gravityVector;
                 airVelocity += gravityVector;
                 airMovement = (airVelocity * Time.deltaTime);
@@ -278,7 +282,7 @@ public class CharacterBase : MonoBehaviour
         {
             Vector3 jump;
             jump.x = jump.z = 0;
-            jump.y = jumpStrength - velocity.y;
+            jump.y = baseInfo.jumpStrength - velocity.y;
             velocity += jump;
         }
     }
@@ -286,7 +290,7 @@ public class CharacterBase : MonoBehaviour
     public void Tackle()
     {
         if (hasBall) return;
-        if (tackleTimer < tackleCooldown) return;
+        if (tackleTimer < baseInfo.tackleCooldown) return;
         tackleTimer = 0;
         tackleHitbox.SetActive(true);
     }
@@ -325,7 +329,7 @@ public class CharacterBase : MonoBehaviour
                 ClearPassTarget();
 
                 // ダウン
-                downTimer = maxDownTime * (1 - constition);
+                downTimer = baseInfo.maxDownTime * (1 - constition);
             }
         }
         else if (other.gameObject.name == "GoalZone")
@@ -425,6 +429,8 @@ public class CharacterBase : MonoBehaviour
         CharacterBase target = PassTarget(out blockers);
 
         if (target == null) return;
+
+        if ((target.transform.position - transform.position).magnitude > baseInfo.maxPassDistance) { return; }
 
         // See if blocked or not
         if (blockers != null)
