@@ -315,6 +315,7 @@ public class CharacterBase : MonoBehaviour
     {
         if (other.gameObject.name == "TackleHitbox")
         {
+            if (!hasBall) { return; }
             CharacterBase opponent = other.GetComponentInParent<CharacterBase>();
             if (BallHandlingFail())
             {
@@ -327,6 +328,9 @@ public class CharacterBase : MonoBehaviour
                 opponent.lockMove();
                 hasBall = false;
                 ClearPassTarget();
+
+                SkillBar enemyEnergy = SkillBar.GetSkillBar(opponent.teamNo);
+                if (enemyEnergy != null) enemyEnergy.GainForTackle();
 
                 // ƒ_ƒEƒ“
                 downTimer = baseInfo.maxDownTime * (1 - constition);
@@ -457,7 +461,10 @@ public class CharacterBase : MonoBehaviour
 
     public virtual void Skill()
     {
-
+        SkillBar energy = SkillBar.GetSkillBar(teamNo);
+        if (energy == null) { return; }
+        energy.PayForSkill();
+        Debug.Log("Used Skill");
     }
 
     public void lockMove() { moveLocked = true; }
