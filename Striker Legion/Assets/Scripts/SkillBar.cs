@@ -1,60 +1,56 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class SkillBar : MonoBehaviour
 {
-    [field: SerializeField] public int teamNo { get; private set; }
-
-    [field: SerializeField] public float energy { get; private set; }
+    Dictionary<int, float> energyBars = new Dictionary<int, float>();
 
     [SerializeField] private SkillBarInfo barInfo;
 
-    Slider slider;
+    Slider test_slider;
 
     float secondTimer = 1.0f;
+
+    public void RegisterTeam(int teamNo) { energyBars[teamNo] = barInfo.startingEnergy; }
+
+    public float GetEnergy(int teamNo) { return energyBars[teamNo]; }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        energy = 0.0f;
-        slider = GetComponentInParent<Slider>();
+        test_slider = FindAnyObjectByType<Slider>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        secondTimer -= Time.deltaTime;
-        if (secondTimer < 0.0f) 
-        {
-            secondTimer += 1;
-            Charge(barInfo.passiveGain);
-        }
+        //secondTimer -= Time.deltaTime;
+        //if (secondTimer < 0.0f) 
+        //{
+        //    secondTimer += 1;
+        //    foreach (int teamNo in energyBars.Keys) {
+        //        Charge(barInfo.passiveGain, teamNo);
+        //    }
+        //}
+        //test_slider.value = energyBars[0] / barInfo.maxEnergy;
     }
 
-    public bool Ready() { return energy >= barInfo.reqEnergy; }
+    public bool Ready(int teamNo) { return energyBars[teamNo] >= barInfo.reqEnergy; }
 
-    void Charge(float amount) 
-    { 
-        energy = Mathf.Clamp(energy + amount, 0, barInfo.maxEnergy);
-        slider.value = energy / barInfo.maxEnergy;
+    void Charge(float amount, int teamNo) 
+    {
+        energyBars[teamNo] = Mathf.Clamp(energyBars[teamNo] + amount, 0, barInfo.maxEnergy);
     }
     
-    public bool PayForSkill() 
+    public bool PayForSkill(int teamNo) 
     {
-        if (!Ready()) return false;
-        Charge(-barInfo.maxEnergy);
+        if (!Ready(teamNo)) return false;
+        Charge(-barInfo.maxEnergy, teamNo);
         return true;
     }
 
-    public void GainForTackle() { Charge(barInfo.tackleGain); }
-    public void GainForShoot() { Charge(barInfo.shootGain); }
+    public void GainForTackle(int teamNo) { Charge(barInfo.tackleGain, teamNo); }
+    public void GainForShoot(int teamNo) { Charge(barInfo.shootGain, teamNo); }
 
-    static public SkillBar GetSkillBar(int teamNo)
-    {
-        SkillBar[] bars = FindObjectsByType<SkillBar>();
-        foreach (SkillBar bar in bars) { 
-            if (bar.teamNo == teamNo) { return bar; }
-        }
-        return null;
-    }
 }

@@ -96,7 +96,11 @@ public class CharacterBase : MonoBehaviour
 
     [field: SerializeField] public bool hasBall { get; private set; } = false;
 
-    public Vector3 velocity { get; private set; }
+    private Vector3 _velocity;
+    public Vector3 velocity => _velocity;
+
+    Animator animator;
+    SkillBar skillBar;
 
     /// <summary>
     /// trueなら動いている向きに回る、falseなら向かない
@@ -132,14 +136,37 @@ public class CharacterBase : MonoBehaviour
         ball.SetActive(false);
         tackleHitbox = transform.Find("TackleHitbox").gameObject;
         tackleHitbox.SetActive(false);
+
+        animator = GetComponentInChildren<Animator>();
     }
 
     void Start()
     {
         tackleTimer = baseInfo.tackleCooldown;
+        skillBar = FindAnyObjectByType<SkillBar>();
     }
 
     void Update()
+    {
+        animator.Update(Time.deltaTime);
+
+        UpdatePassTarget();
+
+        UpdateTackle();
+
+        if (isDown)
+        {
+            _velocity.x = 0;
+            _velocity.z = 0;
+            downTimer -= Time.deltaTime;
+            if (downTimer <= 0) { animator.SetTrigger("Recover"); }
+            return;
+        }
+
+        UpdateMovement();
+    }
+
+    void UpdatePassTarget()
     {
         if (hasBall)
         {
@@ -151,7 +178,10 @@ public class CharacterBase : MonoBehaviour
                 passTarget = newPassTarget;
             }
         }
+    }
 
+    void UpdateTackle()
+    {
         if (tackleTimer < baseInfo.tackleCooldown)
         {
             tackleTimer += Time.deltaTime;
@@ -160,77 +190,90 @@ public class CharacterBase : MonoBehaviour
                 if (tackleTimer > baseInfo.tackleHitboxDuration) { tackleHitbox.SetActive(false); }
             }
         }
+    }
 
-        if (isDown)
-        {
-            downTimer -= Time.deltaTime;
-            velocity = Vector3.zero;
-            return;
-        }
-
+    void UpdateMovement()
+    {
         if (flying) // 飛んでる
         {
         }
         else // 走ってる
         {
             // 速度チェック
-            Vector3 groundVelocity = new Vector3(velocity.x, 0, velocity.z);
-            float speed = groundVelocity.magnitude; 
-            if (speed > maxSpeed)
-            {
-                float m = (maxSpeed / speed);
-                velocity.Scale(new Vector3(m, 1, m));
-                groundVelocity.Scale(new Vector3(m, 1, m));
-                speed = maxSpeed;
-            }
-            Vector3 groundMovement = Vector3.zero;
+            Vector3 groundVelocity = velocity;
+            groundVelocity.y = 0;
+
+            groundVelocity = Vector3.ClampMagnitude(groundVelocity, maxSpeed);
+
+            Vector3 movement = Vector3.zero;
+
             if (strafing) // 横移動
             {
-                groundMovement = (groundVelocity * Time.deltaTime);
+                movement = (groundVelocity * Time.deltaTime);
+                animator.SetFloat("forward", 0);
             }
             else // 普通に走る
             {
-                if (moving && !moveLocked && groundVelocity != Vector3.zero)
-                {
-                    Quaternion targetRotation = Quaternion.LookRotation(groundVelocity.normalized);
+                UpdateRotation(groundVelocity);
 
-                    body.transform.rotation = Quaternion.RotateTowards(
-                        body.transform.rotation,
-                        targetRotation,
-                        (baseInfo.minTurnSpeed + Lerp(baseInfo.minTurnSpeed, baseInfo.maxTurnSpeed, groundMobility)) * Time.deltaTime
+                float speed = groundVelocity.magnitude;
+
+                if (speed > 0.001f)
+                {
+                    float forwardDegree = Vector3.Dot(groundVelocity / speed, body.transform.forward);
+                    movement = (body.transform.forward * (Clamp01(forwardDegree) * speed * Time.deltaTime));
+
+                    float angle = Vector3.SignedAngle(
+                        body.transform.forward,
+                        groundVelocity.normalized,
+                        Vector3.up
                     );
 
-                }
-                Vector3 forward = body.transform.forward.normalized;
-                float dot = Vector3.Dot(groundVelocity.normalized, forward);
-                groundMovement = (forward * (Clamp01(dot) * speed * Time.deltaTime));
+                    animator.SetFloat("forward", angle / 180.0f);
+                } 
+                else { animator.SetFloat("forward", 0); }
             }
 
-            // 重力
-            Vector3 airMovement = Vector3.zero;
-            Vector3 airVelocity = Vector3.zero;
-            airVelocity.y = velocity.y;
-            if (!body.isGrounded)
-            {
-                Vector3 gravityVector = new(0, -baseInfo.gravity * Time.deltaTime, 0);
-                velocity += gravityVector;
-                airVelocity += gravityVector;
-                airMovement = (airVelocity * Time.deltaTime);
-            } 
-            else
-            {
-                if (velocity.y > 0)
-                {
-                    airMovement = (airVelocity * Time.deltaTime);
-                }
-            }
+            movement += UpdateGravity();
 
-            body.Move(groundMovement + airMovement);
+            body.Move(movement);
         }
-        if (!moving && !moveLocked) {
+
+        if (!moving && !moveLocked)
+        {
             float drag = Clamp01(1.0f - Time.deltaTime / 0.25f);
-            velocity = Vector3.Scale(velocity, new Vector3(drag, 1, drag)); 
+            _velocity.x *= drag;
+            _velocity.z *= drag;
         }
+
+        if (body.isGrounded && velocity.y < 0) { _velocity.y = 0; }
+
+        animator.SetFloat("groundSpeed", new Vector2(velocity.x, velocity.z).magnitude);
+        animator.SetFloat("yVelocity", velocity.y);
+        animator.SetBool("grounded", body.isGrounded);
+    }
+
+    void UpdateRotation(Vector3 groundVelocity)
+    {
+        if (moving && (!moveLocked) && (groundVelocity.sqrMagnitude > 0.01f))
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(groundVelocity);
+
+            float turnSpeed = (baseInfo.minTurnSpeed + Lerp(baseInfo.minTurnSpeed, baseInfo.maxTurnSpeed, groundMobility)) * Time.deltaTime;
+
+            body.transform.rotation = Quaternion.RotateTowards(
+                body.transform.rotation,
+                targetRotation,
+                turnSpeed
+            );
+
+        }
+    }
+
+    Vector3 UpdateGravity()
+    {
+        _velocity.y += -baseInfo.gravity * Time.deltaTime;
+        return Vector3.up * velocity.y * Time.deltaTime;
     }
 
     /// <summary>
@@ -241,24 +284,31 @@ public class CharacterBase : MonoBehaviour
     {
         if (moveLocked) { return; }
 
-        moving = (input != Vector3.zero) || !body.isGrounded;
-        if (!moving) { return; }
+        moving = (input.sqrMagnitude > 0.001f) || (!body.isGrounded);
+        if (input.sqrMagnitude < 0.001f) { return; }
+
+        input = input.normalized;
 
         float mobility = body.isGrounded ? groundMobility : airMobility;
 
         float accelerationModifier = Mathf.Pow(2, (mobility - 1));
 
-        Vector3 inputVelocity = input * maxSpeed * Time.deltaTime * accelerationModifier;
-        Vector3 groundVelocity = new Vector3(velocity.x, 0, velocity.z);
-        float dot = Vector3.Dot(inputVelocity.normalized, groundVelocity.normalized);
+        float acceleration = maxSpeed * Time.deltaTime * accelerationModifier;
+        Vector3 groundVelocity = velocity;
+        groundVelocity.y = 0;
 
-        if (dot < 0) // 移動先が動いている向きと違う
+        if (groundVelocity.sqrMagnitude > 0.001f)
         {
-            // 向きが違う分、早く向けるため、早くなる。
-            inputVelocity += groundVelocity * dot * mobility;
+            float dot = Vector3.Dot(input, groundVelocity.normalized);
+
+            if (dot < 0) // 移動先が動いている向きと違う
+            {
+                // 向きが違う分、早く向けるため、早くなる。
+                acceleration *= 1 - dot * mobility;
+            }
         }
 
-        velocity += inputVelocity;
+        _velocity += input * acceleration;
     }
 
     /// <summary>
@@ -274,16 +324,14 @@ public class CharacterBase : MonoBehaviour
     public void Jump()
     {
         if (!body.isGrounded) { return; }
+        animator.SetTrigger("Jump");
         if (canFly) 
         { 
             // 飛び始めて
         }
         else 
         {
-            Vector3 jump;
-            jump.x = jump.z = 0;
-            jump.y = baseInfo.jumpStrength - velocity.y;
-            velocity += jump;
+            _velocity.y = baseInfo.jumpStrength;
         }
     }
 
@@ -293,6 +341,7 @@ public class CharacterBase : MonoBehaviour
         if (tackleTimer < baseInfo.tackleCooldown) return;
         tackleTimer = 0;
         tackleHitbox.SetActive(true);
+        animator.SetTrigger("Tackle");
     }
 
     bool BallHandlingFail()
@@ -328,12 +377,11 @@ public class CharacterBase : MonoBehaviour
                 opponent.lockMove();
                 hasBall = false;
                 ClearPassTarget();
-
-                SkillBar enemyEnergy = SkillBar.GetSkillBar(opponent.teamNo);
-                if (enemyEnergy != null) enemyEnergy.GainForTackle();
+                skillBar.GainForTackle(opponent.teamNo);
 
                 // ダウン
                 downTimer = baseInfo.maxDownTime * (1 - constition);
+                animator.SetTrigger("Down");
             }
         }
         else if (other.gameObject.name == "GoalZone")
@@ -455,15 +503,20 @@ public class CharacterBase : MonoBehaviour
         gameBall.Kick(new GameBall.flight(this, target, 1.5f, 20));
         gameBall.SetOwner(target);
         target.lockMove();
+
         ClearPassTarget();
         hasBall = false;
+        animator.SetTrigger("Shoot");
+    }
+
+    public bool CanSkill()
+    {
+        return skillBar.Ready(teamNo);
     }
 
     public virtual void Skill()
     {
-        SkillBar energy = SkillBar.GetSkillBar(teamNo);
-        if (energy == null) { return; }
-        energy.PayForSkill();
+        skillBar.PayForSkill(teamNo);
         Debug.Log("Used Skill");
     }
 

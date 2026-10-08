@@ -108,9 +108,7 @@ public class PlayerController : MonoBehaviour
     public void OnSkill()
     {
         if (playerCharacter == null) { return; }
-        SkillBar energy = SkillBar.GetSkillBar(playerCharacter.teamNo);
-        if (energy == null) { return; }
-        if (energy.Ready())
+        if (playerCharacter.CanSkill())
         {
             playerCharacter.Skill();
         }

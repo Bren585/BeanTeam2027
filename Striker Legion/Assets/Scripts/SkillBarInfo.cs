@@ -9,4 +9,5 @@ public class SkillBarInfo : ScriptableObject
     public float passiveGain = 2;
     public float tackleGain = 5;
     public float shootGain = 50;
+    public float startingEnergy = 0;
 }
