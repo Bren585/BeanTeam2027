@@ -32,7 +32,8 @@ public partial class StealAction : ActionBase
 		}
 
 		// ボールを奪われるキャラクターにスタンをかける
-		characterWithBall.StartStan();
+		characterWithBall.StartStan(5.0f);
+		Debug.Log(characterWithBall.name + "はボールを奪われた");
 
 		// ボールを奪う処理
 		characterWithBall.isHoldingBall = false;

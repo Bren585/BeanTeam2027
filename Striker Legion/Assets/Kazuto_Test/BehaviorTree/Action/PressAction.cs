@@ -26,7 +26,11 @@ public partial class PressAction : ActionBase
         Debug.Log(GameObject.name + " : Start Press");
 
         // ターゲットを設定
-        TargetCharacter = characterComponent.CharacterSensor.GetEnemyHavingBall(GameObject.tag);
+        TargetCharacter = MatchManager.Instance.CurrentBallHolder;
+
+        // キャラのタグが同一なら、同じ陣営のキャラを追いかけようとしているからFalse
+        if (TargetCharacter.tag == characterComponent.tag)
+            return Status.Failure;
 
 
 		return Status.Running;
@@ -34,8 +38,13 @@ public partial class PressAction : ActionBase
 
     protected override Status OnUpdate()
     {
+        // ターゲットがいなかったら失敗
+        if (TargetCharacter == null)
+            return Status.Failure;
+
         // 追跡する座標をターゲットの位置に更新
         characterComponent.SteeringController.TargetPosition = TargetCharacter.transform.position;
+        
 
 		// ターゲットまでの距離を取得
 		if (distanceFromBall.Value <= PressDistance)

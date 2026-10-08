@@ -5,19 +5,36 @@ using UnityEngine;
 public class SampleCharacter : MonoBehaviour
 {
 	// キャラクターのロール
-	[SerializeField] public CharacterRole characterRole;
+	private CharacterRole characterRole;
 
-    // ボールのオブジェクト
-    [SerializeField] private GameObject ballObject;
+	public CharacterRole CharacterRole{
+		get { return characterRole; }
+	}
+	
+
+	// ボールのオブジェクト
+	[SerializeField] private GameObject ballObject;
 
 	// ボール保持者かどうかのフラグ
 	[SerializeField] public bool isHoldingBall = false;
+
+	// ポジショニングをする基準のトランスフォーム
+	private Transform positioningBaseTransform;
+
+	// 色情報
+	private Color baseColor;
+	public Color BaseColor {
+		get { return baseColor; }
+	}
 
 	// 行動後硬直時間
 	private float stanTime = 0.0f;
 
 	// 硬直時間の最大値
 	private const float MaxStanTime = 1.0f;
+
+	// キャラクターのチーム
+	public CharacterTeam TeamType { get; private set; }
 
 	// BehaviorGraphAgentの参照
 	private BehaviorGraphAgent behaviorGraphAgent;
@@ -70,20 +87,39 @@ public class SampleCharacter : MonoBehaviour
 
 		// BehaviorGraphの値を初期設定する
 		UpdateBehaviorGraph();
-
 		// ビヘイビアツリー開始
 		behaviorGraphAgent.enabled = true;
+
+		// 色を保存する
+		baseColor = gameObject.GetComponent<Renderer>().material.GetColor("_BaseColor");
+        Debug.Log(name + ": BaseColor=" + baseColor);
+
+		// キャラクターのチームを割り振る
+		TeamType = (LayerMask.LayerToName(gameObject.layer) == "Player") ? CharacterTeam.Player : CharacterTeam.Enemy;
+	}
+
+	// キャラクターのパラメータを外部の値で初期化用
+	public void InitializeData(CharacterRole role, Transform positioningBase)
+	{
+		characterRole = role;
+		positioningBaseTransform = positioningBase;
+
+		// BehaviorGraphの値を初期設定する
+		UpdateBehaviorGraph();
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
 		// 硬直時間の処理
-		if(stanTime > 0.0f)
+		if (stanTime > 0.0f)
 		{
 			stanTime -= Time.deltaTime;
 			if (stanTime < 0.0f)
+			{
+				Debug.Log(gameObject.name + "スタン解消");
 				stanTime = 0.0f;
+			}
 		}
 
 		if (isHoldingBall)
@@ -107,7 +143,8 @@ public class SampleCharacter : MonoBehaviour
 			behaviorGraphAgent.SetVariableValue("DistanceFromBall", value);
 			behaviorGraphAgent.SetVariableValue("StanTime", stanTime);
 			behaviorGraphAgent.SetVariableValue("CharacterRole", characterRole);
-			behaviorGraphAgent.SetVariableValue("DistanceFromOpponentGoal", characterSensor.GetDistanceToGoal(false));
+			behaviorGraphAgent.SetVariableValue("DistanceFromOpponentGoal", GetDistanceToGoal());
+			//behaviorGraphAgent.SetVariableValue("DistanceFromOpponentGoal", characterSensor.GetDistanceToGoal(false));
 		}
 	}
 
@@ -120,7 +157,7 @@ public class SampleCharacter : MonoBehaviour
 		}
 
 		float value = Vector3.Distance(transform.position, ballObject.transform.position);
-		return Vector3.Distance(transform.position, ballObject.transform.position);
+		return value;
 	}
 
 	// ボールをステアリング制御のターゲットとする
@@ -130,8 +167,35 @@ public class SampleCharacter : MonoBehaviour
 		steeringController.TargetPosition = ballObject.transform.position;
 	}
 
-	public void StartStan()
+	public void StartStan(float stan = MaxStanTime)
 	{
-		stanTime = MaxStanTime;
+		stanTime = stan;
+
+		if (behaviorGraphAgent.GetVariableID("StanTime", out Unity.Behavior.GraphFramework.SerializableGUID targetVar))
+		{
+			behaviorGraphAgent.SetVariableValue(targetVar, stanTime);
+		}
+		//behaviorGraphAgent.SetVariableValue("StanTime", stanTime);
+	}
+
+	public void StartMoveBasePos(float limitMax)
+	{
+		// 移動開始フラグを立てる
+		steeringController.StartMove();
+
+		// 円状の乱数を作成する
+		Vector2 random = Random.insideUnitCircle;
+		Vector3 offset = new Vector3(random.x, 0.0f, random.y) * limitMax;
+
+		// ロールで決定された場所を目指す
+		steeringController.TargetPosition = positioningBaseTransform.position + offset;	
+	}
+
+	// ゴールまでの距離
+	public float GetDistanceToGoal()
+	{
+		Transform Goal = (TeamType == CharacterTeam.Player) ? MatchManager.Instance.PlayerGoal : MatchManager.Instance.EnemyGoal;
+		
+		return Vector3.Distance(transform.position, Goal.position);
 	}
 }

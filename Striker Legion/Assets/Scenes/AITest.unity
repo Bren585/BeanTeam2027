@@ -176,6 +176,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19e72904e2ed484c9dacae171cb291c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TeamManager
+  positioningBaseTransforms:
+  - key: 0
+    value: {fileID: 1654999021}
+  - key: 1
+    value: {fileID: 858739254}
+  - key: 2
+    value: {fileID: 1032747353}
 --- !u!1 &520371462
 GameObject:
   m_ObjectHideFlags: 0
@@ -350,6 +357,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19e72904e2ed484c9dacae171cb291c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TeamManager
+  positioningBaseTransforms:
+  - key: 0
+    value: {fileID: 1032747353}
+  - key: 1
+    value: {fileID: 858739254}
+  - key: 2
+    value: {fileID: 1654999021}
 --- !u!4 &781926628 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5725689288027811690, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
@@ -406,6 +420,10 @@ PrefabInstance:
     - target: {fileID: 111950660466823198, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
       propertyPath: m_TagString
       value: EnemyCP
+      objectReference: {fileID: 0}
+    - target: {fileID: 2815594572705982149, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
+      propertyPath: m_ProvidesContacts
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5357833205306486325, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
       propertyPath: 'managedReferences[5601786485558739597]'
@@ -715,6 +733,10 @@ PrefabInstance:
       propertyPath: isHoldingBall
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2866324557156355578, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
+      propertyPath: m_ProvidesContacts
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2887874105960231806, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: m_Name
       value: Player02
@@ -777,7 +799,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7951731069966906157, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.95
+      value: 3.85
       objectReference: {fileID: 0}
     - target: {fileID: 7951731069966906157, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: m_LocalPosition.y
@@ -785,7 +807,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7951731069966906157, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.9
+      value: 3.36
       objectReference: {fileID: 0}
     - target: {fileID: 7951731069966906157, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: m_LocalRotation.w
@@ -841,6 +863,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: EnemyCP
       objectReference: {fileID: 0}
+    - target: {fileID: 2815594572705982149, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
+      propertyPath: m_ProvidesContacts
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5357833205306486325, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
       propertyPath: 'managedReferences[5601786485558739596]'
       value: 'Unity.Behavior Unity.Behavior.BlackboardVariable`1[[System.Boolean, mscorlib]]'
@@ -855,7 +881,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5357833205306486325, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
       propertyPath: managedReferences[5601786485558739596].m_Value
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5357833205306486325, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
       propertyPath: 'm_BlackboardVariableOverridesList.Array.data[2]'
@@ -1128,6 +1154,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1679969673
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1679969674}
+  - component: {fileID: 1679969675}
+  m_Layer: 0
+  m_Name: MatchManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1679969674
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1679969673}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -4.84301, y: 2.87624, z: 1.08988}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1679969675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1679969673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 708550964463ba847bece5b361bd9f1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MatchManager
+  PlayerTeam: {fileID: 591126621}
+  EnemyTeam: {fileID: 444129011}
 --- !u!1 &1751610586
 GameObject:
   m_ObjectHideFlags: 0
@@ -1240,6 +1312,119 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1812264059
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1812264063}
+  - component: {fileID: 1812264062}
+  - component: {fileID: 1812264061}
+  - component: {fileID: 1812264060}
+  m_Layer: 0
+  m_Name: Plane
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!64 &1812264060
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1812264059}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &1812264061
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1812264059}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1812264062
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1812264059}
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &1812264063
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1812264059}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.86, y: -0.97, z: 0.16}
+  m_LocalScale: {x: 3.3852258, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1852949034
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1256,6 +1441,10 @@ PrefabInstance:
       propertyPath: characterRole
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 2866324557156355578, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
+      propertyPath: m_ProvidesContacts
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2887874105960231806, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: m_Name
       value: Player03
@@ -1269,8 +1458,16 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
+      propertyPath: 'managedReferences[5601786503321092404]'
+      value: 'Unity.Behavior Unity.Behavior.BlackboardVariable`1[[System.Boolean, mscorlib]]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: 'managedReferences[8400545493861269993]'
       value: 'Unity.Behavior Unity.Behavior.BlackboardVariable`1[[System.Boolean, mscorlib]]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
+      propertyPath: managedReferences[5601786503321092404].Name
+      value: Debug Stop
       objectReference: {fileID: 0}
     - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: managedReferences[8400545493861269993].Name
@@ -1278,15 +1475,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: m_BlackboardVariableOverridesList.Array.size
-      value: 3
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
+      propertyPath: managedReferences[5601786503321092404].m_Value
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: managedReferences[8400545493861269993].m_Value
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: 'm_BlackboardVariableOverridesList.Array.data[2]'
       value: 8400545493861269993
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
+      propertyPath: 'm_BlackboardVariableOverridesList.Array.data[3]'
+      value: 5601786503321092404
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
+      propertyPath: managedReferences[5601786503321092404].GUID.m_Value0
+      value: 2189107667068063195
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
+      propertyPath: managedReferences[5601786503321092404].GUID.m_Value1
+      value: 608500936222541205
       objectReference: {fileID: 0}
     - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: managedReferences[8400545493861269993].GUID.m_Value0
@@ -1298,7 +1511,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7951731069966906157, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.99
+      value: 6.63
       objectReference: {fileID: 0}
     - target: {fileID: 7951731069966906157, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1306,7 +1519,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7951731069966906157, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.9
+      value: -0.43
       objectReference: {fileID: 0}
     - target: {fileID: 7951731069966906157, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1355,7 +1568,7 @@ GameObject:
   - component: {fileID: 2059711728}
   m_Layer: 0
   m_Name: Ball
-  m_TagString: Untagged
+  m_TagString: Ball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1375,7 +1588,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -1467,7 +1680,7 @@ PrefabInstance:
       objectReference: {fileID: 2059711727}
     - target: {fileID: -891996949468990701, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: isHoldingBall
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2887874105960231806, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: m_Name
@@ -1482,6 +1695,10 @@ PrefabInstance:
       value: 'Unity.Behavior Unity.Behavior.BlackboardVariable`1[[System.Boolean, mscorlib]]'
       objectReference: {fileID: 0}
     - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
+      propertyPath: 'managedReferences[5601786503321092403]'
+      value: 'Unity.Behavior Unity.Behavior.BlackboardVariable`1[[CharacterRole, Assembly-CSharp]]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: 'managedReferences[8400545493861269992]'
       value: 'Unity.Behavior Unity.Behavior.BlackboardVariable`1[[System.Boolean, mscorlib]]'
       objectReference: {fileID: 0}
@@ -1490,15 +1707,23 @@ PrefabInstance:
       value: Debug Stop
       objectReference: {fileID: 0}
     - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
+      propertyPath: managedReferences[5601786503321092403].Name
+      value: CharacterRole
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: managedReferences[8400545493861269992].Name
       value: TeamHavingBall
       objectReference: {fileID: 0}
     - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: m_BlackboardVariableOverridesList.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: managedReferences[5601786485558739718].m_Value
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
+      propertyPath: managedReferences[5601786503321092403].m_Value
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
@@ -1514,12 +1739,24 @@ PrefabInstance:
       value: 5601786485558739718
       objectReference: {fileID: 0}
     - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
+      propertyPath: 'm_BlackboardVariableOverridesList.Array.data[4]'
+      value: 5601786503321092403
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: managedReferences[5601786485558739718].GUID.m_Value0
       value: 2189107667068063195
       objectReference: {fileID: 0}
     - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: managedReferences[5601786485558739718].GUID.m_Value1
       value: 608500936222541205
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
+      propertyPath: managedReferences[5601786503321092403].GUID.m_Value0
+      value: 586399825598681200
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
+      propertyPath: managedReferences[5601786503321092403].GUID.m_Value1
+      value: 2201018515938840313
       objectReference: {fileID: 0}
     - target: {fileID: 5939280733780450176, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: managedReferences[8400545493861269992].GUID.m_Value0
@@ -1531,7 +1768,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7951731069966906157, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.61
+      value: 4.82
       objectReference: {fileID: 0}
     - target: {fileID: 7951731069966906157, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1539,7 +1776,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7951731069966906157, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.39
       objectReference: {fileID: 0}
     - target: {fileID: 7951731069966906157, guid: 608a75252b4504046a9d7f58a03a6bf7, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1590,8 +1827,36 @@ PrefabInstance:
       propertyPath: m_TagString
       value: EnemyCP
       objectReference: {fileID: 0}
+    - target: {fileID: 547856804479524616, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
+      propertyPath: m_Constraints
+      value: 112
+      objectReference: {fileID: 0}
+    - target: {fileID: 547856804479524616, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
+      propertyPath: m_ImplicitCom
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 547856804479524616, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
+      propertyPath: m_Interpolate
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 547856804479524616, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
+      propertyPath: m_LinearDamping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 547856804479524616, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
+      propertyPath: m_ImplicitTensor
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2815594572705982149, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
+      propertyPath: m_ProvidesContacts
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5357833205306486325, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
       propertyPath: 'managedReferences[5601786485558739595]'
+      value: 'Unity.Behavior Unity.Behavior.BlackboardVariable`1[[System.Boolean, mscorlib]]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 5357833205306486325, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
+      propertyPath: 'managedReferences[5601786503559119417]'
       value: 'Unity.Behavior Unity.Behavior.BlackboardVariable`1[[System.Boolean, mscorlib]]'
       objectReference: {fileID: 0}
     - target: {fileID: 5357833205306486325, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
@@ -1599,16 +1864,28 @@ PrefabInstance:
       value: Debug Stop
       objectReference: {fileID: 0}
     - target: {fileID: 5357833205306486325, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
+      propertyPath: managedReferences[5601786503559119417].Name
+      value: TeamHavingBall
+      objectReference: {fileID: 0}
+    - target: {fileID: 5357833205306486325, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
       propertyPath: m_BlackboardVariableOverridesList.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5357833205306486325, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
       propertyPath: managedReferences[5601786485558739595].m_Value
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5357833205306486325, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
+      propertyPath: managedReferences[5601786503559119417].m_Value
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5357833205306486325, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
       propertyPath: 'm_BlackboardVariableOverridesList.Array.data[2]'
       value: 5601786485558739595
+      objectReference: {fileID: 0}
+    - target: {fileID: 5357833205306486325, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
+      propertyPath: 'm_BlackboardVariableOverridesList.Array.data[3]'
+      value: 5601786503559119417
       objectReference: {fileID: 0}
     - target: {fileID: 5357833205306486325, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
       propertyPath: managedReferences[5601786485558739595].GUID.m_Value0
@@ -1617,6 +1894,14 @@ PrefabInstance:
     - target: {fileID: 5357833205306486325, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
       propertyPath: managedReferences[5601786485558739595].GUID.m_Value1
       value: 608500936222541205
+      objectReference: {fileID: 0}
+    - target: {fileID: 5357833205306486325, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
+      propertyPath: managedReferences[5601786503559119417].GUID.m_Value0
+      value: 3317734756899176576
+      objectReference: {fileID: 0}
+    - target: {fileID: 5357833205306486325, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
+      propertyPath: managedReferences[5601786503559119417].GUID.m_Value1
+      value: 11924338892610768401
       objectReference: {fileID: 0}
     - target: {fileID: 5725689288027811690, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1664,7 +1949,7 @@ PrefabInstance:
       objectReference: {fileID: 2059711727}
     - target: {fileID: 7603249284082552527, guid: b6e967f613001d04a9cac07651d0b267, type: 3}
       propertyPath: isHoldingBall
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1677,6 +1962,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 1159200374}
   - {fileID: 520371464}
+  - {fileID: 1679969674}
   - {fileID: 1668515503}
   - {fileID: 2059711731}
   - {fileID: 591126620}
@@ -1684,3 +1970,4 @@ SceneRoots:
   - {fileID: 1751610590}
   - {fileID: 1593952615}
   - {fileID: 1255449749}
+  - {fileID: 1812264063}

@@ -42,21 +42,7 @@ public class CharacterSensor : MonoBehaviour
 		return closest != null;
 	}
 
-	// ボールのオブジェクトまでの距離
-	public float GetBallDistance()
-	{
-		if (GetComponent<SampleCharacter>().isHoldingBall)
-			return 0.0f;
-		else
-		{
-			GameObject ball = GameObject.FindGameObjectWithTag("Ball");
-			if (ball != null)
-				return Vector3.Distance(transform.position, ball.transform.position);
-			else
-				return float.MaxValue;
-		}
-	}
-
+	
 	/// <summary>
 	/// ボールを持ってるキャラクターを探す。
 	/// ゲーム性として、キャラの探知範囲に制限をかけている
@@ -91,34 +77,6 @@ public class CharacterSensor : MonoBehaviour
 		}
 		character = havingBall;
 		return havingBall != null;
-	}
-
-	/// <summary>
-	/// 敵でボールを持っているキャラクターを探す。
-	/// 距離による判定はなし
-	/// </summary>
-	/// <param name="tag">自分のタグ</param>
-	/// <returns></returns>
-	public SampleCharacter GetEnemyHavingBall(string tag)
-	{
-		// 相手のタグをサーチする(マジックナンバーなので、修正予定)
-		string SearchTag = (tag == "PlayerCP") ? "EnemyCP" : "PlayerCP";
-
-		// タグから対象を見つける
-		GameObject[] objects = GameObject.FindGameObjectsWithTag(SearchTag);
-
-		foreach(GameObject o in objects)
-		{
-			SampleCharacter characterComponent = o.GetComponent<SampleCharacter>();
-
-			// ボール持ちを探す
-			if (characterComponent.isHoldingBall)
-				return characterComponent;
-
-		}
-
-		Debug.Log("Enemy Having Ball is Null");
-		return null;
 	}
 
 	public float GetDistanceToGoal(bool isMyGoal)
@@ -190,7 +148,7 @@ public class CharacterSensor : MonoBehaviour
 				continue;
 
 			// ロールが指定したものかチェックする
-			if (sampleChar.characterRole == role)
+			if (sampleChar.CharacterRole == role)
 				return sampleChar;
 			
 		}

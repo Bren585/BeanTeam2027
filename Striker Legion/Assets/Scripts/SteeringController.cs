@@ -29,6 +29,11 @@ public class SteeringController : MonoBehaviour
 		isMove = true;
     }
 
+    // 移動していないかどうかを返す
+    public bool IsMove() { 
+        return isMove;
+    }
+
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
     {

@@ -21,7 +21,8 @@ public partial class MfUtilityPassCondition : Condition
             return false;
 
         // パスの対象のゴールまでの距離
-        float TargetGoalDistance = TargetCharacter.CharacterSensor.GetDistanceToGoal(false);
+        float TargetGoalDistance = TargetCharacter.GetDistanceToGoal();
+        //float TargetGoalDistance = TargetCharacter.CharacterSensor.GetDistanceToGoal(false);
 
 		// パスが成功するかどうか
 		bool IsPassSuccess = Midfielder.Value.CharacterSensor.IsPassSuccess(TargetCharacter.transform);

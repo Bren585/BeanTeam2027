@@ -23,12 +23,12 @@ public partial class MfUtilityShootCondition : Condition
             return true;
 
         // フォワードとゴールまでの距離
-        float distanceToGoalFromForward = Forward.CharacterSensor.GetDistanceToGoal(false);
-        // ミッドフィルダーのゴールまでの距離
-        float distanceToGoalFromMidFielder = Midfielder.Value.CharacterSensor.GetDistanceToGoal(false);
+        float distanceToGoalFromForward = Forward.GetDistanceToGoal();
+		// ミッドフィルダーのゴールまでの距離
+		float distanceToGoalFromMidFielder = Midfielder.Value.GetDistanceToGoal();
 
-        // フォワードのほうがゴールまで遠い場合、スコアを加算する
-        if (distanceToGoalFromForward > distanceToGoalFromMidFielder)
+		// フォワードのほうがゴールまで遠い場合、スコアを加算する
+		if (distanceToGoalFromForward > distanceToGoalFromMidFielder)
             score += 0.3f;
 
         // パスが成功するかどうか

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -5,10 +6,13 @@ using UnityEngine;
 public class TeamManager : MonoBehaviour
 {
 	// 同じチームのオブジェクトを格納する
-	private List<SampleCharacter> teamObjects;
+	public List<SampleCharacter> teamObjects { get; private set; }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+	// ポジショニングの基準となるTransformを格納する
+	[SerializeField] public Dictionary<CharacterRole, Transform> positioningBaseTransforms = new Dictionary<CharacterRole, Transform>();
+
+	// Start is called once before the first execution of Update after the MonoBehaviour is created
+	void Start()
     {
 		// 子に配置されているオブジェクトをチームとして取得
 		List<Transform> childrenTransforms = new List<Transform>();
@@ -20,10 +24,19 @@ public class TeamManager : MonoBehaviour
 		// LINQを使って GameObject の配列として1行で取得
 		teamObjects = transform.Cast<Transform>().Select(t => t.gameObject.GetComponent<SampleCharacter>()).ToList();
 
+		int count = 0;
 		// 子のオブジェクト名をログ出力
 		foreach(SampleCharacter child in teamObjects)
 		{
-			Debug.Log(gameObject.name + " Child Object: " + child.name);
+			// キャラクターに設定するロール
+			CharacterRole role = Enum.IsDefined(typeof(CharacterRole), count) ? (CharacterRole)count : CharacterRole.Forward;
+
+			// キャラクターのデータを初期化
+			child.InitializeData(role, positioningBaseTransforms[role]);
+
+			count++;
+
+			Debug.Log(gameObject.name + " Child Object: " + child.name + "ロール:" + role);
 		}
 
 		UpdateAllBehaviorGraph();
