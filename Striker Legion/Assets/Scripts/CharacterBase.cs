@@ -101,6 +101,7 @@ public class CharacterBase : MonoBehaviour
     bool moving = false;
     bool flying = false;
     bool moveLocked = false;
+    public bool isShooting { get; private set; } = false;
 
     private float maxSpeed 
     { 
@@ -351,6 +352,11 @@ public class CharacterBase : MonoBehaviour
             // ディフェンダーが到達した場合、「スタミナ（Constitution）」（および場合によっては「ボールハンドリング」）を使ってブロックを試みる
             // プレイヤーがディフェンダーの場合、狙いが正確であればスピードとブロックにボーナスが加算される
             // 
+
+            //Debuging
+            lockMove();
+            isShooting = true;
+            velocity = Vector3.zero;
         }
     }
 

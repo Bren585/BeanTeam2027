@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int                teamNo;
     [SerializeField] GameBall           gameBall; 
 
-    CharacterBase                       playerCharacter;
+    public CharacterBase playerCharacter { get; private set; }
     [SerializeField] CinemachineCamera  playerCamera;
 
     [SerializeField] float              cameraMaxSpeed;
