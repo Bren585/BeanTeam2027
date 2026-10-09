@@ -34,9 +34,11 @@ public partial class RunForwardAction : ActionBase
         // 移動処理を開始
         characterComponent.SteeringController.StartMove();
 
-        teamType = GameObject.tag == "PlayerCP" ? TeamType.Player : TeamType.Enemy;
+        teamType = LayerMask.LayerToName(GameObject.layer) == "Player" ? TeamType.Player : TeamType.Enemy;
 
         timer = 0.0f;
+
+		characterComponent.DebugText.SetText("前に走る");
 
 		return Status.Running;
     }

@@ -8,7 +8,7 @@ public class CharacterSensor : MonoBehaviour
 	//[SerializeField] private float detectionRadius = 15f;
 	private Collider[] hitColliders = new Collider[10];
 
-	// 毎フレームではなく、0.1〜0.2秒ごとに実行（軽量化）
+	// 一番近いキャラクターを調べる
 	public bool GetClosestCharacter(string Layer, float radius,out SampleCharacter character)
 	{
 		LayerMask enemyLayer = LayerMask.GetMask(Layer);
@@ -49,63 +49,22 @@ public class CharacterSensor : MonoBehaviour
 	/// </summary>
 	public bool GetCharacterHavingBall(string Layer, float radius, out SampleCharacter character)
 	{
+		// 呼び出し元へ帰す結果を初期化
+		character = null;
+
 		// 対象のレイヤー
 		LayerMask enemyLayer = LayerMask.GetMask(Layer);
 
-		// 検出数を保存する変数
-		int numFound = 0;
+		// ボールを持っているキャラクター
+		SampleCharacter BallerCharacter  = (MatchManager.Instance.CurrentBallHolder != null) ? MatchManager.Instance.CurrentBallHolder : null;
 
-		// 検出処理
-		if (Layer != null && Layer != "")
-			numFound = Physics.OverlapSphereNonAlloc(transform.position, radius, hitColliders, enemyLayer);
-		else
-			numFound = Physics.OverlapSphereNonAlloc(transform.position, radius, hitColliders);
+		// 距離判定
+		if (Vector3.Distance(BallerCharacter.transform.position, gameObject.transform.position) > radius)
+			return false;
 
-		// ボールを持っている対象
-		SampleCharacter havingBall = null;
+		character = BallerCharacter;
 
-		// 検出されたキャラクターの回数回す
-		for (int i = 0; i < numFound; i++)
-		{
-			SampleCharacter sampleChar = hitColliders[i].GetComponent<SampleCharacter>();
-			// ボールを持っているキャラクターを探す
-			if (sampleChar != null && sampleChar.isHoldingBall)
-			{
-				havingBall = sampleChar;
-				break;
-			}
-		}
-		character = havingBall;
-		return havingBall != null;
-	}
-
-	public float GetDistanceToGoal(bool isMyGoal)
-	{
-		// ゴールのオブジェクトを取得する（2つあるはず）
-		GameObject[] goalObjects = GameObject.FindGameObjectsWithTag("Goal");
-
-		// 対象のレイヤー番号
-		// 自分のゴールか相手のゴールかでレイヤーを決定する
-		int Layer = isMyGoal ? gameObject.layer : (gameObject.layer == LayerMask.NameToLayer("Player") ? LayerMask.NameToLayer("Enemy") : LayerMask.NameToLayer("Player"));
-
-		// ゴールの種類を決定する
-		GameObject targetGoal = null;
-		foreach(GameObject goalObject in goalObjects)
-		{
-			if(goalObject.layer == Layer)
-			{
-				targetGoal = goalObject;
-				break;
-			}
-		}
-
-		if (targetGoal == null)
-		{
-			Debug.Log("ゴールが見つかりませんでした");
-			return float.MaxValue;
-		}
-		// 距離を計算
-		return Vector3.Distance(transform.position, targetGoal.transform.position);
+		return BallerCharacter != null;
 	}
 
 	public bool IsEnemyInRange(string targetLayer, float radius)
@@ -123,64 +82,14 @@ public class CharacterSensor : MonoBehaviour
 
 			return false;
 		}
-		// ヒットしたオブジェクトが敵かどうかを判定
-		if (!hit.collider.CompareTag(enemyLayerStr == "Player" ? "PlayerCP" : "EnemyCP"))
+		// ヒットしたオブジェクトがキャラクターかどうかを判定
+		if (!hit.collider.CompareTag("Character"))
 		{
 			return false;
 		}
 		return true;
 	}
 
-	// 味方の指定したロールのキャラクターを探す
-	public SampleCharacter GetAllyByRole(CharacterRole role)
-	{
-		// 自身のタグを味方のタグとして使用する
-		string allyTag = gameObject.tag;
-
-		// 味方のオブジェクトを取得する
-		GameObject[] allies = GameObject.FindGameObjectsWithTag(allyTag);
-		foreach (GameObject ally in allies)
-		{
-			SampleCharacter sampleChar = ally.GetComponent<SampleCharacter>();
-
-			// キャラクターのコンポーネントをヌルチェック
-			if (sampleChar == null)
-				continue;
-
-			// ロールが指定したものかチェックする
-			if (sampleChar.CharacterRole == role)
-				return sampleChar;
-			
-		}
-		return null;
-	}
-
-	// パスが成功するかどうかをレイキャストで判定する
-	public bool IsPassSuccess(Transform TargetTransform)
-	{
-		// 引数の位置に向けてのレイを作成
-		Ray ray = new Ray(transform.position, Vector3.Normalize(TargetTransform.position - transform.position));
-
-		float rayDistance = Vector3.Distance(TargetTransform.position ,transform.position);
-
-		// 敵のレイヤー
-		string enemyLayerStr = (LayerMask.LayerToName(gameObject.layer) == "Player") ? "Enemy" : "Player";
-		LayerMask enemyLayer = LayerMask.GetMask(enemyLayerStr);
-
-		// レイがヒットしたか
-		if (!Physics.Raycast(ray, out RaycastHit hit, rayDistance, enemyLayer))
-		{
-			Debug.Log("敵が見つかりませんでした");
-
-			return false;
-		}
-		// ヒットしたオブジェクトが敵かどうかを判定
-		if (!hit.collider.CompareTag(enemyLayerStr == "Player" ? "PlayerCP" : "EnemyCP"))
-		{
-			return false;
-		}
-		return true;
-	}
 
 	public bool IsNearbyOpponent(float radius)
 	{

@@ -5,11 +5,13 @@ using UnityEngine;
 
 public class TeamManager : MonoBehaviour
 {
-	// 同じチームのオブジェクトを格納する
-	public List<SampleCharacter> teamObjects { get; private set; }
-
 	// ポジショニングの基準となるTransformを格納する
 	[SerializeField] public Dictionary<CharacterRole, Transform> positioningBaseTransforms = new Dictionary<CharacterRole, Transform>();
+
+	[SerializeField] private CharacterTeam TeamType;
+
+	// 同じチームのオブジェクトを格納する
+	public List<SampleCharacter> teamObjects { get; private set; }
 
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
@@ -56,5 +58,23 @@ public class TeamManager : MonoBehaviour
 		{
 			obj.BehaviorGraphAgent.SetVariableValue("TeamHavingBall", isAnyHoldingBall);
 		}
+	}
+
+	public CharacterTeam GetTeamType()
+	{
+		return TeamType;
+	}
+
+	// スタン状態じゃないキャラを取得する（読み取り専用）
+	public IReadOnlyList<SampleCharacter> GetActiveCharacters()
+	{
+		List<SampleCharacter> activeCharacters = new List<SampleCharacter>();
+		foreach(SampleCharacter character in teamObjects)
+		{
+			if (!character.IsStan())
+				activeCharacters.Add(character);
+		}
+
+		return activeCharacters;
 	}
 }

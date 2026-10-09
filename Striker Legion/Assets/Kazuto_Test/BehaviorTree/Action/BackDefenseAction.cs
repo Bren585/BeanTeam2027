@@ -21,6 +21,9 @@ public partial class BackDefenseAction : ActionBase
         // タイマーの初期化
         timer = 0.0f;
 
+        // テキスト表示
+        characterComponent.DebugText.SetText("守備に戻る");
+
 		return Status.Running;
     }
 

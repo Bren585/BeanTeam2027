@@ -17,7 +17,10 @@ public partial class MoveBasePositionAction : ActionBase
         // 決められた座標への移動開始
         characterComponent.StartMoveBasePos(RandomLimit);
 
-        return Status.Running;
+		// 行動をデバッグで表示
+		characterComponent.DebugText.SetText("指定された位置に移動");
+
+		return Status.Running;
     }
 
     protected override Status OnUpdate()

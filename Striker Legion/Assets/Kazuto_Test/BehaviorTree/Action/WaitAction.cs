@@ -18,11 +18,14 @@ public partial class ActionWaitAction : ActionBase
 
         base.OnStart();
 
-        //isInterrupted.Value = true;
+		// 行動をデバッグで表示
+		characterComponent.DebugText.SetText("待機中");
 
-        //Debug.Log("isInterrupted: " + isInterrupted.Value);
+		//isInterrupted.Value = true;
 
-        return Status.Running;
+		//Debug.Log("isInterrupted: " + isInterrupted.Value);
+
+		return Status.Running;
     }
 
     protected override Status OnUpdate()

@@ -15,7 +15,10 @@ public partial class StealAction : ActionBase
 	{
 		base.OnStart();
 
-		Debug.Log(GameObject.name + ": StealAction started.");
+		// 行動をデバッグで表示
+		characterComponent.DebugText.SetText("ボールを奪う");
+
+		//Debug.Log(GameObject.name + ": StealAction started.");
 
 		return Status.Running;
 	}
@@ -27,7 +30,7 @@ public partial class StealAction : ActionBase
 
 		if (characterWithBall == null)
 		{
-			Debug.Log("No character is holding the ball.");
+			//Debug.Log("No character is holding the ball.");
 			return Status.Failure;
 		}
 

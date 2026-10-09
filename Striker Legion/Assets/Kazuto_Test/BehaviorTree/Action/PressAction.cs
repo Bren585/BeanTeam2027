@@ -23,14 +23,17 @@ public partial class PressAction : ActionBase
         // 移動開始
         characterComponent.SteeringController.StartMove();
 
-        Debug.Log(GameObject.name + " : Start Press");
+        //Debug.Log(GameObject.name + " : Start Press");
 
         // ターゲットを設定
         TargetCharacter = MatchManager.Instance.CurrentBallHolder;
 
         // キャラのタグが同一なら、同じ陣営のキャラを追いかけようとしているからFalse
-        if (TargetCharacter.tag == characterComponent.tag)
+        if (TargetCharacter.gameObject.layer == characterComponent.gameObject.layer)
             return Status.Failure;
+
+		// 行動をデバッグで表示
+		characterComponent.DebugText.SetText("プレスをかける");
 
 
 		return Status.Running;
@@ -49,7 +52,7 @@ public partial class PressAction : ActionBase
 		// ターゲットまでの距離を取得
 		if (distanceFromBall.Value <= PressDistance)
 		{
-            Debug.Log(GameObject.name + ": Success Press. Distance : " + distanceFromBall.Value);
+            //Debug.Log(GameObject.name + ": Success Press. Distance : " + distanceFromBall.Value);
 
 			// 一定距離まで近づいたら成功を返す
 			return Status.Success;

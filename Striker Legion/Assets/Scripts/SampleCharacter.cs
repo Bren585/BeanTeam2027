@@ -7,10 +7,10 @@ public class SampleCharacter : MonoBehaviour
 	// キャラクターのロール
 	private CharacterRole characterRole;
 
-	public CharacterRole CharacterRole{
+	public CharacterRole CharacterRole {
 		get { return characterRole; }
 	}
-	
+
 
 	// ボールのオブジェクト
 	[SerializeField] private GameObject ballObject;
@@ -56,12 +56,17 @@ public class SampleCharacter : MonoBehaviour
 		get { return steeringController; }
 	}
 
+	// デバッグ用のテキスト
+	public DebugText DebugText { get; private set; }
+
 	void Awake()
 	{
 		// キャラクターセンサーを生成
 		characterSensor = gameObject.AddComponent<CharacterSensor>();
 		// ステアリング制御コントローラを生成
 		steeringController = gameObject.AddComponent<SteeringController>();
+		// デバッグテキストコンポーネントを追加
+		DebugText = gameObject.AddComponent<DebugText>();
 
 		
 		// BehaviorGraphAgentの取得
@@ -92,10 +97,11 @@ public class SampleCharacter : MonoBehaviour
 
 		// 色を保存する
 		baseColor = gameObject.GetComponent<Renderer>().material.GetColor("_BaseColor");
-        Debug.Log(name + ": BaseColor=" + baseColor);
 
 		// キャラクターのチームを割り振る
 		TeamType = (LayerMask.LayerToName(gameObject.layer) == "Player") ? CharacterTeam.Player : CharacterTeam.Enemy;
+
+		DebugText.SetDefaultText(CharacterRole.ToString());
 	}
 
 	// キャラクターのパラメータを外部の値で初期化用
@@ -178,6 +184,12 @@ public class SampleCharacter : MonoBehaviour
 		//behaviorGraphAgent.SetVariableValue("StanTime", stanTime);
 	}
 
+	// スタン中か
+	public bool IsStan()
+	{
+		return stanTime > 0.0f;
+	}
+
 	public void StartMoveBasePos(float limitMax)
 	{
 		// 移動開始フラグを立てる
@@ -194,7 +206,7 @@ public class SampleCharacter : MonoBehaviour
 	// ゴールまでの距離
 	public float GetDistanceToGoal()
 	{
-		Transform Goal = (TeamType == CharacterTeam.Player) ? MatchManager.Instance.PlayerGoal : MatchManager.Instance.EnemyGoal;
+		Transform Goal = (TeamType == CharacterTeam.Player) ? MatchManager.Instance.EnemyGoal : MatchManager.Instance.PlayerGoal;
 		
 		return Vector3.Distance(transform.position, Goal.position);
 	}

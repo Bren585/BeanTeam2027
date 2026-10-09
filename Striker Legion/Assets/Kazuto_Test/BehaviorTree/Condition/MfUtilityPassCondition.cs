@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.Behavior;
 using UnityEngine;
 
@@ -10,33 +11,19 @@ public partial class MfUtilityPassCondition : Condition
 
     public override bool IsTrue()
     {
-        // 結果を決めるスコア
-        float score = 0.0f;
+       
+		// 動けるキャラクターを探す
+		IReadOnlyList<SampleCharacter> ActiveCharacters = MatchManager.Instance.GetActiveCharacters(Midfielder.Value.TeamType);
 
-        // もっとも近い味方をパスの対象として取得する
-		bool isSuccess = Midfielder.Value.CharacterSensor.GetClosestCharacter(LayerMask.LayerToName(GameObject.layer), float.MaxValue, out SampleCharacter TargetCharacter);
+		
+        // 最も低かったスコア
+        float MinScore = PassUtility.CostPassToAnyAlly(ActiveCharacters, Midfielder);
 
-		// 取得に失敗するか、対象がヌルの場合はパスができないと判断してfalseを返す
-		if (!isSuccess || TargetCharacter == null)
-            return false;
-
-        // パスの対象のゴールまでの距離
-        float TargetGoalDistance = TargetCharacter.GetDistanceToGoal();
-        //float TargetGoalDistance = TargetCharacter.CharacterSensor.GetDistanceToGoal(false);
-
-		// パスが成功するかどうか
-		bool IsPassSuccess = Midfielder.Value.CharacterSensor.IsPassSuccess(TargetCharacter.transform);
-
-        if (TargetGoalDistance > 4.0f)
-            score += 0.4f;
-
-        if(IsPassSuccess)
-            score += 0.6f;
-
+        // 乱数の取得
 		float rand = UnityEngine.Random.Range(0.0f, 1.0f);
 
 		// 乱数よりスコアのほうが高ければ、パスをする
-		if (score < rand)
+		if (MinScore < rand)
 			return false;
 
 		return true;

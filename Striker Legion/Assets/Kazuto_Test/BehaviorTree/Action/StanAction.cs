@@ -6,13 +6,18 @@ using Unity.Properties;
 
 [Serializable, GeneratePropertyBag]
 [NodeDescription(name: "StanAction", story: "Unable to Action While Stan [Time]", category: "Action", id: "9ee0565aba92322148eb03a2d2d0ae28")]
-public partial class StanAction : Action
+public partial class StanAction : ActionBase
 {
     [SerializeReference] public BlackboardVariable<float> Time;
 
     protected override Status OnStart()
     {
-        return Status.Running;
+        base.OnStart();
+
+		// 行動をデバッグで表示
+		characterComponent.DebugText.SetText("スタン中");
+
+		return Status.Running;
     }
 
     protected override Status OnUpdate()

@@ -24,7 +24,7 @@ public class SteeringController : MonoBehaviour
 
     // 移動開始用
     public void StartMove() {
-		Debug.Log("ステアリング開始");
+		//Debug.Log("ステアリング開始");
 
 		isMove = true;
     }
@@ -52,7 +52,7 @@ public class SteeringController : MonoBehaviour
         // 規定の距離まで移動したら、移動終了
         if (Vector3.Distance(transform.position, TargetPosition) < AcceptableDistance)
         {
-            Debug.Log("ステアリング終了");
+            //Debug.Log("ステアリング終了");
             isMove = false;
         }
 	}

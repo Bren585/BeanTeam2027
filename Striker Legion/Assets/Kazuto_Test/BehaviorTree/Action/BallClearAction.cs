@@ -13,7 +13,10 @@ public partial class BallClearAction : ActionBase
     {
         base.OnStart();
 
-        return Status.Running;
+        // 行動をデバッグで表示
+		characterComponent.DebugText.SetText("ボールをクリアする");
+
+		return Status.Running;
     }
 
     protected override Status OnUpdate()
