@@ -26,7 +26,7 @@ public partial class MoveBasePositionAction : ActionBase
     protected override Status OnUpdate()
     {
         // 移動終了で成功
-        if(!characterComponent.SteeringController.IsMove())
+        if(!characterComponent.SteeringController.IsMove)
             return Status.Success;
 
         return Status.Running;
