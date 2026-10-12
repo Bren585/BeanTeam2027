@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Linq;
+using System.Collections.ObjectModel;
 
 public class SkillBar : MonoBehaviour
 {
@@ -25,15 +27,28 @@ public class SkillBar : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //secondTimer -= Time.deltaTime;
-        //if (secondTimer < 0.0f) 
-        //{
-        //    secondTimer += 1;
-        //    foreach (int teamNo in energyBars.Keys) {
-        //        Charge(barInfo.passiveGain, teamNo);
-        //    }
-        //}
-        //test_slider.value = energyBars[0] / barInfo.maxEnergy;
+        secondTimer -= Time.deltaTime;
+        if (secondTimer < 0.0f)
+        {
+            secondTimer += 1;
+            
+            Dictionary<int, float>.KeyCollection keys = energyBars.Keys;
+            int[] teams = new int[keys.Count];
+            int i = 0;
+
+            foreach (int teamNo in keys)
+            {
+              teams[i++] = teamNo;
+            }
+
+            foreach (int teamNo in teams)
+            {
+                Charge(barInfo.passiveGain, teamNo);
+            }
+        }
+
+        energyBars.TryGetValue(0, out float test_value);
+        test_slider.value = test_value / barInfo.maxEnergy;
     }
 
     public bool Ready(int teamNo) { return energyBars[teamNo] >= barInfo.reqEnergy; }
