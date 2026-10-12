@@ -12,4 +12,5 @@ public class CharacterBaseInfo : ScriptableObject
     public float maxPassDistance = 10.0f;
     public float gravity = 5.0f;
     public float jumpStrength = 2.0f;
+    public float maxRunSpeed = 20.0f;
 }

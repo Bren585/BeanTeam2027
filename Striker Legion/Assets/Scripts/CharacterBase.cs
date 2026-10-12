@@ -41,10 +41,10 @@ public class CharacterBase : MonoBehaviour
     // キャラパラメータ **************************************************************************************
 
     [Header("継承パラメータ")]
-    /// <summary>
-    ///                                             走るマックススピード
-    /// </summary>
-    [SerializeField] protected float maxRunSpeed;
+    ///// <summary>
+    /////                                             走るマックススピード
+    ///// </summary>
+    //[SerializeField] protected float maxRunSpeed;
 
     /// <summary>
     ///                                             復活力
@@ -115,8 +115,8 @@ public class CharacterBase : MonoBehaviour
         get 
         {
             if      (flying)    return maxFlySpeed;
-            else if (strafing)  return maxRunSpeed * (0.1f + 0.9f * groundMobility);
-            else                return maxRunSpeed;
+            else if (strafing)  return baseInfo.maxRunSpeed * (0.1f + 0.9f * groundMobility);
+            else                return baseInfo.maxRunSpeed;
         } 
     }
 
