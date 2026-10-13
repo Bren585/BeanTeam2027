@@ -20,31 +20,9 @@ public class CharacterBase : MonoBehaviour
     [Header("ベース設定")]
     [SerializeField] protected CharacterBaseInfo baseInfo;
 
-    //[SerializeField] float minTurnSpeed = 90;
-    //[SerializeField] float maxTurnSpeed = 360;
-
-    //[SerializeField] float tackleHitboxDuration = 0.25f;
-    //[SerializeField] float tackleCooldown = 1.0f;
-
-    //[SerializeField] float maxDownTime = 2.0f;
-
-    //[SerializeField] float maxPassDistance = 10.0f;
-
-    //[SerializeField] float gravity = 5.0f;
-
-    ///// <summary>
-    /////                                             ジャンプ力
-    ///// </summary>
-    //[SerializeField] protected float jumpStrength = 2.0f;
-
-
     // キャラパラメータ **************************************************************************************
 
     [Header("継承パラメータ")]
-    ///// <summary>
-    /////                                             走るマックススピード
-    ///// </summary>
-    //[SerializeField] protected float maxRunSpeed;
 
     /// <summary>
     ///                                             復活力
