@@ -84,6 +84,34 @@ public class MatchManager : MonoBehaviour
 		}
 	}
 
+	// ゴールした際の処理
+	public void GoalEvent(CharacterTeam team)
+	{
+		Debug.Log(team + "側のゴールにボールが入りました。");
+
+		// キャラクターの座標などをリセットする
+		ResetForKickoff(team);
+	}
+
+	// キックオフのために状況をリセットする
+	private void ResetForKickoff(CharacterTeam team)
+	{
+		PlayerTeam.ResetInit();
+		EnemyTeam.ResetInit();
+
+		// プレイヤー側のゴールに入った場合
+		if(team == CharacterTeam.Player)
+		{
+			EnemyTeam.OrderLoseBall();	// 点をいれた側からボールを没収する
+			PlayerTeam.OrderGetBall();	// 点をいれられた側にボールを渡す。
+		}
+		else
+		{
+			PlayerTeam.OrderLoseBall();
+			EnemyTeam.OrderGetBall();
+		}
+	}
+
 	public SampleCharacter GetAllyByRole(CharacterTeam team, CharacterRole role)
 	{
 		// 味方のオブジェクトを取得する
@@ -113,4 +141,10 @@ public class MatchManager : MonoBehaviour
 			return EnemyTeam;
 	}
 
+	// GUIのデバッグ表示
+	public void DebugGUI()
+	{
+		PlayerTeam.DebugGUI();
+		EnemyTeam.DebugGUI();
+	}
 }

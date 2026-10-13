@@ -6,7 +6,7 @@ public class SteeringController : MonoBehaviour
 {
 	private const float MoveWeight = 0.6f;
 	private const float AvoidWeight = 0.4f;
-	private const float RayLength = 1.0f;
+	private const float RayLength = 1.5f;
 	private const float SphereRadius = 0.5f;
 
 	// 目標位置
@@ -33,6 +33,9 @@ public class SteeringController : MonoBehaviour
     public void StartMove() {
 		isMove = true;
     }
+	public void CancelMove()	{
+		isMove = false;
+	}
 
 
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -94,8 +97,7 @@ public class SteeringController : MonoBehaviour
         if (hitInfo.collider.tag != gameObject.tag)
             return Vector3.zero;
 		
-
-
+		// 法線で返す
 		return hitInfo.normal;
 	}
 

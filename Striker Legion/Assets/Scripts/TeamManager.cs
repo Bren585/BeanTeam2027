@@ -16,13 +16,6 @@ public class TeamManager : MonoBehaviour
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
     {
-		// 子に配置されているオブジェクトをチームとして取得
-		List<Transform> childrenTransforms = new List<Transform>();
-		foreach (Transform child in transform)
-		{
-			childrenTransforms.Add(child);
-		}
-
 		// LINQを使って GameObject の配列として1行で取得
 		teamObjects = transform.Cast<Transform>().Select(t => t.gameObject.GetComponent<SampleCharacter>()).ToList();
 
@@ -60,6 +53,31 @@ public class TeamManager : MonoBehaviour
 		}
 	}
 
+	public void ResetInit()
+	{
+		foreach (SampleCharacter child in teamObjects)
+		{
+			child.ResetInit();
+		}
+
+	}
+
+	// チームからボールを奪う命令
+	public void OrderLoseBall()
+	{
+		foreach (SampleCharacter child in teamObjects)
+		{
+			child.isHoldingBall = false;
+		}
+		
+	}
+
+	// チームにボールを与える命令
+	public void OrderGetBall()
+	{
+		teamObjects[0].isHoldingBall = true;
+	}
+
 	public CharacterTeam GetTeamType()
 	{
 		return TeamType;
@@ -76,5 +94,15 @@ public class TeamManager : MonoBehaviour
 		}
 
 		return activeCharacters;
+	}
+
+	// GUIのデバッグ表示(MatchManagerで呼び出し)
+	public void DebugGUI()
+	{
+		foreach (SampleCharacter child in teamObjects)
+		{
+			child.DebugGUI();
+		}
+
 	}
 }

@@ -59,6 +59,13 @@ public class SampleCharacter : MonoBehaviour
 	// デバッグ用のテキスト
 	public DebugText DebugText { get; private set; }
 
+	// 初期化用座標
+	private Vector3 InitialPosition;
+	private Quaternion InitialQuaternion;
+
+	// デバッグ用のアクティブフラグ
+	bool isActive = true;
+
 	void Awake()
 	{
 		// キャラクターセンサーを生成
@@ -101,7 +108,9 @@ public class SampleCharacter : MonoBehaviour
 		// キャラクターのチームを割り振る
 		TeamType = (LayerMask.LayerToName(gameObject.layer) == "Player") ? CharacterTeam.Player : CharacterTeam.Enemy;
 
-		DebugText.SetDefaultText(CharacterRole.ToString());
+		// 初期座標を保存する
+		InitialPosition = transform.position;
+		InitialQuaternion = transform.rotation;
 	}
 
 	// キャラクターのパラメータを外部の値で初期化用
@@ -112,6 +121,9 @@ public class SampleCharacter : MonoBehaviour
 
 		// BehaviorGraphの値を初期設定する
 		UpdateBehaviorGraph();
+
+		// デバッグテキストでキャラのロールを表示
+		DebugText.SetDefaultText(CharacterRole.ToString());
 	}
 
 	// Update is called once per frame
@@ -120,7 +132,10 @@ public class SampleCharacter : MonoBehaviour
 		// 硬直時間の処理
 		if (stanTime > 0.0f)
 		{
+			// 移動をキャンセル
+			steeringController.CancelMove();
 			stanTime -= Time.deltaTime;
+
 			if (stanTime < 0.0f)
 			{
 				Debug.Log(gameObject.name + "スタン解消");
@@ -130,7 +145,7 @@ public class SampleCharacter : MonoBehaviour
 
 		if (isHoldingBall)
 		{
-			ballObject.transform.SetPositionAndRotation(transform.position + Vector3.up * 0.5f, transform.rotation);
+			ballObject.transform.SetPositionAndRotation(transform.position + transform.forward * 1.0f, transform.rotation);
 			//Debug.Log("ボールの位置更新");
 		}
 
@@ -209,5 +224,27 @@ public class SampleCharacter : MonoBehaviour
 		Transform Goal = (TeamType == CharacterTeam.Player) ? MatchManager.Instance.EnemyGoal : MatchManager.Instance.PlayerGoal;
 		
 		return Vector3.Distance(transform.position, Goal.position);
+	}
+
+	public void ResetInit()
+	{
+		// 座標と回転を初期化
+		transform.position = InitialPosition;
+		transform.rotation = InitialQuaternion;
+
+		// スタン時間をリセット
+		stanTime = 0.0f;
+	}
+
+	// デバッグGUI(TeamManagerで呼び出し)
+	public void DebugGUI()
+	{
+		// 更新の切り替え
+		bool newFlag = GUILayout.Toggle(isActive, $"{gameObject.name} IsActive");
+		if (newFlag != isActive)
+		{
+			isActive = newFlag;
+			gameObject.SetActive(isActive);
+		}
 	}
 }
