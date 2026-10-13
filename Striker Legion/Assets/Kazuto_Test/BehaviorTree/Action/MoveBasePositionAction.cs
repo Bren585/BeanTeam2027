@@ -16,28 +16,29 @@ public partial class MoveBasePositionAction : ActionBase
 
 	protected override Status OnStart()
     {
+#if false
         // 基底クラスの初期化
         base.OnStart();
 
-        // 決められた座標への移動開始
-        characterComponent.StartMoveBasePos(RandomLimit);
+		// 決められた座標への移動開始
+		characterAIAgent.StartMoveBasePos(RandomLimit);
 
 		// 行動をデバッグで表示
-		characterComponent.DebugText.SetText("指定された位置に移動");
+		characterAIAgent.DebugText.SetText("指定された位置に移動");
 
         // タイマーが未設定の場合、一秒を設定する
         if (Timer == null || Timer.Value <= 0.0f)
             currentTimer = 1.0f;
         else
             currentTimer = Timer.Value;
-
+#endif
 		return Status.Running;
     }
 
     protected override Status OnUpdate()
     {
         // 移動終了で成功
-        if(!characterComponent.SteeringController.IsMove)
+        if(!characterAIAgent.SteeringController.IsMove)
             return Status.Success;
 
         // 設定された時間経過で成功を返す

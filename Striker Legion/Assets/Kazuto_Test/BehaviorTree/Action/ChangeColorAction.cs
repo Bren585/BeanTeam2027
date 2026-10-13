@@ -6,7 +6,7 @@ using Unity.Properties;
 
 [Serializable, GeneratePropertyBag]
 [NodeDescription(name: "Change Color", story: "Change [Color] If is true add color: [IsAdd]", category: "Action", id: "c4687ae26c8a53b8719fe6ea1d3b7f76")]
-public partial class ChangeColorAction : ActionBase
+public partial class ChangeColorAction : Action
 {
     [SerializeReference] public BlackboardVariable<Color> Color;
     [SerializeReference] public BlackboardVariable<bool> IsAdd;

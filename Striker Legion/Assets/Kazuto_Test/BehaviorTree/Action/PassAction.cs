@@ -17,29 +17,32 @@ public partial class PassAction : ActionBase
 
 	protected override Status OnStart()
 	{
+#if false
 		// 基底クラスの初期化
 		base.OnStart();
 
 		// 行動をデバッグで表示
-		characterComponent.DebugText.SetText("パスをする");
+		characterAIAgent.DebugText.SetText("パスをする");
 
 		// アクティブなキャラ
+		// Todo:MatchManagerコンポーネントを修正
 		ActiveCharacters = MatchManager.Instance.GetActiveCharacters(characterComponent.TeamType);
-
+#endif
 		return Status.Running;
 	}
 
 	protected override Status OnUpdate()
 	{
+#if false
 		// キャラがボールをロストしていたら、失敗で終了
-		if (!characterComponent.isHoldingBall)
+		if (!characterAIAgent.HasBall)
 		{
-			Debug.Log(characterComponent.name + ":パスの前にボールを奪われた");
+			Debug.Log(characterAIAgent.name + ":パスの前にボールを奪われた");
 			return Status.Failure;
 		}
 		if(ActiveCharacters.Count <= 0)
 		{
-			Debug.Log(characterComponent.name + ":アクティブキャラがゼロ");
+			Debug.Log(characterAIAgent.name + ":アクティブキャラがゼロ");
 			return Status.Failure;
 		}
 
@@ -85,6 +88,8 @@ public partial class PassAction : ActionBase
 
 		// 何回もパスしないよう、パスをしたらスタンする
 		//characterComponent.StartStan();
+#endif
+
 		return Status.Success;
 	}
 

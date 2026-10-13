@@ -13,8 +13,8 @@ public partial class BallClearAction : ActionBase
     {
         base.OnStart();
 
-        // 行動をデバッグで表示
-		characterComponent.DebugText.SetText("ボールをクリアする");
+		// 行動をデバッグで表示
+		characterAIAgent.DebugText.SetText("ボールをクリアする");
 
 		return Status.Running;
     }

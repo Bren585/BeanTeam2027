@@ -411,14 +411,19 @@ public class CharacterBase : MonoBehaviour
             if (distance > bestDistance && blockers == null) { continue; }
 
             List<RaycastHit> hits = new(Physics.SphereCastAll(new Ray(transform.position, toCharacter), 0.5f, distance));
+
+            // ヒット対象からキャラクター以外とチームメンバーを除外
             hits.RemoveAll(hit =>
             {
                 CharacterBase hitCharacter = hit.transform.GetComponent<CharacterBase>();
                 return hitCharacter == null || hitCharacter.teamNo == teamNo;
             });
 
-
-            if (blockers != null) { if (hits.Count > blockers.Count) { continue; } }
+            // ヒット数が前回までのヒット数より多かったら飛ばす
+            if (blockers != null) { 
+                if (hits.Count > blockers.Count) 
+                    continue; 
+            }
 
             if (distance < bestDistance)
             {

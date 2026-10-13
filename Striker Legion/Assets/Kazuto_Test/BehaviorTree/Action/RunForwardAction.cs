@@ -19,9 +19,8 @@ public partial class RunForwardAction : ActionBase
         // 基底クラスの初期化
         base.OnStart();
 
-        // PitchEvaluatorの取得
-        //if(GameObject.FindWithTag("PitchManager").GetComponent<PitchEvaluator>())
-            pitchEvaluator = GameObject.FindWithTag("PitchManager").GetComponent<PitchEvaluator>();
+       
+       pitchEvaluator = GameObject.FindWithTag("PitchManager").GetComponent<PitchEvaluator>();
 
         if (pitchEvaluator == null)
         {
@@ -32,20 +31,20 @@ public partial class RunForwardAction : ActionBase
             Debug.Log("RunForward Start");
 
         // 移動処理を開始
-        characterComponent.SteeringController.StartMove();
+        characterAIAgent.SteeringController.StartMove();
 
         teamType = LayerMask.LayerToName(GameObject.layer) == "Player" ? TeamType.Player : TeamType.Enemy;
 
         timer = 0.0f;
 
-		characterComponent.DebugText.SetText("前に走る");
+		characterAIAgent.DebugText.SetText("前に走る");
 
 		return Status.Running;
     }
 
     protected override Status OnUpdate()
     {
-        characterComponent.SteeringController.TargetPosition = GameObject.transform.position + GameObject.transform.forward * 1.5f;
+		characterAIAgent.SteeringController.TargetPosition = GameObject.transform.position + GameObject.transform.forward * 1.5f;
 		//characterComponent.SteeringController.TargetPosition = pitchEvaluator.GetBestPosition(teamType); 
 		//characterComponent.SteeringController.TargetPosition = new Vector3(0, 0, 0);
 

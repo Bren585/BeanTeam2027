@@ -14,7 +14,7 @@ public partial class ShootAction : ActionBase
         base.OnStart();
 
 		// 行動をデバッグで表示
-		characterComponent.DebugText.SetText("シュートする");
+		characterAIAgent.DebugText.SetText("シュートする");
 
 		return Status.Running;
     }

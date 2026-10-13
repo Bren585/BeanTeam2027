@@ -14,27 +14,29 @@ public partial class PressAction : ActionBase
     // どこまで近づくか
     private const float PressDistance = 1.0f;
 
-    private SampleCharacter TargetCharacter;
+    private CharacterBase TargetCharacter;
 
 	protected override Status OnStart()
     {
+#if false
         base.OnStart();
 
         // 移動開始
-        characterComponent.SteeringController.StartMove();
+        characterAIAgent.SteeringController.StartMove();
 
         //Debug.Log(GameObject.name + " : Start Press");
 
         // ターゲットを設定
+        // Todo:MatchManagerコンポーネントを修正
         TargetCharacter = MatchManager.Instance.CurrentBallHolder;
 
         // キャラのタグが同一なら、同じ陣営のキャラを追いかけようとしているからFalse
-        if (TargetCharacter.gameObject.layer == characterComponent.gameObject.layer)
+        if (TargetCharacter.teamNo == characterAIAgent.TeamNumber)
             return Status.Failure;
 
 		// 行動をデバッグで表示
-		characterComponent.DebugText.SetText("プレスをかける");
-
+		characterAIAgent.DebugText.SetText("プレスをかける");
+#endif
 
 		return Status.Running;
     }
@@ -45,8 +47,8 @@ public partial class PressAction : ActionBase
         if (TargetCharacter == null)
             return Status.Failure;
 
-        // 追跡する座標をターゲットの位置に更新
-        characterComponent.SteeringController.TargetPosition = TargetCharacter.transform.position;
+		// 追跡する座標をターゲットの位置に更新
+		characterAIAgent.SteeringController.TargetPosition = TargetCharacter.transform.position;
         
 
 		// ターゲットまでの距離を取得

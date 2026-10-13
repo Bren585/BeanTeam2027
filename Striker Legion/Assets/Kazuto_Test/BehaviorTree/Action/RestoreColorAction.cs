@@ -20,7 +20,7 @@ public partial class RestoreColorAction : ActionBase
 		Material targetMaterial = targetRenderer.material;
 
 		// 色を変更
-		targetMaterial.SetColor("_BaseColor", characterComponent.BaseColor);
+		targetMaterial.SetColor("_BaseColor", characterAIAgent.BaseColor);
 
         Debug.Log("色を元に戻す");
 

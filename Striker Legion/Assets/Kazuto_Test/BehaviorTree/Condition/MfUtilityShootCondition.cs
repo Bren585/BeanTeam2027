@@ -7,16 +7,17 @@ using UnityEngine;
 public partial class MfUtilityShootCondition : Condition
 {
     // 評価対象のミッドフィルダー(BehaviorGraphで指定)
-    [SerializeReference] public BlackboardVariable<SampleCharacter> Midfielder;
+    [SerializeReference] public BlackboardVariable<CharacterAIAgent> Midfielder;
 
     public override bool IsTrue()
     {
+#if false
         // 評価を下すスコア
         // 高いとミッドフィルダーがシュートを可能性が高い
         float score = 0.0f;
 
-        // フォワードを取得する
-        SampleCharacter Forward = MatchManager.Instance.GetAllyByRole(Midfielder.Value.TeamType, CharacterRole.Forward);
+		// フォワードを取得する
+		CharacterAIAgent Forward = MatchManager.Instance.GetAllyByRole(Midfielder.Value.TeamType, CharacterRole.Forward);
         //SampleCharacter Forward = Midfielder.Value.CharacterSensor.GetAllyByRole(CharacterRole.Forward);
 
 		// フォワードが存在しない場合はシュートをするためにtrueを返す
@@ -52,6 +53,9 @@ public partial class MfUtilityShootCondition : Condition
             return true;
 
 		return false;
+#else
+        return true;
+#endif
     }
 
     public override void OnStart()

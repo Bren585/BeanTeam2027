@@ -6,13 +6,8 @@ using Unity.Properties;
 
 [Serializable]
 public partial class ActionBase : Action
-{
-	// 割り込み可能フラグ
-	protected bool isInterrupted = false;
-	//protected BlackboardVariable<bool> isInterrupted = new BlackboardVariable<bool>(false);
-	//protected GameObject self;
-	protected SampleCharacter characterComponent;
-	//[SerializeReference] public BlackboardVariable<SampleCharacter> characterComponent;
+{	
+	protected CharacterAIAgent characterAIAgent;
 
 	bool Initialized = false;
 
@@ -46,10 +41,10 @@ public partial class ActionBase : Action
 		}
 
 		// SampleCharacterコンポーネントを取得
-		if (GameObject.TryGetComponent<SampleCharacter>(out var character))
+		if (GameObject.TryGetComponent<CharacterAIAgent>(out var character))
 		//if (agent.GetVariable<SampleCharacter>("CharacterComponent", out var character))
 		{
-			characterComponent = character;
+			characterAIAgent = character;
 		}
 		else
 		{

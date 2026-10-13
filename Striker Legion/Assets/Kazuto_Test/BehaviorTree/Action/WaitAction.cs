@@ -19,7 +19,7 @@ public partial class ActionWaitAction : ActionBase
         base.OnStart();
 
 		// 行動をデバッグで表示
-		characterComponent.DebugText.SetText("待機中");
+		characterAIAgent.DebugText.SetText("待機中");
 
 		//isInterrupted.Value = true;
 

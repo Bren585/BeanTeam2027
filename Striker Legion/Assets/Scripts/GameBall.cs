@@ -15,7 +15,9 @@ public class GameBall : MonoBehaviour
 
         public flight(CharacterBase from, CharacterBase to, float height, float speed)
         {
+            // 始点キャラクターの足元の座標
             start = from.transform.Find("Feet").position;
+            // 終点キャラクターの足元の座標
             Vector3 target = to.transform.Find("Feet").position;
             Vector3 velocity = new Vector3(to.velocity.x, 0, to.velocity.z);
             Vector3 offset = target - start;

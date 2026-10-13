@@ -16,21 +16,21 @@ public partial class BackDefenseAction : ActionBase
         base.OnStart();
 
 		// 移動処理を開始
-		characterComponent.SteeringController.StartMove();
+		characterAIAgent.SteeringController.StartMove();
 
         // タイマーの初期化
         timer = 0.0f;
 
-        // テキスト表示
-        characterComponent.DebugText.SetText("守備に戻る");
+		// テキスト表示
+		characterAIAgent.DebugText.SetText("守備に戻る");
 
 		return Status.Running;
     }
 
     protected override Status OnUpdate()
     {
-        // 目標地点をキャラクターの後ろ方向に設定
-		characterComponent.SteeringController.TargetPosition = GameObject.transform.position + -GameObject.transform.forward * 1.5f;
+		// 目標地点をキャラクターの後ろ方向に設定
+		characterAIAgent.SteeringController.TargetPosition = GameObject.transform.position + -GameObject.transform.forward * 1.5f;
 
 		timer += Time.deltaTime;
 		if (timer >= 0.5f)
