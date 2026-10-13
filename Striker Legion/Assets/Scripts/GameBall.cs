@@ -139,7 +139,6 @@ public class GameBall : MonoBehaviour
                 toTarget *= (speedTimme / distance);
             }
             transform.position += toTarget;
-
         }
     }
 

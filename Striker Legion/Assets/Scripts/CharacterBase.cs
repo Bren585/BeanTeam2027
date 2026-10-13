@@ -327,7 +327,7 @@ public class CharacterBase : MonoBehaviour
         return Random.value > ballHandling;
     }
 
-    bool BallHandlingSucess()
+    bool BallHandlingSuccess()
     {
         return Random.value < ballHandling;
     }
@@ -469,7 +469,7 @@ public class CharacterBase : MonoBehaviour
             foreach (RaycastHit blocker in blockers) { 
                 CharacterBase character = blocker.collider.GetComponent<CharacterBase>();
                 if (character == null) continue;
-                if (character.BallHandlingSucess())
+                if (character.BallHandlingSuccess())
                 {
                     target = character;
                     break;
