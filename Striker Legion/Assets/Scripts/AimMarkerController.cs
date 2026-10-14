@@ -10,7 +10,7 @@ public class AimMarkerController : BallHolder
     [SerializeField] InputActionReference inputRef;
     [SerializeField] Vector2 movingSensitivity = new Vector2(5.0f, 5.0f);
     Vector3 originPosition = Vector3.zero;
-    [SerializeField] OnGoal onGoalEvent;
+    [SerializeField] Unity.Behavior.EventChannel onGoalEvent;
 
     // override ************************
     public override Vector3 GetHoldPosition()

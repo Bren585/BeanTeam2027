@@ -11,6 +11,7 @@ public partial class CoinTossAction : Action
 
     protected override Status OnStart()
     {
+        
         return Status.Running;
     }
 
