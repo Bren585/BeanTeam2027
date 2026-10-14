@@ -9,93 +9,77 @@ using static UnityEngine.Mathf;
 [RequireComponent(typeof(CharacterController))]
 public class CharacterBase : BallHolder
 {
-    // ƒRƒ“ƒ|ƒlƒ“ƒg ******************************************************************************************
+    // ã‚³ãƒ³ãƒãƒãƒ³ãƒˆ ******************************************************************************************
 
     protected CharacterController body;
     protected GameObject ball;
     protected GameObject tackleHitbox;
 
-    // ƒLƒƒƒ‰’è‹` *******************************************************************************************
+    // ã‚­ãƒ£ãƒ©å®šç¾© *******************************************************************************************
 
-    [Header("ƒx[ƒXİ’è")]
-    [SerializeField] float minTurnSpeed = 90;
-    [SerializeField] float maxTurnSpeed = 360;
+    [Header("ãƒ™ãƒ¼ã‚¹è¨­å®š")]
+    [SerializeField] protected CharacterBaseInfo baseInfo;
 
-    [SerializeField] float tackleHitboxDuration = 0.25f;
-    [SerializeField] float tackleCooldown = 1.0f;
+    // ã‚­ãƒ£ãƒ©ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ **************************************************************************************
 
-    [SerializeField] float maxDownTime = 2.0f;
-
-    [SerializeField] float gravity = 5.0f;
+    [Header("ç¶™æ‰¿ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿")]
 
     /// <summary>
-    ///                                             ƒWƒƒƒ“ƒv—Í
-    /// </summary>
-    [SerializeField] protected float jumpStrength = 2.0f;
-
-
-    // ƒLƒƒƒ‰ƒpƒ‰ƒ[ƒ^ **************************************************************************************
-
-    [Header("Œp³ƒpƒ‰ƒ[ƒ^")]
-    /// <summary>
-    ///                                             ‘–‚éƒ}ƒbƒNƒXƒXƒs[ƒh
-    /// </summary>
-    [SerializeField] protected float maxRunSpeed;
-
-    /// <summary>
-    ///                                             •œŠˆ—Í
+    ///                                             å¾©æ´»åŠ›
     ///                                             <br/>
-    ///                                             ’l‚Í0.0iã‚¢A‘‚­¡‚ç‚È‚¢j‚©‚ç‚PD‚Oi‹­‚¢A‘‚­¡‚éj‚Ü‚Å‚Æ‚µ‚Ü‚·B
+    ///                                             å€¤ã¯0.0ï¼ˆå¼±ã„ã€æ—©ãæ²»ã‚‰ãªã„ï¼‰ã‹ã‚‰ï¼‘ï¼ï¼ï¼ˆå¼·ã„ã€æ—©ãæ²»ã‚‹ï¼‰ã¾ã§ã¨ã—ã¾ã™ã€‚
     /// </summary>
     [SerializeField, Range(0f, 1f)] protected float constition;
 
     /// <summary>
-    ///                                             ƒ{[ƒ‹‚Ìˆµ‚¢‚â‚·‚³
+    ///                                             ãƒœãƒ¼ãƒ«ã®æ‰±ã„ã‚„ã™ã•
     ///                                             <br/>
-    ///                                             ’l‚Í0.0iUŒ‚‚³‚ê‚½‚çâ‘Î—‚Æ‚·‚È‚Çj‚©‚ç‚PD‚Oiƒ{[ƒ‹—‚Æ‚³‚È‚¢‚È‚Çj‚Ü‚Å‚Æ‚µ‚Ü‚·B
+    ///                                             å€¤ã¯0.0ï¼ˆæ”»æ’ƒã•ã‚ŒãŸã‚‰çµ¶å¯¾è½ã¨ã™ãªã©ï¼‰ã‹ã‚‰ï¼‘ï¼ï¼ï¼ˆãƒœãƒ¼ãƒ«è½ã¨ã•ãªã„ãªã©ï¼‰ã¾ã§ã¨ã—ã¾ã™ã€‚
     /// </summary>
     [SerializeField, Range(0f, 1f)] protected float ballHandling;
 
     /// <summary>
-    ///                                             ‘–‚é‚Æ‚«‚Ì¬‰ñ‚è—ÍA‰¡ˆÚ“®ƒXƒs[ƒhAƒAƒNƒZƒ‹                      
+    ///                                             èµ°ã‚‹ã¨ãã®å°å›ã‚ŠåŠ›ã€æ¨ªç§»å‹•ã‚¹ãƒ”ãƒ¼ãƒ‰ã€ã‚¢ã‚¯ã‚»ãƒ«                      
     ///                                             <br/>            
-    ///                                             ’l‚Í‚OD‚OiÅ’á‚É’x‚¢j‚©‚ç‚PD‚OiÅ‚‚É‘‚¢j‚Ü‚Å‚Æ‚µ‚Ü‚·B
+    ///                                             å€¤ã¯ï¼ï¼ï¼ï¼ˆæœ€ä½ã«é…ã„ï¼‰ã‹ã‚‰ï¼‘ï¼ï¼ï¼ˆæœ€é«˜ã«æ—©ã„ï¼‰ã¾ã§ã¨ã—ã¾ã™ã€‚
     /// </summary>
     [SerializeField, Range(0f, 1f)] protected float groundMobility;
 
     /// <summary>
-    ///                                             ƒVƒ‡[ƒg—Í
+    ///                                             ã‚·ãƒ§ãƒ¼ãƒˆåŠ›
     /// </summary>
-    [SerializeField] protected float power;
+    [SerializeField, Range(0f, 1f)] protected float power;
 
-    [Header("’¹Œn")]
+    [Header("é³¥ç³»")]
     /// <summary>
-    ///                                             ”ò‚×‚é‚©‚Ç‚¤‚©
+    ///                                             é£›ã¹ã‚‹ã‹ã©ã†ã‹
     /// </summary>
     [SerializeField] protected bool canFly = false;
 
     /// <summary>
-    ///                                             ”ò‚Ôƒ}ƒbƒNƒXƒXƒs[ƒh
+    ///                                             é£›ã¶ãƒãƒƒã‚¯ã‚¹ã‚¹ãƒ”ãƒ¼ãƒ‰
     /// </summary>
     [SerializeField] protected float maxFlySpeed = 0;
 
     /// <summary>
-    ///                                             ”ò‚Ô‚Æ‚«‚Ì¬‰ñ‚è—ÍA‰¡ˆÚ“®ƒXƒs[ƒhAƒAƒNƒZƒ‹
+    ///                                             é£›ã¶ã¨ãã®å°å›ã‚ŠåŠ›ã€æ¨ªç§»å‹•ã‚¹ãƒ”ãƒ¼ãƒ‰ã€ã‚¢ã‚¯ã‚»ãƒ«
     /// </summary>
     [SerializeField, Range(0f, 1f)] protected float airMobility = 0.1f;
 
-    // ƒLƒƒƒ‰ó‘Ô *******************************************************************************************
+    // ã‚­ãƒ£ãƒ©çŠ¶æ…‹ *******************************************************************************************
 
-    [field: Header("ó‘Ô")]
+    [field: Header("çŠ¶æ…‹")]
 
     public Vector3 velocity { get; private set; }
+    Animator animator;
+    SkillBar skillBar;
 
-    // ƒI[ƒo[ƒ‰ƒCƒh ***************************************************************************************
+    // ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰ ***************************************************************************************
     public override Vector3 GetHoldPosition() { return transform.Find("Feet").position; }
     public override Vector3 GetVerocity() { return velocity; }
 
     /// <summary>
-    /// true‚È‚ç“®‚¢‚Ä‚¢‚éŒü‚«‚É‰ñ‚éAfalse‚È‚çŒü‚©‚È‚¢
+    /// trueãªã‚‰å‹•ã„ã¦ã„ã‚‹å‘ãã«å›ã‚‹ã€falseãªã‚‰å‘ã‹ãªã„
     /// </summary>
     bool strafing = false;
     bool moving = false;
@@ -108,8 +92,8 @@ public class CharacterBase : BallHolder
         get 
         {
             if      (flying)    return maxFlySpeed;
-            else if (strafing)  return maxRunSpeed * (0.1f + 0.9f * groundMobility);
-            else                return maxRunSpeed;
+            else if (strafing)  return baseInfo.maxRunSpeed * (0.1f + 0.9f * groundMobility);
+            else                return baseInfo.maxRunSpeed;
         } 
     }
 
@@ -120,7 +104,7 @@ public class CharacterBase : BallHolder
 
     CharacterBase passTarget = null;
 
-    // ŠÖ” *******************************************************************************************
+    // é–¢æ•° *******************************************************************************************
 
     protected virtual void Awake()
     {
@@ -129,14 +113,37 @@ public class CharacterBase : BallHolder
         ball.SetActive(false);
         tackleHitbox = transform.Find("TackleHitbox").gameObject;
         tackleHitbox.SetActive(false);
+
+        animator = GetComponentInChildren<Animator>();
     }
 
     void Start()
     {
-        tackleTimer = tackleCooldown;
+        tackleTimer = baseInfo.tackleCooldown;
+        skillBar = FindAnyObjectByType<SkillBar>();
     }
 
     void Update()
+    {
+        animator.Update(Time.deltaTime);
+
+        UpdatePassTarget();
+
+        UpdateTackle();
+
+        if (isDown)
+        {
+            _velocity.x = 0;
+            _velocity.z = 0;
+            downTimer -= Time.deltaTime;
+            if (downTimer <= 0) { animator.SetTrigger("Recover"); }
+            return;
+        }
+
+        UpdateMovement();
+    }
+
+    void UpdatePassTarget()
     {
         if (hasBall)
         {
@@ -148,120 +155,143 @@ public class CharacterBase : BallHolder
                 passTarget = newPassTarget;
             }
         }
+    }
 
-        if (tackleTimer < tackleCooldown)
+    void UpdateTackle()
+    {
+        if (tackleTimer < baseInfo.tackleCooldown)
         {
             tackleTimer += Time.deltaTime;
             if (tackleHitbox.activeSelf)
             {
-                if (tackleTimer > tackleHitboxDuration) { tackleHitbox.SetActive(false); }
+                if (tackleTimer > baseInfo.tackleHitboxDuration) { tackleHitbox.SetActive(false); }
             }
-        }
-
-        if (isDown)
-        {
-            downTimer -= Time.deltaTime;
-            velocity = Vector3.zero;
-            return;
-        }
-
-        if (flying) // ”ò‚ñ‚Å‚é
-        {
-        }
-        else // ‘–‚Á‚Ä‚é
-        {
-            // ‘¬“xƒ`ƒFƒbƒN
-            Vector3 groundVelocity = new Vector3(velocity.x, 0, velocity.z);
-            float speed = groundVelocity.magnitude; 
-            if (speed > maxSpeed)
-            {
-                float m = (maxSpeed / speed);
-                velocity.Scale(new Vector3(m, 1, m));
-                groundVelocity.Scale(new Vector3(m, 1, m));
-                speed = maxSpeed;
-            }
-            Vector3 groundMovement = Vector3.zero;
-            if (strafing) // ‰¡ˆÚ“®
-            {
-                groundMovement = (groundVelocity * Time.deltaTime);
-            }
-            else // •’Ê‚É‘–‚é
-            {
-                if (moving && !moveLocked && groundVelocity != Vector3.zero)
-                {
-                    Quaternion targetRotation = Quaternion.LookRotation(groundVelocity.normalized);
-
-                    body.transform.rotation = Quaternion.RotateTowards(
-                        body.transform.rotation,
-                        targetRotation,
-                        (minTurnSpeed + Lerp(minTurnSpeed, maxTurnSpeed, groundMobility)) * Time.deltaTime
-                    );
-
-                }
-                Vector3 forward = body.transform.forward.normalized;
-                float dot = Vector3.Dot(groundVelocity.normalized, forward);
-                groundMovement = (forward * (Clamp01(dot) * speed * Time.deltaTime));
-            }
-
-            // d—Í
-            Vector3 airMovement = Vector3.zero;
-            Vector3 airVelocity = Vector3.zero;
-            airVelocity.y = velocity.y;
-            if (!body.isGrounded)
-            {
-                Vector3 gravityVector = new(0, -gravity * Time.deltaTime, 0);
-                velocity += gravityVector;
-                airVelocity += gravityVector;
-                airMovement = (airVelocity * Time.deltaTime);
-            } 
-            else
-            {
-                if (velocity.y > 0)
-                {
-                    airMovement = (airVelocity * Time.deltaTime);
-                }
-            }
-
-            body.Move(groundMovement + airMovement);
-        }
-        if (!moving && !moveLocked) {
-            float drag = Clamp01(1.0f - Time.deltaTime / 0.25f);
-            velocity = Vector3.Scale(velocity, new Vector3(drag, 1, drag)); 
         }
     }
 
+    void UpdateMovement()
+    {
+        if (flying) // é£›ã‚“ã§ã‚‹
+        {
+        }
+        else // èµ°ã£ã¦ã‚‹
+        {
+            // é€Ÿåº¦ãƒã‚§ãƒƒã‚¯
+            Vector3 groundVelocity = velocity;
+            groundVelocity.y = 0;
+
+            groundVelocity = Vector3.ClampMagnitude(groundVelocity, maxSpeed);
+
+            Vector3 movement = Vector3.zero;
+
+            if (strafing) // æ¨ªç§»å‹•
+            {
+                movement = (groundVelocity * Time.deltaTime);
+                animator.SetFloat("forward", 0);
+            }
+            else // æ™®é€šã«èµ°ã‚‹
+            {
+                UpdateRotation(groundVelocity);
+
+                float speed = groundVelocity.magnitude;
+
+                if (speed > 0.001f)
+                {
+                    float forwardDegree = Vector3.Dot(groundVelocity / speed, body.transform.forward);
+                    movement = (body.transform.forward * (Clamp01(forwardDegree) * speed * Time.deltaTime));
+
+                    float angle = Vector3.SignedAngle(
+                        body.transform.forward,
+                        groundVelocity.normalized,
+                        Vector3.up
+                    );
+
+                    animator.SetFloat("forward", angle / 180.0f);
+                } 
+                else { animator.SetFloat("forward", 0); }
+            }
+
+            movement += UpdateGravity();
+
+            body.Move(movement);
+        }
+
+        if (!moving && !moveLocked)
+        {
+            float drag = Clamp01(1.0f - Time.deltaTime / 0.25f);
+            _velocity.x *= drag;
+            _velocity.z *= drag;
+        }
+
+        if (body.isGrounded && velocity.y < 0) { _velocity.y = 0; }
+
+        animator.SetFloat("groundSpeed", new Vector2(velocity.x, velocity.z).magnitude);
+        animator.SetFloat("yVelocity", velocity.y);
+        animator.SetBool("grounded", body.isGrounded);
+    }
+
+    void UpdateRotation(Vector3 groundVelocity)
+    {
+        if (moving && (!moveLocked) && (groundVelocity.sqrMagnitude > 0.01f))
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(groundVelocity);
+
+            float turnSpeed = (baseInfo.minTurnSpeed + Lerp(baseInfo.minTurnSpeed, baseInfo.maxTurnSpeed, groundMobility)) * Time.deltaTime;
+
+            body.transform.rotation = Quaternion.RotateTowards(
+                body.transform.rotation,
+                targetRotation,
+                turnSpeed
+            );
+
+        }
+    }
+
+    Vector3 UpdateGravity()
+    {
+        _velocity.y += -baseInfo.gravity * Time.deltaTime;
+        return Vector3.up * velocity.y * Time.deltaTime;
+    }
+
     /// <summary>
-    /// ƒLƒƒƒ‰‚É‘¬“x‚ğ‰Á‚¦‚é
+    /// ã‚­ãƒ£ãƒ©ã«é€Ÿåº¦ã‚’åŠ ãˆã‚‹
     /// </summary>
-    /// <param name="input">‘¬“x</param>
+    /// <param name="input">é€Ÿåº¦</param>
     public void Move(Vector3 input)
     {
         if (moveLocked) { return; }
 
-        moving = (input != Vector3.zero) || !body.isGrounded;
-        if (!moving) { return; }
+        moving = (input.sqrMagnitude > 0.001f) || (!body.isGrounded);
+        if (input.sqrMagnitude < 0.001f) { return; }
+
+        input = input.normalized;
 
         float mobility = body.isGrounded ? groundMobility : airMobility;
 
         float accelerationModifier = Mathf.Pow(2, (mobility - 1));
 
-        Vector3 inputVelocity = input * maxSpeed * Time.deltaTime * accelerationModifier;
-        Vector3 groundVelocity = new Vector3(velocity.x, 0, velocity.z);
-        float dot = Vector3.Dot(inputVelocity.normalized, groundVelocity.normalized);
+        float acceleration = maxSpeed * Time.deltaTime * accelerationModifier;
+        Vector3 groundVelocity = velocity;
+        groundVelocity.y = 0;
 
-        if (dot < 0) // ˆÚ“®æ‚ª“®‚¢‚Ä‚¢‚éŒü‚«‚Æˆá‚¤
+        if (groundVelocity.sqrMagnitude > 0.001f)
         {
-            // Œü‚«‚ªˆá‚¤•ªA‘‚­Œü‚¯‚é‚½‚ßA‘‚­‚È‚éB
-            inputVelocity += groundVelocity * dot * mobility;
+            float dot = Vector3.Dot(input, groundVelocity.normalized);
+
+            if (dot < 0) // ç§»å‹•å…ˆãŒå‹•ã„ã¦ã„ã‚‹å‘ãã¨é•ã†
+            {
+                // å‘ããŒé•ã†åˆ†ã€æ—©ãå‘ã‘ã‚‹ãŸã‚ã€æ—©ããªã‚‹ã€‚
+                acceleration *= 1 - dot * mobility;
+            }
         }
 
-        velocity += inputVelocity;
+        _velocity += input * acceleration;
     }
 
     /// <summary>
-    /// ˆÚ“®æ‚ÉŒü‚­‚×‚«‚©
+    /// ç§»å‹•å…ˆã«å‘ãã¹ãã‹
     /// </summary>
-    /// <param name="strafe">true‚È‚ç“®‚¢‚Ä‚¢‚éŒü‚«‚É‰ñ‚éAfalse‚È‚çŒü‚©‚È‚¢</param>
+    /// <param name="strafe">trueãªã‚‰å‹•ã„ã¦ã„ã‚‹å‘ãã«å›ã‚‹ã€falseãªã‚‰å‘ã‹ãªã„</param>
     public void SetStrafe(bool strafe)
     {
         if (flying) strafing = false;
@@ -271,25 +301,24 @@ public class CharacterBase : BallHolder
     public void Jump()
     {
         if (!body.isGrounded) { return; }
+        animator.SetTrigger("Jump");
         if (canFly) 
         { 
-            // ”ò‚Ñn‚ß‚Ä
+            // é£›ã³å§‹ã‚ã¦
         }
         else 
         {
-            Vector3 jump;
-            jump.x = jump.z = 0;
-            jump.y = jumpStrength - velocity.y;
-            velocity += jump;
+            _velocity.y = baseInfo.jumpStrength;
         }
     }
 
     public void Tackle()
     {
         if (hasBall) return;
-        if (tackleTimer < tackleCooldown) return;
+        if (tackleTimer < baseInfo.tackleCooldown) return;
         tackleTimer = 0;
         tackleHitbox.SetActive(true);
+        animator.SetTrigger("Tackle");
     }
 
     bool BallHandlingFail()
@@ -297,7 +326,7 @@ public class CharacterBase : BallHolder
         return Random.value > ballHandling;
     }
 
-    bool BallHandlingSucess()
+    bool BallHandlingSuccess()
     {
         return Random.value < ballHandling;
     }
@@ -311,10 +340,11 @@ public class CharacterBase : BallHolder
     {
         if (other.gameObject.name == "TackleHitbox")
         {
+            if (!hasBall) { return; }
             CharacterBase opponent = other.GetComponentInParent<CharacterBase>();
             if (BallHandlingFail())
             {
-                //if (opponent.teamNo == teamNo) { return; } // ƒeƒXƒg‚µ‚â‚·‚¢‚½‚ßƒIƒbƒt
+                //if (opponent.teamNo == teamNo) { return; } // ãƒ†ã‚¹ãƒˆã—ã‚„ã™ã„ãŸã‚ã‚ªãƒƒãƒ•
 
                 GameBall gameBall = FindAnyObjectByType<GameBall>();
 
@@ -323,12 +353,14 @@ public class CharacterBase : BallHolder
                 opponent.lockMove();
                 LoseBall();
                 ClearPassTarget();
+                skillBar.GainForTackle(opponent.teamNo);
 
-                // ƒ_ƒEƒ“
-                downTimer = maxDownTime * (1 - constition);
+                // ãƒ€ã‚¦ãƒ³
+                downTimer = baseInfo.maxDownTime * (1 - constition);
+                animator.SetTrigger("Down");
             }
         }
-        //HACK: if•¶‚ª’·‚·‚¬‚é
+        //HACK: ifæ–‡ãŒé•·ã™ãã‚‹
         else if (other.gameObject.name == "GoalZone" && other.transform.Find("ShootCamOrigin").Find("AimMarker").GetComponent<AimMarkerController>().teamNo != this.teamNo && hasBall == true)
         {
             // Enter Shooting Mode
@@ -342,15 +374,15 @@ public class CharacterBase : BallHolder
             // If defender reaches, they use they're constitution (and maybe ballhandle) to try to block
             // Player defender gets a bonus in speed and block if they aimed correctly 
             //
-            // “ú–{Œê (‹@ŠB–|–ó)
-            // ƒVƒ…[ƒgƒ‚[ƒh‚Í•ÊƒXƒNƒŠƒvƒg‚Åˆ—
-            // ƒJƒƒ‰‚ªƒVƒ…[ƒ^[‚ÉÚ‹ß‚µAŠÔ‚Ì—¬‚ê‚ª’x‚­‚È‚é
-            // ƒVƒ…[ƒ^[‚ÍƒJ[ƒ\ƒ‹‚ğ“®‚©‚µ‚Ä‘_‚¢‚ğ’è‚ß‚éiƒJ[ƒ\ƒ‹‚ÌˆÚ“®‘¬“x‚ÍƒXƒe[ƒ^ƒX‚ÌuƒXƒs[ƒhv‚ÉˆË‘¶j
-            // ƒfƒBƒtƒFƒ“ƒ_[‚ªƒvƒŒƒCƒ„[‚Ìê‡A“¯—l‚ÉƒJ[ƒ\ƒ‹‚ğg‚Á‚Äç”õˆÊ’u‚ğ‘_‚¤
-            // ƒVƒ…[ƒ^[‚ªƒVƒ…[ƒg‚ğ•ú‚Â
-            // ƒfƒBƒtƒFƒ“ƒ_[‚ÍuƒXƒs[ƒhv‚ÌƒXƒe[ƒ^ƒX‚ğŠˆ‚©‚µ‚Ä‹——£‚ğ‹l‚ß‚æ‚¤‚Æ‚·‚éi§ŒÀŠÔ‚ÍƒVƒ…[ƒ^[‚Ìƒpƒ[‚ÉˆË‘¶j
-            // ƒfƒBƒtƒFƒ“ƒ_[‚ª“’B‚µ‚½ê‡AuƒXƒ^ƒ~ƒiiConstitutionjvi‚¨‚æ‚Ñê‡‚É‚æ‚Á‚Ä‚Íuƒ{[ƒ‹ƒnƒ“ƒhƒŠƒ“ƒOvj‚ğg‚Á‚ÄƒuƒƒbƒN‚ğ‚İ‚é
-            // ƒvƒŒƒCƒ„[‚ªƒfƒBƒtƒFƒ“ƒ_[‚Ìê‡A‘_‚¢‚ª³Šm‚Å‚ ‚ê‚ÎƒXƒs[ƒh‚ÆƒuƒƒbƒN‚Éƒ{[ƒiƒX‚ª‰ÁZ‚³‚ê‚é
+            // æ—¥æœ¬èª (æ©Ÿæ¢°ç¿»è¨³)
+            // ã‚·ãƒ¥ãƒ¼ãƒˆãƒ¢ãƒ¼ãƒ‰ã¯åˆ¥ã‚¹ã‚¯ãƒªãƒ—ãƒˆã§å‡¦ç†
+            // ã‚«ãƒ¡ãƒ©ãŒã‚·ãƒ¥ãƒ¼ã‚¿ãƒ¼ã«æ¥è¿‘ã—ã€æ™‚é–“ã®æµã‚ŒãŒé…ããªã‚‹
+            // ã‚·ãƒ¥ãƒ¼ã‚¿ãƒ¼ã¯ã‚«ãƒ¼ã‚½ãƒ«ã‚’å‹•ã‹ã—ã¦ç‹™ã„ã‚’å®šã‚ã‚‹ï¼ˆã‚«ãƒ¼ã‚½ãƒ«ã®ç§»å‹•é€Ÿåº¦ã¯ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®ã€Œã‚¹ãƒ”ãƒ¼ãƒ‰ã€ã«ä¾å­˜ï¼‰
+            // ãƒ‡ã‚£ãƒ•ã‚§ãƒ³ãƒ€ãƒ¼ãŒãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å ´åˆã€åŒæ§˜ã«ã‚«ãƒ¼ã‚½ãƒ«ã‚’ä½¿ã£ã¦å®ˆå‚™ä½ç½®ã‚’ç‹™ã†
+            // ã‚·ãƒ¥ãƒ¼ã‚¿ãƒ¼ãŒã‚·ãƒ¥ãƒ¼ãƒˆã‚’æ”¾ã¤
+            // ãƒ‡ã‚£ãƒ•ã‚§ãƒ³ãƒ€ãƒ¼ã¯ã€Œã‚¹ãƒ”ãƒ¼ãƒ‰ã€ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’æ´»ã‹ã—ã¦è·é›¢ã‚’è©°ã‚ã‚ˆã†ã¨ã™ã‚‹ï¼ˆåˆ¶é™æ™‚é–“ã¯ã‚·ãƒ¥ãƒ¼ã‚¿ãƒ¼ã®ãƒ‘ãƒ¯ãƒ¼ã«ä¾å­˜ï¼‰
+            // ãƒ‡ã‚£ãƒ•ã‚§ãƒ³ãƒ€ãƒ¼ãŒåˆ°é”ã—ãŸå ´åˆã€ã€Œã‚¹ã‚¿ãƒŸãƒŠï¼ˆConstitutionï¼‰ã€ï¼ˆãŠã‚ˆã³å ´åˆã«ã‚ˆã£ã¦ã¯ã€Œãƒœãƒ¼ãƒ«ãƒãƒ³ãƒ‰ãƒªãƒ³ã‚°ã€ï¼‰ã‚’ä½¿ã£ã¦ãƒ–ãƒ­ãƒƒã‚¯ã‚’è©¦ã¿ã‚‹
+            // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒãƒ‡ã‚£ãƒ•ã‚§ãƒ³ãƒ€ãƒ¼ã®å ´åˆã€ç‹™ã„ãŒæ­£ç¢ºã§ã‚ã‚Œã°ã‚¹ãƒ”ãƒ¼ãƒ‰ã¨ãƒ–ãƒ­ãƒƒã‚¯ã«ãƒœãƒ¼ãƒŠã‚¹ãŒåŠ ç®—ã•ã‚Œã‚‹
             // 
 
             //Debuging
@@ -454,6 +486,8 @@ public class CharacterBase : BallHolder
 
         if (target == null) return;
 
+        if ((target.transform.position - transform.position).magnitude > baseInfo.maxPassDistance) { return; }
+
         // See if blocked or not
         if (blockers != null)
         {
@@ -461,7 +495,7 @@ public class CharacterBase : BallHolder
             foreach (RaycastHit blocker in blockers) { 
                 CharacterBase character = blocker.collider.GetComponent<CharacterBase>();
                 if (character == null) continue;
-                if (character.BallHandlingSucess())
+                if (character.BallHandlingSuccess())
                 {
                     target = character;
                     break;
@@ -476,12 +510,18 @@ public class CharacterBase : BallHolder
 
         ClearPassTarget();
         LoseBall();
+        animator.SetTrigger("Shoot");
     }
 
+    public bool CanSkill()
+    {
+        return skillBar.Ready(teamNo);
+    }
 
     public virtual void Skill()
     {
-
+        skillBar.PayForSkill(teamNo);
+        Debug.Log("Used Skill");
     }
 
     public void lockMove() { moveLocked = true; }

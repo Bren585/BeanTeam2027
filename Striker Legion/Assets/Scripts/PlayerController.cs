@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        gameBall = FindAnyObjectByType<GameBall>();
+        //gameBall = FindAnyObjectByType<GameBall>();
         if (gameBall)
         {
             PossessCharacter(GetClosestPossessableCharacter());
@@ -61,7 +61,6 @@ public class PlayerController : MonoBehaviour
         // Player Move Input, rotated to Camera
         if (playerCharacter != null)
         {
-
             Quaternion cameraYaw = Quaternion.Euler(0, playerCamera.transform.rotation.eulerAngles.y, 0);
             Vector3 rotatedInput = cameraYaw * new Vector3(moveInput.x, 0, moveInput.y);
             playerCharacter.Move(rotatedInput);
@@ -110,7 +109,10 @@ public class PlayerController : MonoBehaviour
     public void OnSkill()
     {
         if (playerCharacter == null) { return; }
-        playerCharacter.Skill();
+        if (playerCharacter.CanSkill())
+        {
+            playerCharacter.Skill();
+        }
     }
 
     public void OnShoot()
