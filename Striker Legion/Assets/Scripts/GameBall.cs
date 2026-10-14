@@ -22,53 +22,36 @@ public class GameBall : MonoBehaviour
             offset.y = 0;
 
             duration = Mathf.Infinity;
-            do
+
+            //speed‚©‚çduration‚ð‹‚Ü‚é
+            float a = Vector3.Dot(velocity, velocity) - (speed * speed);
+            float b = 2f * Vector3.Dot(offset, velocity);
+            float c = Vector3.Dot(offset, offset);
+            if (Mathf.Approximately(a, 0))
             {
-                float a = Vector3.Dot(velocity, velocity) - (speed * speed);
-                float b = 2f * Vector3.Dot(offset, velocity);
-                float c = Vector3.Dot(offset, offset);
-
-                if (Mathf.Approximately(a, 0))
+                if (!Mathf.Approximately(b, 0))
                 {
-                    if (!Mathf.Approximately(b, 0))
+                    float t = -c / b;
+                    if (t > 0)
                     {
-                        float t = -c / b;
-                        if (t > 0)
-                        {
-                            duration = t;
-                        }
+                        duration = t;
                     }
-                }
-                else
-                {
-                    float discriminant = b * b - 4f * a * c;
-
-                    if (discriminant >= 0)
-                    {
-                        float sqrt = Mathf.Sqrt(discriminant);
-                        float t1 = (-b - sqrt) / (2f * a);
-                        float t2 = (-b + sqrt) / (2f * a);
-
-                        if (t1 > 0f) { duration = t1; }
-                        if (t2 > 0f && t2 < duration) { duration = t2; }
-                    }
-                }
-                if (duration == Mathf.Infinity)
-                {
-                    // No valid intercept.
-                    // Adjust speed to make it possible.
-                    float offsetSqr = Vector3.Dot(offset, offset);
-                    float velocitySqr = Vector3.Dot(velocity, velocity);
-                    float dot = Vector3.Dot(offset, velocity);
-                    float minSpeed;
-                    if (dot < 0.0f)
-                        minSpeed = Mathf.Sqrt(velocitySqr - (dot * dot / offsetSqr));
-                    else
-                        minSpeed = Mathf.Sqrt(velocitySqr);
-                    speed = minSpeed + 1f;
                 }
             }
-            while (duration == Mathf.Infinity);
+            else
+            {
+                float discriminant = b * b - 4f * a * c;
+
+                if (discriminant >= 0)
+                {
+                    float sqrt = Mathf.Sqrt(discriminant);
+                    float t1 = (-b - sqrt) / (2f * a);
+                    float t2 = (-b + sqrt) / (2f * a);
+
+                    if (t1 > 0f) { duration = t1; }
+                    if (t2 > 0f && t2 < duration) { duration = t2; }
+                }
+            }
 
             //duration‚ð§ŒÀ‚·‚é
             duration = Mathf.Min(duration, MAX_DURATION);
@@ -139,7 +122,6 @@ public class GameBall : MonoBehaviour
                 toTarget *= (speedTimme / distance);
             }
             transform.position += toTarget;
-
         }
     }
 

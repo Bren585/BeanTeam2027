@@ -25,4 +25,9 @@ public class GameMaster : MonoBehaviour
     {
         gametimer += Time.deltaTime;
     }
+
+    public void OnGoal()
+    {
+        // 
+    }
 }
