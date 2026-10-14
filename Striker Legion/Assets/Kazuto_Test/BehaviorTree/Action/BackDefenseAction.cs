@@ -16,7 +16,7 @@ public partial class BackDefenseAction : ActionBase
         base.OnStart();
 
 		// 移動処理を開始
-		characterAIAgent.SteeringController.StartMove();
+		characterAIAgent.SteeringController.StartMove(SteeringMode.Avoid);
 
         // タイマーの初期化
         timer = 0.0f;

@@ -19,19 +19,8 @@ public partial class RunForwardAction : ActionBase
         // 基底クラスの初期化
         base.OnStart();
 
-       
-       pitchEvaluator = GameObject.FindWithTag("PitchManager").GetComponent<PitchEvaluator>();
-
-        if (pitchEvaluator == null)
-        {
-            Debug.LogError("PitchEvaluator not found.");
-            return Status.Failure;
-        }
-        else
-            Debug.Log("RunForward Start");
-
         // 移動処理を開始
-        characterAIAgent.SteeringController.StartMove();
+        characterAIAgent.SteeringController.StartMove(SteeringMode.Avoid);
 
         teamType = LayerMask.LayerToName(GameObject.layer) == "Player" ? TeamType.Player : TeamType.Enemy;
 

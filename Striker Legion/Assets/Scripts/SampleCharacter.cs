@@ -208,7 +208,7 @@ public class SampleCharacter : MonoBehaviour
 	public void StartMoveBasePos(float limitMax)
 	{
 		// 移動開始フラグを立てる
-		steeringController.StartMove();
+		steeringController.StartMove(SteeringMode.Avoid);
 
 		// 円状の乱数を作成する
 		Vector2 random = Random.insideUnitCircle;

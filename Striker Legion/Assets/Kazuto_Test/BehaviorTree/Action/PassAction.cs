@@ -17,6 +17,7 @@ public partial class PassAction : ActionBase
 
 	protected override Status OnStart()
 	{
+		base.OnStart();
 #if false
 		// 基底クラスの初期化
 		base.OnStart();
@@ -33,6 +34,9 @@ public partial class PassAction : ActionBase
 
 	protected override Status OnUpdate()
 	{
+		if (!characterAIAgent.HasBall)
+			return Status.Failure;
+		characterAIAgent.Pass();
 #if false
 		// キャラがボールをロストしていたら、失敗で終了
 		if (!characterAIAgent.HasBall)

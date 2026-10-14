@@ -1,13 +1,23 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
+
+public enum SteeringMode
+{
+	Seek,
+	Arrive,
+	Avoid,
+}
 
 // キャラクターのステアリング制御を行うクラス
 public class SteeringController : MonoBehaviour
 {
 	private const float MoveWeight = 0.6f;
 	private const float AvoidWeight = 0.4f;
-	private const float RayLength = 1.5f;
-	private const float SphereRadius = 0.5f;
+	private const float RayLength = 8.0f;
+	private const float SphereRadius = 1.0f;
+
+	private SteeringMode sterringMode = SteeringMode.Avoid;
 
 	// 目標位置
 	private Vector3 targetPosition;
@@ -18,20 +28,27 @@ public class SteeringController : MonoBehaviour
 
 	// 速度
 	private Vector3 velocity;
+	public Vector3 Velocity => velocity;
 
-    // 最大速度
-    private const float MaxSpeed = 5.0f;
+	// 親の速度
+	[SerializeField] private Vector3 parentVelocity;
+	[SerializeField] public float minMagnitude = 1.0f;
+	public void SetParentVelocity(Vector3 v) => parentVelocity = v;
+
+	// 最大速度
+	private const float MaxSpeed = 20.0f;
 
 	// 移動を許容する距離
-	private const float AcceptableDistance = 0.1f;
+	private const float AcceptableDistance = 1.0f;
 
     // 移動するかのフラグ
     bool isMove = false;
     public bool IsMove => isMove;
 
     // 移動開始用
-    public void StartMove() {
+    public void StartMove(SteeringMode mode) {
 		isMove = true;
+		sterringMode = mode;
     }
 	public void CancelMove()	{
 		isMove = false;
@@ -51,17 +68,39 @@ public class SteeringController : MonoBehaviour
             return;
 
         // ターゲットまでの移動ベクトル
-		Vector3 MoveDirection = Vector3.Normalize(TargetPosition - transform.position);
+		Vector3 MoveDirection = TargetPosition - transform.position;
+		//Vector3 MoveDirection = Vector3.Normalize(TargetPosition - transform.position);
 		MoveDirection.y = 0.0f;
 
 		// 規定の距離まで移動したら、移動終了
-		if (MoveDirection.magnitude < AcceptableDistance)
+		if (MoveDirection.magnitude < minMagnitude)
         {
             //Debug.Log("ステアリング終了");
             isMove = false;
         }
+
 		// 移動処理
-		transform.position += AvoidOpponentVector(MoveDirection);
+		//velocity = AvoidOpponentVector(MoveDirection.normalized);
+		//transform.position += AvoidOpponentVector(MoveDirection);
+		UpdateVelocity(MoveDirection);
+	}
+
+	void UpdateVelocity(Vector3 Direction)
+	{
+		switch (sterringMode)
+		{
+			case SteeringMode.Seek:
+				velocity = SeekVector(Direction);
+			break;
+
+			case SteeringMode.Arrive:
+				velocity = ArriveVector(Direction, Direction.magnitude);
+			break;
+
+			case SteeringMode.Avoid:
+				velocity = AvoidOpponentVector(Direction.normalized);
+			break;
+		}
 	}
 
     // 敵対キャラクターを避ける
@@ -75,7 +114,34 @@ public class SteeringController : MonoBehaviour
         Vector3 Direction = Vector3.Normalize(MoveDirection * MoveWeight + HitVector * AvoidWeight);
         
         // 速度計算
-        return Direction * (MaxSpeed * Time.deltaTime);
+        return Direction * (MaxSpeed) * Time.deltaTime;
+	}
+
+	Vector3 SeekVector(Vector3 MoveDirection)
+	{
+		Vector3 NeedVector = MoveDirection.normalized * MaxSpeed;
+
+		return NeedVector - parentVelocity;
+	}
+
+	Vector3 ArriveVector(Vector3 moveDirection, float magnitude)
+	{
+		const float SplitSpeed = 2.0f;
+
+
+		// 負の値が出ないようにする
+		float safeMagnitude = Mathf.Max(0f, magnitude);
+		if (safeMagnitude < minMagnitude)
+			return Vector3.zero;
+		float splitMagnitude = safeMagnitude / SplitSpeed;
+
+		// 今回使用する係数
+		float speed = (splitMagnitude > MaxSpeed) ? MaxSpeed : splitMagnitude;
+
+		// 単位ベクトルに補正して速度を掛ける
+		Vector3 velocity = moveDirection.normalized * speed;
+
+		return velocity - parentVelocity;
 	}
 
     Vector3 SphereCastHitVector(Vector3 Position, Vector3 Direction, float Radius, float Length)
@@ -93,10 +159,11 @@ public class SteeringController : MonoBehaviour
         // 自分自身に当たらないようにする
         if (hitInfo.transform == gameObject.transform)
             return Vector3.zero;
-        // タグが別であれば、対象外とする
-        if (hitInfo.collider.tag != gameObject.tag)
-            return Vector3.zero;
-		
+		// タグが別であれば、対象外とする
+		if (hitInfo.collider.tag != gameObject.tag)
+		    return Vector3.zero;
+
+
 		// 法線で返す
 		return hitInfo.normal;
 	}

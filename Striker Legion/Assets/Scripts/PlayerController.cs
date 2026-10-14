@@ -5,8 +5,11 @@ using Unity.Cinemachine;
 
 public class PlayerController : MonoBehaviour
 {
+    // キャラクターの切り替えを行うかのフラグ
+    [SerializeField] bool               changePlayerCharacter;
     [SerializeField] int                teamNo;
-    [SerializeField] GameBall           gameBall; 
+    [SerializeField] GameBall           gameBall;
+
 
     CharacterBase                       playerCharacter;
     [SerializeField] CinemachineCamera  playerCamera;
@@ -122,7 +125,7 @@ public class PlayerController : MonoBehaviour
             playerCharacter.Shoot();
 
             CharacterBase ballOwner = gameBall.GetOwner();
-            if (ballOwner != playerCharacter && ballOwner != null)
+            if (ballOwner != playerCharacter && ballOwner != null && changePlayerCharacter)
             {
                 if (ballOwner.teamNo == teamNo)
                 {

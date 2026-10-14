@@ -20,7 +20,8 @@ public class MatchManager : MonoBehaviour
 	public Transform BallTransform { get; private set; }
 
 	// ボールを持っているキャラをマネージャーで集約して保持すると超軽量化できる
-	public SampleCharacter CurrentBallHolder { get; private set; }
+	private CharacterBase currentBallHolder;
+	public CharacterBase CurrentBallHolder => currentBallHolder;
 
 	private void Awake()
 	{
@@ -35,6 +36,11 @@ public class MatchManager : MonoBehaviour
 
 		// 初期化処理
 		Initialize();
+	}
+
+	private void Start()
+	{
+		UpdateBallHolder();
 	}
 
 	void Initialize()
@@ -64,22 +70,29 @@ public class MatchManager : MonoBehaviour
 		UpdateBallHolder();
 	}
 
+	// ボールを持っているキャラクターを検索する
 	void UpdateBallHolder()
 	{
-		foreach (SampleCharacter c in PlayerTeam.teamObjects)
+		if (PlayerTeam == null || EnemyTeam == null)
+			return;
+
+		if (PlayerTeam.teamObjects == null || EnemyTeam.teamObjects == null)
+			return;
+
+		foreach (CharacterBase c in PlayerTeam.teamObjects)
 		{
-			if (!c.isHoldingBall)
+			if (!c.hasBall)
 				continue;
 
-			CurrentBallHolder = c;
+			currentBallHolder = c;
 			return;
 		}
-		foreach (SampleCharacter c in EnemyTeam.teamObjects)
+		foreach (CharacterBase c in EnemyTeam.teamObjects)
 		{
-			if (!c.isHoldingBall)
+			if (!c.hasBall)
 				continue;
 
-			CurrentBallHolder = c;
+			currentBallHolder = c;
 			return;
 		}
 	}
@@ -112,10 +125,11 @@ public class MatchManager : MonoBehaviour
 		}
 	}
 
-	public SampleCharacter GetAllyByRole(CharacterTeam team, CharacterRole role)
+	public CharacterBase GetAllyByRole(CharacterTeam team, CharacterRole role)
 	{
+#if false
 		// 味方のオブジェクトを取得する
-		foreach (SampleCharacter ally in GetTeamManager(team).teamObjects)
+		foreach (CharacterBase ally in GetTeamManager(team).teamObjects)
 		{
 			// キャラクターのコンポーネントをヌルチェック
 			if (ally == null)
@@ -126,9 +140,11 @@ public class MatchManager : MonoBehaviour
 				return ally;
 
 		}
+#endif
 		return null;
 	}
-	public IReadOnlyList<SampleCharacter> GetActiveCharacters(CharacterTeam team)
+
+	public IReadOnlyList<CharacterBase> GetActiveCharacters(CharacterTeam team)
 	{
 		return GetTeamManager(team).GetActiveCharacters();
 	}

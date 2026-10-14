@@ -16,7 +16,7 @@ public partial class MoveBasePositionAction : ActionBase
 
 	protected override Status OnStart()
     {
-#if false
+#if true
         // 基底クラスの初期化
         base.OnStart();
 

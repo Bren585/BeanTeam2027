@@ -23,7 +23,7 @@ public partial class EnablePassCondition : Condition
         return (InverseButton) ? !result : InverseButton;
       
 #else
-        return true;
+        return CharacterAIAgent.Value.EnablePass();
 
 #endif
     }

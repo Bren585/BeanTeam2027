@@ -17,6 +17,8 @@ public class DebugText : MonoBehaviour
 
 		// デバッグテキストの生成
 		DebugTextManager.Instance.AddDebugText(out text);
+
+		Debug.Log("テキストの生成");
 	}
 
 	private void LateUpdate()
@@ -56,8 +58,8 @@ public class DebugText : MonoBehaviour
 	public void SetText(string textStr)
 	{
 		//text.text = textStr;
-
-		text.text = DefaultMessage + '\n' +textStr;
+		if(text != null)
+			text.text = DefaultMessage + '\n' +textStr;
 	}
 	public void SetDefaultText(string defaultStr)
 	{

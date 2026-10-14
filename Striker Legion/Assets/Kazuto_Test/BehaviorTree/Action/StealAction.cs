@@ -43,7 +43,7 @@ public partial class StealAction : ActionBase
 		characterWithBall.isHoldingBall = false;
 		characterAIAgent.isHoldingBall = true;
 #endif
-
+		characterAIAgent.Tackle();
 		return Status.Success;
 	}
 
