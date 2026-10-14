@@ -59,7 +59,7 @@ public class CameraController : MonoBehaviour
         // c²‚Å‰ñ“] 
         targetYaw += input.x * lookSensitivity.x * Time.deltaTime;
         // ‰¡²‚Å‰ñ“]
-        targetPitch += -input.y * lookSensitivity.y * Time.deltaTime;
+        targetPitch += input.y * lookSensitivity.y * Time.deltaTime;
         // pitch ‚Æ yaw ‚ğg‚Á‚Ä‰ñ“]‚·‚é
         cameraTarget.transform.rotation = Quaternion.Euler(targetPitch, targetYaw, 0.0f);
     }
