@@ -17,7 +17,7 @@ public class GameBall : MonoBehaviour
         {
             start = from.GetHoldPosition();
             Vector3 target = to.GetHoldPosition();
-            Vector3 velocity = new Vector3(to.GetVerocity().x, 0, to.GetVerocity().z);
+            Vector3 velocity = new Vector3(to.GetVelocity().x, 0, to.GetVelocity().z);
             Vector3 offset = target - start;
             offset.y = 0;
 

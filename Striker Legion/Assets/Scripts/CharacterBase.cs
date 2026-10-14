@@ -70,13 +70,14 @@ public class CharacterBase : BallHolder
 
     [field: Header("状態")]
 
-    public Vector3 velocity { get; private set; }
+    private Vector3 _velocity;
+    public Vector3 velocity => _velocity;
     Animator animator;
     SkillBar skillBar;
 
     // オーバーライド ***************************************************************************************
     public override Vector3 GetHoldPosition() { return transform.Find("Feet").position; }
-    public override Vector3 GetVerocity() { return velocity; }
+    public override Vector3 GetVelocity() { return velocity; }
 
     /// <summary>
     /// trueなら動いている向きに回る、falseなら向かない
@@ -388,7 +389,7 @@ public class CharacterBase : BallHolder
             //Debuging
             lockMove();
             isShooting = true;
-            velocity = Vector3.zero;
+            _velocity = Vector3.zero;
         }
     }
 

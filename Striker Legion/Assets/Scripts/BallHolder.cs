@@ -7,7 +7,7 @@ public class BallHolder : MonoBehaviour
     [field: SerializeField] public bool hasBall { get; private set; } = false;
 
     virtual public Vector3 GetHoldPosition() { return Vector3.zero; }
-    virtual public Vector3 GetVerocity() { return Vector3.zero; }
+    virtual public Vector3 GetVelocity() { return Vector3.zero; }
     
     public int GetTeamNo() { return teamNo; }
 
