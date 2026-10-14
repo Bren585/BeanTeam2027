@@ -189,8 +189,10 @@ GameObject:
   m_Component:
   - component: {fileID: 73280708}
   - component: {fileID: 73280707}
-  - component: {fileID: 73280706}
-  - component: {fileID: 73280705}
+  - component: {fileID: 73280714}
+  - component: {fileID: 73280715}
+  - component: {fileID: 73280710}
+  - component: {fileID: 73280713}
   m_Layer: 0
   m_Name: PlayerCamera
   m_TagString: Untagged
@@ -266,8 +268,8 @@ MonoBehaviour:
   m_StreamingVersion: 20241001
   m_LegacyPriority: 0
   Target:
-    TrackingTarget: {fileID: 926308159}
-    LookAtTarget: {fileID: 0}
+    TrackingTarget: {fileID: 1706729932}
+    LookAtTarget: {fileID: 106065462}
     CustomLookAtTarget: 0
   Lens:
     FieldOfView: 60.000004
@@ -1069,7 +1071,10 @@ Transform:
   m_LocalPosition: {x: 4.26134, y: -0, z: 2.51311}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1706729932}
+  - {fileID: 85146880}
+  - {fileID: 176479704}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &926308160
@@ -1916,6 +1921,38 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1969489929
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1969489930}
+  m_Layer: 0
+  m_Name: ShootCamOrigin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1969489930
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1969489929}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1001518970}
+  m_Father: {fileID: 1807511943}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1928,6 +1965,8 @@ SceneRoots:
   - {fileID: 847914003}
   - {fileID: 926308159}
   - {fileID: 1427417285}
+  - {fileID: 1807511943}
+  - {fileID: 106065462}
   - {fileID: 73280708}
   - {fileID: 365047053}
   - {fileID: 1939390608}
