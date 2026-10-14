@@ -7,7 +7,7 @@ using UnityEngine;
 using static UnityEngine.Mathf;
 
 [RequireComponent(typeof(CharacterController))]
-public class CharacterBase : MonoBehaviour
+public class CharacterBase : BallHolder
 {
     // コンポネント ******************************************************************************************
 
@@ -88,11 +88,11 @@ public class CharacterBase : MonoBehaviour
 
     [field: Header("状態")]
 
-    [field: SerializeField] public int teamNo { get; private set; }
-
-    [field: SerializeField] public bool hasBall { get; private set; } = false;
-
     public Vector3 velocity { get; private set; }
+
+    // オーバーライド ***************************************************************************************
+    public override Vector3 GetHoldPosition() { return transform.Find("Feet").position; }
+    public override Vector3 GetVerocity() { return velocity; }
 
     /// <summary>
     /// trueなら動いている向きに回る、falseなら向かない
@@ -302,9 +302,8 @@ public class CharacterBase : MonoBehaviour
         return Random.value < ballHandling;
     }
 
-    public void GetBall()
+    protected override void OnGetBall()
     {
-        hasBall = true;
         unlockMove();
     }
 
@@ -322,14 +321,15 @@ public class CharacterBase : MonoBehaviour
                 gameBall.Kick(new GameBall.flight(this, opponent, 0, 20));
                 gameBall.SetOwner(opponent);
                 opponent.lockMove();
-                hasBall = false;
+                LoseBall();
                 ClearPassTarget();
 
                 // ダウン
                 downTimer = maxDownTime * (1 - constition);
             }
         }
-        else if (other.gameObject.name == "GoalZone")
+        //HACK: if文が長すぎる
+        else if (other.gameObject.name == "GoalZone" && other.transform.Find("ShootCamOrigin").Find("AimMarker").GetComponent<AimMarkerController>().teamNo != this.teamNo && hasBall == true)
         {
             // Enter Shooting Mode
             //
@@ -421,12 +421,34 @@ public class CharacterBase : MonoBehaviour
         passTarget = null;
     }
 
-    public void Shoot()
+
+    public void KickBall()
     {
         if (!hasBall) return;
+        GameBall gameBall = FindAnyObjectByType<GameBall>();
 
         // Check Pass Or Goal
+        if (isShooting)
+        {
+            //--Shoot to Goal--
+            AimMarkerController[] targets = FindObjectsByType<AimMarkerController>();
+            foreach (AimMarkerController goalCandidate in targets)
+            {
+                if (goalCandidate.teamNo == teamNo) continue;
+                Debug.Log("Shooting to Goal");
+                // Kick the ball to Goal
+                gameBall.Kick(new GameBall.flight(this, goalCandidate, 0, 20));
+                gameBall.SetOwner(goalCandidate);
+                break;
+            }
+            ClearPassTarget();
+            LoseBall();
+            isShooting = false;
+            unlockMove();
+            return;
+        }
 
+        //--Pass to Target--
         List<RaycastHit> blockers = null;
         CharacterBase target = PassTarget(out blockers);
 
@@ -447,13 +469,15 @@ public class CharacterBase : MonoBehaviour
             }
         }
 
-        GameBall gameBall = FindAnyObjectByType<GameBall>();
+        // Kick the ball to Target
         gameBall.Kick(new GameBall.flight(this, target, 1.5f, 20));
         gameBall.SetOwner(target);
         target.lockMove();
+
         ClearPassTarget();
-        hasBall = false;
+        LoseBall();
     }
+
 
     public virtual void Skill()
     {

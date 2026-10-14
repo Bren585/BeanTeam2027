@@ -13,11 +13,11 @@ public class GameBall : MonoBehaviour
         public float t; // ƒ^ƒCƒ€
         public const float MAX_DURATION = 3f;
 
-        public flight(CharacterBase from, CharacterBase to, float height, float speed)
+        public flight(BallHolder from, BallHolder to, float height, float speed)
         {
-            start = from.transform.Find("Feet").position;
-            Vector3 target = to.transform.Find("Feet").position;
-            Vector3 velocity = new Vector3(to.velocity.x, 0, to.velocity.z);
+            start = from.GetHoldPosition();
+            Vector3 target = to.GetHoldPosition();
+            Vector3 velocity = new Vector3(to.GetVerocity().x, 0, to.GetVerocity().z);
             Vector3 offset = target - start;
             offset.y = 0;
 
@@ -97,31 +97,23 @@ public class GameBall : MonoBehaviour
     }
 
     bool inFlight = false;
-    flight currentFlight;
+    flight currentPath;
 
     [SerializeField] float maxCatchupSpeed = 40;
 
-    [SerializeField] CharacterBase owner = null;
-    Transform ownerFeet;
+    [SerializeField] BallHolder owner = null;
 
-    public CharacterBase GetOwner() { return owner; }
-    public void SetOwner(CharacterBase character) { owner = character; ownerFeet = owner.transform.Find("Feet"); }
+    public BallHolder GetOwner() { return owner; }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        if (owner)
-        {
-            ownerFeet = owner.transform.Find("Feet");
-        }
-    }
+    public void SetOwner(BallHolder holder) { owner = holder; }
 
     // Update is called once per frame
     void Update()
     {
         if (inFlight)
         {
-            inFlight = currentFlight.update(out Vector3 position);
+            Vector3 position = new Vector3();
+            inFlight = currentPath.update(out position);
             transform.position = position;
             if (!inFlight)
             {
@@ -130,7 +122,7 @@ public class GameBall : MonoBehaviour
         } 
         else
         {
-            Vector3 toTarget = ownerFeet.position - transform.position;
+            Vector3 toTarget = owner.GetHoldPosition() - transform.position;
             toTarget.y = 0;
             float distance = toTarget.magnitude;
             float speedTimme = maxCatchupSpeed * Time.deltaTime;
@@ -146,6 +138,6 @@ public class GameBall : MonoBehaviour
     public void Kick(flight path)
     {
         inFlight = true;
-        currentFlight = path;
+        currentPath = path;
     }
 }
