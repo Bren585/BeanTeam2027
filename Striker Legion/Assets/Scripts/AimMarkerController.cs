@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 public class AimMarkerController : BallHolder
 {
@@ -11,6 +10,7 @@ public class AimMarkerController : BallHolder
     [SerializeField] InputActionReference inputRef;
     [SerializeField] Vector2 movingSensitivity = new Vector2(5.0f, 5.0f);
     Vector3 originPosition = Vector3.zero;
+    [SerializeField] OnGoal onGoalEvent;
 
     // override ************************
     public override Vector3 GetHoldPosition()
@@ -49,5 +49,10 @@ public class AimMarkerController : BallHolder
             // AimMarker ‚ðŒ³‚ÌˆÊ’u‚É–ß‚·
             transform.position = originPosition;
         }
+    }
+
+    protected override void OnGetBall()
+    {
+        onGoalEvent.SendEventMessage();
     }
 }
