@@ -57,34 +57,37 @@ public static class PassUtility
 	}
 
 	// パスをするコスト(低いほどパスをしたがる)
-	public static float CostPassToAnyAlly(IReadOnlyList<SampleCharacter> ActiveCharacters, SampleCharacter PassCharacter)
+	public static float CostPassToAnyAlly(IReadOnlyList<CharacterBase> activeCharacters, CharacterAIAgent passCharacter, Vector3 goalPosition)
 	{
 		// キャラクターのチーム
-		CharacterTeam team = PassCharacter.TeamType;
+		CharacterTeam team = (CharacterTeam)passCharacter.TeamNumber;
 
 		// 敵のレイヤー
-		LayerMask OpponentLayer = LayerMask.NameToLayer(team == CharacterTeam.Player ? "Enemy" : "Player");
+		LayerMask opponentLayer = LayerMask.NameToLayer(team == CharacterTeam.Player ? "Enemy" : "Player");
 
 		float MinCost = 1.0f;
 
+		float passCharacterGoalDistance = (passCharacter.transform.position - goalPosition).magnitude;
 		// パスを受けられるキャラクターを探す
-		for (int i = 0; i < ActiveCharacters.Count; i++)
+		for (int i = 0; i < activeCharacters.Count; i++)
 		{
 			float cost = 0.0f;
 
 			// パスを出すキャラと同一にならないようにする
-			if (ActiveCharacters[i] == PassCharacter)
+			if (activeCharacters[i].gameObject == passCharacter.gameObject)
 				continue;
 
 			// パスが通らないなら飛ばす
-			if (!PassUtility.IsPassSuccess(PassCharacter.transform, ActiveCharacters[i].transform, OpponentLayer))
+			if (!passCharacter.EnablePass())
+			//if (!PassUtility.IsPassSuccess(passCharacter.transform, activeCharacters[i].transform, opponentLayer))
 				cost += 0.6f;
 
 
 			// パスの対象のゴールまでの距離
-			float TargetGoalDistance = ActiveCharacters[i].GetDistanceToGoal();
+			//float TargetGoalDistance = activeCharacters[i].GetDistanceToGoal();
+			float targetGoalDistance = (activeCharacters[i].transform.position - goalPosition).magnitude;
 
-			if (TargetGoalDistance > PassCharacter.GetDistanceToGoal())
+			if (targetGoalDistance > passCharacterGoalDistance)
 				cost += 0.4f;
 
 			if (MinCost > cost)

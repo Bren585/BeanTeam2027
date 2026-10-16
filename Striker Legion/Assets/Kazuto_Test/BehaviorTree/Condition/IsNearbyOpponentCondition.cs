@@ -11,11 +11,7 @@ public partial class IsNearbyOpponentCondition : Condition
 
     public override bool IsTrue()
     {
-#if false
         return CharacterAIAgent.Value.CharacterSensor.IsNearbyOpponent(Radius);
-#else
-        return true;
-#endif
     }
 
     public override void OnStart()

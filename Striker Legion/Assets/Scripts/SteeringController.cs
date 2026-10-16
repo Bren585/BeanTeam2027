@@ -138,8 +138,11 @@ public class SteeringController : MonoBehaviour
 		// 今回使用する係数
 		float speed = (splitMagnitude > MaxSpeed) ? MaxSpeed : splitMagnitude;
 
+		// 係数をかけて、遅すぎるのを緩和する
+		float factor = 2.0f;
+
 		// 単位ベクトルに補正して速度を掛ける
-		Vector3 velocity = moveDirection.normalized * speed;
+		Vector3 velocity = moveDirection.normalized * speed * factor;
 
 		return velocity - parentVelocity;
 	}

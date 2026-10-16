@@ -29,6 +29,7 @@ public partial class PassAction : ActionBase
 		// Todo:MatchManagerコンポーネントを修正
 		ActiveCharacters = MatchManager.Instance.GetActiveCharacters(characterComponent.TeamType);
 #endif
+		characterAIAgent.DebugText.SetText("パスを実行");
 		return Status.Running;
 	}
 

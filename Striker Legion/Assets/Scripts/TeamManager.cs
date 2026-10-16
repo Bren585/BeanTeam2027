@@ -19,6 +19,11 @@ public class TeamManager : MonoBehaviour
 		// LINQを使って GameObject の配列として1行で取得
 		teamObjects = transform.Cast<Transform>().Select(t => t.gameObject.GetComponent<CharacterBase>()).ToList();
 
+		if (teamObjects.Count <= 0)
+		{
+			Debug.Log("チームの取得に失敗");
+			return;
+		}
 		int count = 0;
 		foreach(CharacterBase child in teamObjects)
 		{
@@ -35,16 +40,6 @@ public class TeamManager : MonoBehaviour
 			count++;
 			Debug.Log(gameObject.name + " Child Object: " + child.name + "ロール:" + role);
 		}
-		// 子のオブジェクト名をログ出力
-		foreach(CharacterBase child in teamObjects)
-		{
-
-			// キャラクターのデータを初期化
-			//child.InitializeData(role, positioningBaseTransforms[role]);
-
-
-		}
-
 
 		UpdateAllBehaviorGraph();
 	}

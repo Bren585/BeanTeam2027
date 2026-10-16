@@ -8,11 +8,9 @@ using Unity.Properties;
 [NodeDescription(name: "RunForward", story: "Run To Enemy Goal", category: "Action", id: "cc37bb13f82b2ebb2615a50cb044bac5")]
 public partial class RunForwardAction : ActionBase
 {
-	PitchEvaluator pitchEvaluator;
-
-    TeamType teamType;
-
     float timer = 0.0f;
+
+    Vector3 goalPosition;
 
     protected override Status OnStart()
     {
@@ -22,18 +20,22 @@ public partial class RunForwardAction : ActionBase
         // 移動処理を開始
         characterAIAgent.SteeringController.StartMove(SteeringMode.Avoid);
 
-        teamType = LayerMask.LayerToName(GameObject.layer) == "Player" ? TeamType.Player : TeamType.Enemy;
-
         timer = 0.0f;
 
 		characterAIAgent.DebugText.SetText("前に走る");
+
+        CharacterTeam team = CharacterTeam.Player == (CharacterTeam)characterAIAgent.TeamNumber ? CharacterTeam.Enemy : CharacterTeam.Player;
+
+		goalPosition = MatchManager.Instance.GetGoalPosition(team);
 
 		return Status.Running;
     }
 
     protected override Status OnUpdate()
     {
-		characterAIAgent.SteeringController.TargetPosition = GameObject.transform.position + GameObject.transform.forward * 1.5f;
+        Vector3 Direction = goalPosition - GameObject.transform.position;
+
+		characterAIAgent.SteeringController.TargetPosition = GameObject.transform.position + Direction.normalized * 1.5f;
 		//characterComponent.SteeringController.TargetPosition = pitchEvaluator.GetBestPosition(teamType); 
 		//characterComponent.SteeringController.TargetPosition = new Vector3(0, 0, 0);
 

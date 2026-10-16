@@ -79,10 +79,18 @@ public class MatchManager : MonoBehaviour
 		if (PlayerTeam.teamObjects == null || EnemyTeam.teamObjects == null)
 			return;
 
+		//if(currentBallHolder)
+		//Debug.Log("今ボールを持っているキャラのチーム番号:"+currentBallHolder.teamNo);
+
 		foreach (CharacterBase c in PlayerTeam.teamObjects)
 		{
 			if (!c.hasBall)
 				continue;
+
+			if (currentBallHolder == c)
+				return;
+
+			Debug.Log("Playerチームがボールを持った");
 
 			currentBallHolder = c;
 			return;
@@ -92,9 +100,13 @@ public class MatchManager : MonoBehaviour
 			if (!c.hasBall)
 				continue;
 
+			if (currentBallHolder == c)
+				return;
+			Debug.Log("Enemyチームがボールを持った");
 			currentBallHolder = c;
 			return;
 		}
+		//Debug.Log("だれもボールを持っていない");
 	}
 
 	// ゴールした際の処理
@@ -124,6 +136,10 @@ public class MatchManager : MonoBehaviour
 			EnemyTeam.OrderGetBall();
 		}
 	}
+	public CharacterBase GetAllyByRole(int teamNumber, CharacterRole role)
+	{
+		return GetAllyByRole((CharacterTeam)teamNumber, role);
+	}
 
 	public CharacterBase GetAllyByRole(CharacterTeam team, CharacterRole role)
 	{
@@ -147,6 +163,15 @@ public class MatchManager : MonoBehaviour
 	public IReadOnlyList<CharacterBase> GetActiveCharacters(CharacterTeam team)
 	{
 		return GetTeamManager(team).GetActiveCharacters();
+	}
+
+	public Vector3 GetGoalPosition(int teamNumber)
+	{
+		return GetGoalPosition((CharacterTeam)teamNumber);
+	}
+	public Vector3 GetGoalPosition(CharacterTeam team)
+	{
+		return (team == CharacterTeam.Player) ? PlayerGoal.position : EnemyGoal.position;
 	}
 
 	private TeamManager GetTeamManager(CharacterTeam team)

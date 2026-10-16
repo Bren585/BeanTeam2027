@@ -21,6 +21,7 @@ public partial class ShootAction : ActionBase
 
     protected override Status OnUpdate()
     {
+        characterAIAgent.Shoot();
         return Status.Success;
     }
 

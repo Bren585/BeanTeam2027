@@ -5,14 +5,12 @@ using Action = Unity.Behavior.Action;
 using Unity.Properties;
 
 [Serializable, GeneratePropertyBag]
-[NodeDescription(name: "Press", story: "Move closer to the character holding the ball within [PressDistance]", category: "Action", id: "7de5736b617fe3def2461c27d6181229")]
+[NodeDescription(name: "Press", story: "Move closer to the character holding the ball within [PressDistance] Cancel [CancelDistance]", category: "Action", id: "7de5736b617fe3def2461c27d6181229")]
 public partial class PressAction : ActionBase
 {
-    // ボールまでの距離(Blackboradの値を参照)
-    [SerializeReference] public BlackboardVariable<float> distanceFromBall;
-
 	// どこまで近づくか
 	[SerializeReference] public BlackboardVariable<float> PressDistance;
+	[SerializeReference] public BlackboardVariable<float> CancelDistance;
     //private float PressDistance = 4.0f;
 
     private CharacterBase TargetCharacter;
@@ -53,6 +51,9 @@ public partial class PressAction : ActionBase
         if (TargetCharacter == null)
             return Status.Failure;
 
+        // ターゲットがボールを手放したら失敗
+        if (!TargetCharacter.hasBall)
+            return Status.Failure;
 		// 追跡する座標をターゲットの位置に更新
 		characterAIAgent.SteeringController.TargetPosition = TargetCharacter.transform.position;
 
@@ -66,7 +67,9 @@ public partial class PressAction : ActionBase
             // 一定距離まで近づいたら成功を返す
             return Status.Success;
         }
-       
+        else if (Distance.magnitude > CancelDistance)
+            return Status.Failure;
+
 		// 近くまで行ってない場合、実行し続ける
 		return Status.Running;
     }

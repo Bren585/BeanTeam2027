@@ -11,6 +11,9 @@ public class CharacterAIAgent : MonoBehaviour
     // ビヘイビアエージェント
     private BehaviorGraphAgent behaviorGraphAgent;
 
+    // キャラセンサー
+    private CharacterSensor characterSensor;
+
     // キャラクターベース
     private CharacterBase owner;
 
@@ -30,6 +33,9 @@ public class CharacterAIAgent : MonoBehaviour
 
 	//------------------------------ getter -----------------------------------
     public SteeringController SteeringController => steeringController;
+
+    public CharacterSensor CharacterSensor => characterSensor;
+
 	// キャラクターがボールを持っているか
 	public bool HasBall => owner.hasBall;
     // キャラのチーム番号
@@ -38,8 +44,12 @@ public class CharacterAIAgent : MonoBehaviour
     // パス関数（CharacterBaseから呼び出し）
     public void Pass() => owner.Shoot();
 
+    // シュート関数（CharacterBaseから呼び出し）
+    public void Shoot() => owner.Shoot();
+
     // パスが可能か
     public bool EnablePass() => owner.hasBall && owner.PassTarget() != null;
+    public CharacterBase PassTarget() => owner.PassTarget();
 
     public void Tackle() => owner.Tackle();
 
@@ -52,6 +62,7 @@ public class CharacterAIAgent : MonoBehaviour
 
 		// デバッグテキストコンポーネントを追加
 		DebugText = gameObject.AddComponent<DebugText>();
+		characterSensor = gameObject.AddComponent<CharacterSensor>();
 	}
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -96,15 +107,20 @@ public class CharacterAIAgent : MonoBehaviour
 		{
 			// BehaviorGraphAgentの変数を更新
 			behaviorGraphAgent.SetVariableValue("HavingBall", owner.hasBall);
-            if(MatchManager.Instance.CurrentBallHolder)
-			    behaviorGraphAgent.SetVariableValue("TeamHaving Ball", owner.teamNo == MatchManager.Instance.CurrentBallHolder.teamNo);
-			//float value = GetDistanceToBall();
-			//Debug.Log(name + "のボールとの距離：" + value);
+            if(owner.hasBall)
+             	behaviorGraphAgent.SetVariableValue("TeamHavingBall", true);
+            else if (MatchManager.Instance.CurrentBallHolder)
+               	behaviorGraphAgent.SetVariableValue("TeamHavingBall", owner.teamNo == MatchManager.Instance.CurrentBallHolder.teamNo);
+            else
+               	behaviorGraphAgent.SetVariableValue("TeamHavingBall", false);
+            
 			behaviorGraphAgent.SetVariableValue("DistanceFromBall", GetDistanceToBallHolder());
 			behaviorGraphAgent.SetVariableValue("Is Down", owner.isDown);
 			behaviorGraphAgent.SetVariableValue("CharacterRole", Role);
 			behaviorGraphAgent.SetVariableValue("DistanceFromOpponentGoal", GetDistanceToGoal());
 		}
+        if (!behaviorGraphAgent)
+            Debug.Log(name + ":BehaviorGraphAgentを持っていない");
 	}
 
     // ポジショニングの基準座標への移動開始

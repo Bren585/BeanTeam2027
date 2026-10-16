@@ -11,19 +11,22 @@ public partial class MfUtilityPassCondition : Condition
 
     public override bool IsTrue()
     {
-#if false
-        // 動けるキャラクターを探す
-        IReadOnlyList<CharacterAIAgent> ActiveCharacters = MatchManager.Instance.GetActiveCharacters(Midfielder.Value.TeamType);
+#if true
+        CharacterTeam team = (CharacterTeam)(Midfielder.Value.TeamNumber);
+
+		// 動けるキャラクターを探す
+		IReadOnlyList <CharacterBase> ActiveCharacters = MatchManager.Instance.GetActiveCharacters(team);
+        //IReadOnlyList<CharacterAIAgent> ActiveCharacters = MatchManager.Instance.GetActiveCharacters((CharacterTeam)(Midfielder.Value.TeamNumber));
 
 		
         // 最も低かったスコア
-        float MinScore = PassUtility.CostPassToAnyAlly(ActiveCharacters, Midfielder);
+        float MinScore = PassUtility.CostPassToAnyAlly(ActiveCharacters, Midfielder, MatchManager.Instance.GetGoalPosition(team));
 
         // 乱数の取得
 		float rand = UnityEngine.Random.Range(0.0f, 1.0f);
 
 		// 乱数よりスコアのほうが高ければ、パスをする
-		if (MinScore < rand)
+		if (MinScore > rand)
 			return false;
 #endif
 

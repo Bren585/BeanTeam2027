@@ -76,15 +76,16 @@ public class CharacterSensor : MonoBehaviour
 		LayerMask enemyLayer = LayerMask.GetMask(enemyLayerStr);
 
 		// レイがヒットしたか
-		if (!Physics.Raycast(ray, out RaycastHit hit, radius, enemyLayer))
+		if (!Physics.SphereCast(ray, 5.0f, out RaycastHit hit, radius, enemyLayer))
 		{
-			Debug.Log("敵が見つかりませんでした");
+			Debug.Log("敵が見つかりませんでした Layer :" + enemyLayer);
 
 			return false;
 		}
 		// ヒットしたオブジェクトがキャラクターかどうかを判定
 		if (!hit.collider.CompareTag("Character"))
 		{
+			Debug.Log("ヒット対象がCharacter以外:" + hit.collider.tag);
 			return false;
 		}
 		return true;

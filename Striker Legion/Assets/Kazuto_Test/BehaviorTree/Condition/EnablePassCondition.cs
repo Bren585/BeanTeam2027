@@ -15,17 +15,7 @@ public partial class EnablePassCondition : Condition
 
 	public override bool IsTrue()
     {
-#if false
-        // 動けるキャラクターを探す
-        IReadOnlyList<SampleCharacter> ActiveCharacters = MatchManager.Instance.GetActiveCharacters(CharacterComponent.Value.TeamType);
-
-        bool result = PassUtility.CanPassToAnyAlly(ActiveCharacters, CharacterComponent);
-        return (InverseButton) ? !result : InverseButton;
-      
-#else
         return CharacterAIAgent.Value.EnablePass();
-
-#endif
     }
 
     public override void OnStart()
