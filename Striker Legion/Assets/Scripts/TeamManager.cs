@@ -29,8 +29,10 @@ public class TeamManager : MonoBehaviour
 		{
 			// AIコンポーネントの取得
 			if (!child.TryGetComponent<CharacterAIAgent>(out CharacterAIAgent agent))
+			{
+				count++;
 				continue;
-
+			}
 			// キャラクターに設定するロール
 			CharacterRole role = Enum.IsDefined(typeof(CharacterRole), count) ? (CharacterRole)count : CharacterRole.Forward;
 

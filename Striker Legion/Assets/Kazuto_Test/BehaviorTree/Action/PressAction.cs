@@ -23,7 +23,7 @@ public partial class PressAction : ActionBase
 #if true
 
         // 移動開始
-        characterAIAgent.SteeringController.StartMove(SteeringMode.Arrive);
+        characterAIAgent.SteeringController.StartMove(SteeringMode.Seek);
 
         //Debug.Log(GameObject.name + " : Start Press");
 

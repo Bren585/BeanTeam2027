@@ -441,9 +441,24 @@ public class CharacterBase : MonoBehaviour
 
     public CharacterBase PassTarget() { return PassTarget(out _); }
 
-    //public CharacterBase GetPassTarget() { return passTarget; }
+	public bool EnablePass()
+	{
+		CharacterBase target = PassTarget();
 
-    public void MarkAsPassTarget(bool isTarget)
+        // ボールを保持していて、パスターゲットがいるか
+        if (!hasBall || target == null)
+            return false;
+
+        // パスターゲットがパスできる範囲内にいるか
+        if ((target.transform.position - transform.position).magnitude > baseInfo.maxPassDistance)
+            return false;
+
+        return true;
+	}
+
+	//public CharacterBase GetPassTarget() { return passTarget; }
+
+	public void MarkAsPassTarget(bool isTarget)
     {
         ball.SetActive(isTarget);
     }
@@ -507,3 +522,4 @@ public class CharacterBase : MonoBehaviour
     public void lockMove() { moveLocked = true; }
     public void unlockMove() { moveLocked = false; }
 }
+

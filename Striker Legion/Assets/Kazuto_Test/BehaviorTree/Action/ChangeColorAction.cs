@@ -15,8 +15,13 @@ public partial class ChangeColorAction : Action
 		// オブジェクトの Renderer と Material を取得
 		Renderer targetRenderer = GameObject.GetComponent<Renderer>();
 
+        if (targetRenderer == null)
+            return Status.Failure;
 		// 使用しているマテリアルを取得
         Material targetMaterial = targetRenderer.material;
+
+        if (targetMaterial == null)
+            return Status.Failure;
 
         if (IsAdd)
         {

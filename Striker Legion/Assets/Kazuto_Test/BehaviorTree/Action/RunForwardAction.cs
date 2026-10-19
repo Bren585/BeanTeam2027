@@ -24,29 +24,35 @@ public partial class RunForwardAction : ActionBase
 
 		characterAIAgent.DebugText.SetText("前に走る");
 
+        // 敵のゴール座標を取得
         CharacterTeam team = CharacterTeam.Player == (CharacterTeam)characterAIAgent.TeamNumber ? CharacterTeam.Enemy : CharacterTeam.Player;
-
 		goalPosition = MatchManager.Instance.GetGoalPosition(team);
+
+        // ゴールまでのベクトル
+        Vector3 Direction = goalPosition - GameObject.transform.position;
+		characterAIAgent.SteeringController.TargetPosition = GameObject.transform.position + Direction.normalized * 10.5f;
 
 		return Status.Running;
     }
 
     protected override Status OnUpdate()
     {
-        Vector3 Direction = goalPosition - GameObject.transform.position;
+        //Vector3 Direction = goalPosition - GameObject.transform.position;
 
-		characterAIAgent.SteeringController.TargetPosition = GameObject.transform.position + Direction.normalized * 1.5f;
+		//characterAIAgent.SteeringController.TargetPosition = GameObject.transform.position + Direction.normalized * 1.5f;
 		//characterComponent.SteeringController.TargetPosition = pitchEvaluator.GetBestPosition(teamType); 
 		//characterComponent.SteeringController.TargetPosition = new Vector3(0, 0, 0);
 
 		timer += Time.deltaTime;
-        if(timer >= 0.5f)
-		{
-			Debug.Log(GameObject.name + ": Success RunForwardAction.");
+        // 時間経過で終了
+        if(timer >= 3.0f)
 			return Status.Success;
-		}
-        //if (!characterComponent.isHoldingBall)
-        //    return Status.Failure;
+        // 目標地点到達で終了
+        if (!characterAIAgent.SteeringController.IsMove)
+            return Status.Success;
+        // 途中でボールを失うと失敗
+        if (!characterAIAgent.HasBall)
+            return Status.Failure;
 
 		return Status.Running;
     }
