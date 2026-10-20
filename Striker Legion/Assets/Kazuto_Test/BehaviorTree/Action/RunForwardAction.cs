@@ -30,7 +30,8 @@ public partial class RunForwardAction : ActionBase
 
         // ゴールまでのベクトル
         Vector3 Direction = goalPosition - GameObject.transform.position;
-		characterAIAgent.SetTargetPosition(GameObject.transform.position + Direction.normalized * 10.5f);
+		characterAIAgent.SetTargetPosition(characterAIAgent.BasePosition(PositioningName.Offense));
+		//characterAIAgent.SetTargetPosition(GameObject.transform.position + Direction.normalized * 10.5f);
 		//characterAIAgent.SteeringController.TargetPosition = GameObject.transform.position + Direction.normalized * 10.5f;
 
 		return Status.Running;

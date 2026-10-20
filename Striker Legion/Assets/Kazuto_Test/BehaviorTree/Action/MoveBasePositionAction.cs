@@ -5,12 +5,13 @@ using Action = Unity.Behavior.Action;
 using Unity.Properties;
 
 [Serializable, GeneratePropertyBag]
-[NodeDescription(name: "MoveBasePosition", story: "Move to Position Selected by Role while [Timer]: Random Limit[RandomLimit]", category: "Action", id: "4254191743734e158d0f3e00bc6c6270")]
+[NodeDescription(name: "MoveBasePosition", story: "Move to Position Selected by [Role] while [Timer] : Random Limit [RandomLimit]", category: "Action", id: "4254191743734e158d0f3e00bc6c6270")]
 public partial class MoveBasePositionAction : ActionBase
 {
+    [SerializeReference] public BlackboardVariable<PositioningName> Role;
+    [SerializeReference] public BlackboardVariable<float> Timer;
     [SerializeReference] public BlackboardVariable<float> RandomLimit;
-
-	[SerializeReference] public BlackboardVariable<float> Timer;
+    
 
     float currentTimer = 0.0f;
 
@@ -21,7 +22,7 @@ public partial class MoveBasePositionAction : ActionBase
         base.OnStart();
 
 		// 決められた座標への移動開始
-		characterAIAgent.StartMoveBasePos(RandomLimit);
+		characterAIAgent.StartMoveBasePos(RandomLimit, Role);
 
 		// 行動をデバッグで表示
 		characterAIAgent.DebugText.SetText("指定された位置に移動");

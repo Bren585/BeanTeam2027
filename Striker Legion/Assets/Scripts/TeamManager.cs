@@ -1,12 +1,23 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Behavior;
 using UnityEngine;
+
+[BlackboardEnum]
+public enum PositioningName
+{
+	Offense,
+	OffensiveMiddle,
+	DefensiveMiddle,
+	Defense,
+}
 
 public class TeamManager : MonoBehaviour
 {
 	// ポジショニングの基準となるTransformを格納する
-	[SerializeField] public Dictionary<CharacterRole, Transform> positioningBaseTransforms = new Dictionary<CharacterRole, Transform>();
+	[SerializeField] public Dictionary<PositioningName, Transform> positioningBaseTransforms = new Dictionary<PositioningName, Transform>();
+	//[SerializeField] public Dictionary<CharacterRole, Transform> positioningBaseTransforms = new Dictionary<CharacterRole, Transform>();
 
 	[SerializeField] private CharacterTeam TeamType;
 
@@ -24,8 +35,15 @@ public class TeamManager : MonoBehaviour
 			Debug.Log("チームの取得に失敗");
 			return;
 		}
-		int count = 0; 
-		foreach(CharacterBase child in teamObjects)
+		int count = 0;
+
+		Dictionary<PositioningName, Vector3> positioningBasePositions = new Dictionary<PositioningName, Vector3>();
+		foreach (PositioningName n in positioningBaseTransforms.Keys)
+		{
+			positioningBasePositions.Add(n, positioningBaseTransforms[n].position);
+		}
+
+		foreach (CharacterBase child in teamObjects)
 		{
 			// AIコンポーネントの取得
 			if (!child.TryGetComponent<CharacterAIAgent>(out CharacterAIAgent agent))
@@ -37,7 +55,8 @@ public class TeamManager : MonoBehaviour
 			CharacterRole role = Enum.IsDefined(typeof(CharacterRole), count) ? (CharacterRole)count : CharacterRole.Forward;
 
 			// ポジショニングの基準座標
-			agent.Initialize(positioningBaseTransforms[role].position, role);
+			agent.Initialize(positioningBasePositions, role);
+			//agent.Initialize(positioningBaseTransforms[role].position, role);
 
 			count++;
 			Debug.Log(gameObject.name + " Child Object: " + child.name + "ロール:" + role);

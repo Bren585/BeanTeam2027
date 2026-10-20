@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using Unity.AppUI.UI;
 using Unity.Behavior;
@@ -23,11 +24,12 @@ public class CharacterAIAgent : MonoBehaviour
     // キャラクターベース
     private CharacterBase owner;
 
-    // ポジショニングの基準座標
-    private Vector3 positioningBase;
+	// ポジショニングの基準座標
+	Dictionary<PositioningName, Vector3> positioningBase = new Dictionary<PositioningName, Vector3>();
+	//private Vector3 positioningBase;
 
-    // ステアリング制御コントローラ
-    private SteeringController steeringController;
+	// ステアリング制御コントローラ
+	private SteeringController steeringController;
 
     // デバッグ用のテキスト表示
     public DebugText DebugText { get; private set; }
@@ -44,7 +46,7 @@ public class CharacterAIAgent : MonoBehaviour
 
     public CharacterSensor CharacterSensor => characterSensor;
 
-	public Vector3 BasePosition => positioningBase;
+	public Vector3 BasePosition(PositioningName name) => positioningBase[name];
 
 	// キャラクターがボールを持っているか
 	public bool HasBall => owner.hasBall;
@@ -91,9 +93,9 @@ public class CharacterAIAgent : MonoBehaviour
     {
     }
 
-    public void Initialize(Vector3 basePosition, CharacterRole role)
+    public void Initialize(Dictionary<PositioningName, Vector3> positioningBase, CharacterRole role)
     {
-        positioningBase = basePosition;
+        this.positioningBase = positioningBase;
         Role = role;
 		DebugText.SetDefaultText(owner.name +" " + Role);
 	}
@@ -191,7 +193,7 @@ public class CharacterAIAgent : MonoBehaviour
 
 
     // ポジショニングの基準座標への移動開始
-	public void StartMoveBasePos(float limitMax)
+	public void StartMoveBasePos(float limitMax, PositioningName name)
 	{
 		// 移動開始フラグを立てる
 		steeringController.StartMove(SteeringMode.Arrive);
@@ -201,7 +203,7 @@ public class CharacterAIAgent : MonoBehaviour
 		Vector3 offset = new Vector3(random.x, 0.0f, random.y) * limitMax;
 
 		// ロールで決定された場所を目指す
-		SetTargetPosition(positioningBase + offset);
+		SetTargetPosition(positioningBase[name] + offset);
 		//steeringController.TargetPosition = positioningBase + offset;
 	}
 

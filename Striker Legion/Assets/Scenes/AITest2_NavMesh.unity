@@ -575,9 +575,11 @@ MonoBehaviour:
   - key: 0
     value: {fileID: 1032747353}
   - key: 2
-    value: {fileID: 1654999021}
-  - key: 1
     value: {fileID: 1982779075}
+  - key: 1
+    value: {fileID: 858739254}
+  - key: 3
+    value: {fileID: 1654999021}
   TeamType: 0
 --- !u!4 &426248030
 Transform:
@@ -646,6 +648,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd2498d6b10955e43b90da69872b7482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
+  <teamNo>k__BackingField: 0
+  <hasBall>k__BackingField: 0
   baseInfo: {fileID: 11400000, guid: e0dd2aaaa08e4934eb84578a61a3da46, type: 2}
   constition: 0
   ballHandling: 0
@@ -654,8 +658,6 @@ MonoBehaviour:
   canFly: 0
   maxFlySpeed: 0
   airMobility: 0.1
-  <teamNo>k__BackingField: 0
-  <hasBall>k__BackingField: 0
 --- !u!143 &437465447
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1291,6 +1293,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd2498d6b10955e43b90da69872b7482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
+  <teamNo>k__BackingField: 0
+  <hasBall>k__BackingField: 0
   baseInfo: {fileID: 11400000, guid: e0dd2aaaa08e4934eb84578a61a3da46, type: 2}
   constition: 0
   ballHandling: 0
@@ -1299,8 +1303,6 @@ MonoBehaviour:
   canFly: 0
   maxFlySpeed: 0
   airMobility: 0.1
-  <teamNo>k__BackingField: 0
-  <hasBall>k__BackingField: 0
 --- !u!143 &710203604
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1783,8 +1785,10 @@ MonoBehaviour:
   - key: 0
     value: {fileID: 1654999021}
   - key: 1
-    value: {fileID: 858739254}
+    value: {fileID: 1982779075}
   - key: 2
+    value: {fileID: 858739254}
+  - key: 3
     value: {fileID: 1032747353}
   TeamType: 1
 --- !u!1 &796063273
@@ -2060,6 +2064,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd2498d6b10955e43b90da69872b7482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
+  <teamNo>k__BackingField: 1
+  <hasBall>k__BackingField: 0
   baseInfo: {fileID: 11400000, guid: e0dd2aaaa08e4934eb84578a61a3da46, type: 2}
   constition: 0
   ballHandling: 0
@@ -2068,8 +2074,6 @@ MonoBehaviour:
   canFly: 0
   maxFlySpeed: 0
   airMobility: 0.1
-  <teamNo>k__BackingField: 1
-  <hasBall>k__BackingField: 0
 --- !u!143 &830422440
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2259,7 +2263,7 @@ Transform:
   m_GameObject: {fileID: 858739253}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 16}
+  m_LocalPosition: {x: 0, y: 0, z: 17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2687,7 +2691,7 @@ Transform:
   m_GameObject: {fileID: 1032747352}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 28}
+  m_LocalPosition: {x: 0, y: 0, z: 30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3171,9 +3175,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1032747353}
   - {fileID: 858739254}
   - {fileID: 1982779075}
-  - {fileID: 1032747353}
   - {fileID: 1654999021}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3393,6 +3397,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd2498d6b10955e43b90da69872b7482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
+  <teamNo>k__BackingField: 1
+  <hasBall>k__BackingField: 0
   baseInfo: {fileID: 11400000, guid: e0dd2aaaa08e4934eb84578a61a3da46, type: 2}
   constition: 0
   ballHandling: 0
@@ -3401,8 +3407,6 @@ MonoBehaviour:
   canFly: 0
   maxFlySpeed: 0
   airMobility: 0.1
-  <teamNo>k__BackingField: 1
-  <hasBall>k__BackingField: 0
 --- !u!143 &1492037342
 CharacterController:
   m_ObjectHideFlags: 0
@@ -3867,7 +3871,7 @@ Transform:
   m_GameObject: {fileID: 1654999020}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.16, y: 0, z: -32.12}
+  m_LocalPosition: {x: 0, y: 0, z: -30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4003,6 +4007,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd2498d6b10955e43b90da69872b7482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
+  <teamNo>k__BackingField: 1
+  <hasBall>k__BackingField: 0
   baseInfo: {fileID: 11400000, guid: e0dd2aaaa08e4934eb84578a61a3da46, type: 2}
   constition: 0
   ballHandling: 0
@@ -4011,8 +4017,6 @@ MonoBehaviour:
   canFly: 0
   maxFlySpeed: 0
   airMobility: 0.1
-  <teamNo>k__BackingField: 1
-  <hasBall>k__BackingField: 0
 --- !u!143 &1690081811
 CharacterController:
   m_ObjectHideFlags: 0
@@ -4558,7 +4562,7 @@ Transform:
   m_GameObject: {fileID: 1982779074}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -9.44}
+  m_LocalPosition: {x: 0, y: 0, z: -17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

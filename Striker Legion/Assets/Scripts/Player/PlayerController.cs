@@ -128,7 +128,7 @@ public class PlayerController : MonoBehaviour
 
             //ボールを持っているキャラクターがシュートした場合は、ボールの所有者を確認して、同じチームのキャラクターがいればそのキャラクターに操作を移す
             CharacterBase ballOwner = gameBall.GetOwner() as CharacterBase;
-            if (ballOwner != playerCharacter && ballOwner != null)
+            if (ballOwner != playerCharacter && ballOwner != null && changePlayerCharacter)
             {
                 if (ballOwner.teamNo == teamNo)
                 {

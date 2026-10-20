@@ -33,7 +33,7 @@ MonoBehaviour:
         BlackboardGroupReferences: []
         Root:
           rid: 5601786802619809868
-        m_VersionTimestamp: 639281069128469591
+        m_VersionTimestamp: 639281096451387374
     - rid: 5601786483806831577
       type: {class: BlackboardReference, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -251,6 +251,8 @@ MonoBehaviour:
           rid: 5601786483806831576
         m_Parent:
           rid: 5601786802619809871
+        Role:
+          rid: -2
         RandomLimit:
           rid: 5601786802619809887
         Timer:
@@ -404,6 +406,8 @@ MonoBehaviour:
           rid: 5601786483806831576
         m_Parent:
           rid: 5601786802619809877
+        Role:
+          rid: -2
         RandomLimit:
           rid: 5601786802619809900
         Timer:
@@ -741,7 +745,7 @@ MonoBehaviour:
   - rid: 5601786529207812409
   - rid: 5601786687692210403
   - rid: 5601786687692210537
-  m_VersionTimestamp: 639281069128469591
+  m_VersionTimestamp: 639281096451387374
   m_SerializedVersion: 3
   m_DebugInfo: {fileID: -1393703604576493804}
   m_RuntimeGraph: {fileID: -8480220349305978320}
@@ -840,12 +844,16 @@ MonoBehaviour:
     NamedChildren: []
     IsPlaceholder: 0
   - Name: MoveBasePosition
-    Story: 'Move to Position Selected by Role while [Timer]: Random Limit[RandomLimit]'
+    Story: 'Move to Position Selected by [Role] while Timer: Random LimitRandomLimit'
     RuntimeTypeString: MoveBasePositionAction, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     RuntimeTypeID:
       m_Value0: 1535291254967456834
       m_Value1: 8098154634679291789
     Variables:
+    - Name: Role
+      Type:
+        m_SerializableType: PositioningName, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      Tooltip: 
     - Name: RandomLimit
       Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
@@ -883,6 +891,8 @@ MonoBehaviour:
   m_HasMissingTypeInManagedRef: 0
   m_EnumDependencyCache:
     Entries:
+    - EnumTypeId: PositioningName, Assembly-CSharp
+      SignatureHash: c7587306585552cfecd701f3a3675a57
     - EnumTypeId: Unity.Behavior.LogMessageToConsoleAction+LogType, Unity.Behavior
       SignatureHash: 50d3c95d8699b2ee9c9f7a98ef06c304
   references:
@@ -2226,6 +2236,7 @@ MonoBehaviour:
           m_Value0: 1535291254967456834
           m_Value1: 8098154634679291789
         m_FieldValues:
+        - rid: 5601786802992054344
         - rid: 5601786503626752030
         - rid: 5601786620069544225
     - rid: 5601786503626752028
@@ -2282,6 +2293,7 @@ MonoBehaviour:
           m_Value0: 1535291254967456834
           m_Value1: 8098154634679291789
         m_FieldValues:
+        - rid: 5601786802992054345
         - rid: 5601786529207812412
         - rid: 5601786620069544226
     - rid: 5601786529207812410
@@ -2574,6 +2586,42 @@ MonoBehaviour:
           m_Value1: 0
         Name: 
         m_Value: 13
+    - rid: 5601786802992054344
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: Role
+        Type:
+          m_SerializableType: PositioningName, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        LocalValue:
+          rid: 5601786802992054346
+        LinkedVariable:
+          rid: -2
+    - rid: 5601786802992054345
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: Role
+        Type:
+          m_SerializableType: PositioningName, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        LocalValue:
+          rid: 5601786802992054347
+        LinkedVariable:
+          rid: -2
+    - rid: 5601786802992054346
+      type: {class: 'BlackboardVariable`1[[PositioningName, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: 0
+    - rid: 5601786802992054347
+      type: {class: 'BlackboardVariable`1[[PositioningName, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: 0
 --- !u!114 &6033741561794578908
 MonoBehaviour:
   m_ObjectHideFlags: 0

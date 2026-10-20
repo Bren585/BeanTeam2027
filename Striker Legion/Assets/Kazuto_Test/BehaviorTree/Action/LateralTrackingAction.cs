@@ -81,7 +81,8 @@ public partial class LateralTrackingAction : ActionBase
         //offsetVector.z = (toEnemy.z > 0.0f) ? 0.1f : -0.1f;
         Vector3 result = basePosition + (offsetVector);
 
-        result.z = characterAIAgent.BasePosition.z;
+        result.z = characterAIAgent.BasePosition(PositioningName.Defense).z;
+        //result.z = characterAIAgent.BasePosition.z;
 
 		// 位置から計算した射影ベクトルを足した座標を返す
 		return result;
