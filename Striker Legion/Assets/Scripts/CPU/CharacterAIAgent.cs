@@ -52,10 +52,10 @@ public class CharacterAIAgent : MonoBehaviour
     public int TeamNumber => owner.teamNo;
 
     // パス関数（CharacterBaseから呼び出し）
-    public void Pass() => owner.Shoot();
+    public void Pass() => owner.KickBall();
 
     // シュート関数（CharacterBaseから呼び出し）
-    public void Shoot() => owner.Shoot();
+    public void Shoot() => owner.KickBall();
 
     // パスが可能か
     public bool EnablePass() => owner.EnablePass();

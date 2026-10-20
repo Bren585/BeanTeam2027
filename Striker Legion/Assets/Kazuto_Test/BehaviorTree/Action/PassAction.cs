@@ -13,7 +13,7 @@ using Action = Unity.Behavior.Action;
     id: "072f5c0b970ac8587b9f39a11da9c895")]
 public partial class PassAction : ActionBase
 {
-	IReadOnlyList<SampleCharacter> ActiveCharacters;
+	//IReadOnlyList<SampleCharacter> ActiveCharacters;
 
 	protected override Status OnStart()
 	{

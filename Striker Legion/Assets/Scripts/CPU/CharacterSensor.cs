@@ -8,6 +8,7 @@ public class CharacterSensor : MonoBehaviour
 	//[SerializeField] private float detectionRadius = 15f;
 	private Collider[] hitColliders = new Collider[10];
 
+#if false
 	// 一番近いキャラクターを調べる
 	public bool GetClosestCharacter(string Layer, float radius,out SampleCharacter character)
 	{
@@ -41,7 +42,7 @@ public class CharacterSensor : MonoBehaviour
 		character = closest;
 		return closest != null;
 	}
-
+#endif
 	
 	/// <summary>
 	/// ボールを持ってるキャラクターを探す。

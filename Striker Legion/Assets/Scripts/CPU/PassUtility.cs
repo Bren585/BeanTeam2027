@@ -32,29 +32,29 @@ public static class PassUtility
     }
 
 	// パスを受けられる仲間がいるかどうか
-	public static bool CanPassToAnyAlly(IReadOnlyList<SampleCharacter> ActiveCharacters, SampleCharacter PassCharacter)
-	{
-		// キャラクターのチーム
-		CharacterTeam team = PassCharacter.TeamType;
+	//public static bool CanPassToAnyAlly(IReadOnlyList<SampleCharacter> ActiveCharacters, SampleCharacter PassCharacter)
+	//{
+	//	// キャラクターのチーム
+	//	CharacterTeam team = PassCharacter.TeamType;
 
 
-		// 敵のレイヤー
-		LayerMask OpponentLayer = LayerMask.NameToLayer(team == CharacterTeam.Player ? "Enemy" : "Player");
+	//	// 敵のレイヤー
+	//	LayerMask OpponentLayer = LayerMask.NameToLayer(team == CharacterTeam.Player ? "Enemy" : "Player");
 
-		// パスを受けられるキャラクターを探す
-		for (int i = 0; i < ActiveCharacters.Count; i++ )
-		{
-			// パスを出すキャラと同一にならないようにする
-			if (ActiveCharacters[i] == PassCharacter)
-				continue;
+	//	// パスを受けられるキャラクターを探す
+	//	for (int i = 0; i < ActiveCharacters.Count; i++ )
+	//	{
+	//		// パスを出すキャラと同一にならないようにする
+	//		if (ActiveCharacters[i] == PassCharacter)
+	//			continue;
 
-			// スタンしておらず、パスが通る対象がいるならTrueを返す
-			if (PassUtility.IsPassSuccess(PassCharacter.transform, ActiveCharacters[i].transform, OpponentLayer))
-				return true;
-		}
+	//		// スタンしておらず、パスが通る対象がいるならTrueを返す
+	//		if (PassUtility.IsPassSuccess(PassCharacter.transform, ActiveCharacters[i].transform, OpponentLayer))
+	//			return true;
+	//	}
 
-		return false;
-	}
+	//	return false;
+	//}
 
 	// パスをするコスト(低いほどパスをしたがる)
 	public static float CostPassToAnyAlly(IReadOnlyList<CharacterBase> activeCharacters, CharacterAIAgent passCharacter, Vector3 goalPosition)

@@ -24,7 +24,7 @@ public class TeamManager : MonoBehaviour
 			Debug.Log("チームの取得に失敗");
 			return;
 		}
-		int count = 0;
+		int count = 0; 
 		foreach(CharacterBase child in teamObjects)
 		{
 			// AIコンポーネントの取得

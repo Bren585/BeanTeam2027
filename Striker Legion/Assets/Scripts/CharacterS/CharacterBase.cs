@@ -9,7 +9,7 @@ using static UnityEngine.Mathf;
 [RequireComponent(typeof(CharacterController))]
 public class CharacterBase : BallHolder
 {
-    // コンポネント ******************************************************************************************
+    // コンポネンチE******************************************************************************************
 
     protected CharacterController body;
     protected GameObject ball;
@@ -17,7 +17,7 @@ public class CharacterBase : BallHolder
 
     // キャラ定義 *******************************************************************************************
 
-    [Header("ベース設定")]
+    [Header("ベ�Eス設宁E")]
     [SerializeField] protected CharacterBaseInfo baseInfo;
 
     // キャラパラメータ **************************************************************************************
@@ -25,23 +25,23 @@ public class CharacterBase : BallHolder
     [Header("継承パラメータ")]
 
     /// <summary>
-    ///                                             復活力
+    ///                                             復活劁E
     ///                                             <br/>
-    ///                                             値は0.0（弱い、早く治らない）から１．０（強い、早く治る）までとします。
+    ///                                             値は0.0�E�弱ぁE��早く治らなぁE��から１．０（強ぁE��早く治る）までとします、E
     /// </summary>
     [SerializeField, Range(0f, 1f)] protected float constition;
 
     /// <summary>
-    ///                                             ボールの扱いやすさ
+    ///                                             ボ�Eルの扱ぁE��すさ
     ///                                             <br/>
-    ///                                             値は0.0（攻撃されたら絶対落とすなど）から１．０（ボール落とさないなど）までとします。
+    ///                                             値は0.0�E�攻撁E��れたら絶対落とすなど�E�から１．０（�Eール落とさなぁE��ど�E�までとします、E
     /// </summary>
     [SerializeField, Range(0f, 1f)] protected float ballHandling;
 
     /// <summary>
-    ///                                             走るときの小回り力、横移動スピード、アクセル                      
+    ///                                             走るとき�E小回り力、横移動スピ�Eド、アクセル                      
     ///                                             <br/>            
-    ///                                             値は０．０（最低に遅い）から１．０（最高に早い）までとします。
+    ///                                             値は�E�．０（最低に遁E���E�から１．０（最高に早ぁE��までとします、E
     /// </summary>
     [SerializeField, Range(0f, 1f)] protected float groundMobility;
 
@@ -52,35 +52,35 @@ public class CharacterBase : BallHolder
 
     [Header("鳥系")]
     /// <summary>
-    ///                                             飛べるかどうか
+    ///                                             飛べるかどぁE��
     /// </summary>
     [SerializeField] protected bool canFly = false;
 
     /// <summary>
-    ///                                             飛ぶマックススピード
+    ///                                             飛�Eマックススピ�EチE
     /// </summary>
     [SerializeField] protected float maxFlySpeed = 0;
 
     /// <summary>
-    ///                                             飛ぶときの小回り力、横移動スピード、アクセル
+    ///                                             飛�Eとき�E小回り力、横移動スピ�Eド、アクセル
     /// </summary>
     [SerializeField, Range(0f, 1f)] protected float airMobility = 0.1f;
 
-    // キャラ状態 *******************************************************************************************
+    // キャラ状慁E*******************************************************************************************
 
-    [field: Header("状態")]
+    [field: Header("状慁E")]
 
     private Vector3 _velocity;
     public Vector3 velocity => _velocity;
     Animator animator;
     SkillBar skillBar;
 
-    // オーバーライド ***************************************************************************************
+    // オーバ�EライチE***************************************************************************************
     public override Vector3 GetHoldPosition() { return transform.Find("Feet").position; }
     public override Vector3 GetVelocity() { return velocity; }
 
     /// <summary>
-    /// trueなら動いている向きに回る、falseなら向かない
+    /// trueなら動ぁE��ぁE��向きに回る、falseなら向かなぁE
     /// </summary>
     bool strafing = false;
     bool moving = false;
@@ -173,12 +173,12 @@ public class CharacterBase : BallHolder
 
     void UpdateMovement()
     {
-        if (flying) // 飛んでる
+        if (flying) // 飛んでめE
         {
         }
-        else // 走ってる
+        else // 走ってめE
         {
-            // 速度チェック
+            // 速度チェチE��
             Vector3 groundVelocity = velocity;
             groundVelocity.y = 0;
 
@@ -186,12 +186,12 @@ public class CharacterBase : BallHolder
 
             Vector3 movement = Vector3.zero;
 
-            if (strafing) // 横移動
+            if (strafing) // 横移勁E
             {
                 movement = (groundVelocity * Time.deltaTime);
                 animator.SetFloat("forward", 0);
             }
-            else // 普通に走る
+            else // 普通に走めE
             {
                 UpdateRotation(groundVelocity);
 
@@ -280,9 +280,9 @@ public class CharacterBase : BallHolder
         {
             float dot = Vector3.Dot(input, groundVelocity.normalized);
 
-            if (dot < 0) // 移動先が動いている向きと違う
+            if (dot < 0) // 移動�Eが動ぁE��ぁE��向きと違う
             {
-                // 向きが違う分、早く向けるため、早くなる。
+                // 向きが違ぁE�E、早く向けるため、早くなる、E
                 acceleration *= 1 - dot * mobility;
             }
         }
@@ -291,9 +291,9 @@ public class CharacterBase : BallHolder
     }
 
     /// <summary>
-    /// 移動先に向くべきか
+    /// 移動�Eに向くべきか
     /// </summary>
-    /// <param name="strafe">trueなら動いている向きに回る、falseなら向かない</param>
+    /// <param name="strafe">trueなら動ぁE��ぁE��向きに回る、falseなら向かなぁE/param>
     public void SetStrafe(bool strafe)
     {
         if (flying) strafing = false;
@@ -306,7 +306,7 @@ public class CharacterBase : BallHolder
         animator.SetTrigger("Jump");
         if (canFly) 
         { 
-            // 飛び始めて
+            // 飛�E始めて
         }
         else 
         {
@@ -346,7 +346,7 @@ public class CharacterBase : BallHolder
             CharacterBase opponent = other.GetComponentInParent<CharacterBase>();
             if (BallHandlingFail())
             {
-                //if (opponent.teamNo == teamNo) { return; } // テストしやすいためオッフ
+                //if (opponent.teamNo == teamNo) { return; } // チE��トしめE��ぁE��めオチE��
 
                 GameBall gameBall = FindAnyObjectByType<GameBall>();
 
@@ -362,7 +362,7 @@ public class CharacterBase : BallHolder
                 animator.SetTrigger("Down");
             }
         }
-        //HACK: if文が長すぎる
+        //HACK: if斁E��長すぎめE
         else if (other.gameObject.name == "GoalZone" && other.transform.Find("ShootCamOrigin").Find("AimMarker").GetComponent<AimMarkerController>().teamNo != this.teamNo && hasBall == true)
         {
             // Enter Shooting Mode
@@ -376,15 +376,15 @@ public class CharacterBase : BallHolder
             // If defender reaches, they use they're constitution (and maybe ballhandle) to try to block
             // Player defender gets a bonus in speed and block if they aimed correctly 
             //
-            // 日本語 (機械翻訳)
-            // シュートモードは別スクリプトで処理
-            // カメラがシューターに接近し、時間の流れが遅くなる
-            // シューターはカーソルを動かして狙いを定める（カーソルの移動速度はステータスの「スピード」に依存）
-            // ディフェンダーがプレイヤーの場合、同様にカーソルを使って守備位置を狙う
+            // 日本誁E(機械翻訳)
+            // シュートモード�E別スクリプトで処琁E
+            // カメラがシューターに接近し、時間�E流れが遅くなめE
+            // シューターはカーソルを動かして狙いを定める（カーソルの移動速度はスチE�Eタスの「スピ�Eド」に依存！E
+            // チE��フェンダーが�Eレイヤーの場合、同様にカーソルを使って守備位置を狙ぁE
             // シューターがシュートを放つ
-            // ディフェンダーは「スピード」のステータスを活かして距離を詰めようとする（制限時間はシューターのパワーに依存）
-            // ディフェンダーが到達した場合、「スタミナ（Constitution）」（および場合によっては「ボールハンドリング」）を使ってブロックを試みる
-            // プレイヤーがディフェンダーの場合、狙いが正確であればスピードとブロックにボーナスが加算される
+            // チE��フェンダーは「スピ�Eド」�EスチE�Eタスを活かして距離を詰めよぁE��する�E�制限時間�Eシューターのパワーに依存！E
+            // チE��フェンダーが到達した場合、「スタミナ�E�Eonstitution�E�」（およ�E場合によっては「�Eールハンドリング」）を使ってブロチE��を試みめE
+            // プレイヤーがディフェンダーの場合、狙ぁE��正確であればスピ�EドとブロチE��にボ�Eナスが加算される
             // 
 
             //Debuging
