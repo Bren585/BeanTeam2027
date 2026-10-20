@@ -1,17 +1,18 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Cinemachine;
+using Unity.VisualScripting;
 
 
 public class PlayerController : MonoBehaviour
 {
-    // キャラクターの切り替えを行うかのフラグ
+    // 繧ｭ繝｣繝ｩ繧ｯ繧ｿ繝ｼ縺ｮ蛻�ｊ譖ｿ縺医ｒ陦後≧縺九�繝輔Λ繧ｰ
     [SerializeField] bool               changePlayerCharacter;
     [SerializeField] int                teamNo;
     [SerializeField] GameBall           gameBall;
 
 
-    CharacterBase                       playerCharacter;
+    public CharacterBase playerCharacter { get; private set; }
     [SerializeField] CinemachineCamera  playerCamera;
 
     [SerializeField] float              cameraMaxSpeed;
@@ -23,7 +24,7 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 target;
         {
-            CharacterBase ballOwner = gameBall.GetOwner();
+            CharacterBase ballOwner = gameBall.GetOwner() as CharacterBase;
             if (ballOwner == null) { target = gameBall.transform.position; }
             else if (ballOwner.teamNo == teamNo) { return ballOwner; }
             else { target = ballOwner.transform.position; }
@@ -122,10 +123,12 @@ public class PlayerController : MonoBehaviour
         if (playerCharacter == null) { PossessCharacter(GetClosestPossessableCharacter()); }
         if (playerCharacter.hasBall)
         {
-            playerCharacter.Shoot();
+            //キャラクターがボールを持っている場合はシュートする
+            playerCharacter.KickBall();
 
-            CharacterBase ballOwner = gameBall.GetOwner();
-            if (ballOwner != playerCharacter && ballOwner != null && changePlayerCharacter)
+            //ボールを持っているキャラクターがシュートした場合は、ボールの所有者を確認して、同じチームのキャラクターがいればそのキャラクターに操作を移す
+            CharacterBase ballOwner = gameBall.GetOwner() as CharacterBase;
+            if (ballOwner != playerCharacter && ballOwner != null)
             {
                 if (ballOwner.teamNo == teamNo)
                 {
@@ -135,6 +138,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            //
             if (gameBall.GetOwner() == playerCharacter) { return; }
             CharacterBase possesionTarget = playerCharacter.PassTarget();
             if (possesionTarget == null)
