@@ -6,7 +6,7 @@ using Unity.Properties;
 
 [Serializable, GeneratePropertyBag]
 [NodeDescription(name: "Change Color", story: "Change [Color] If is true add color: [IsAdd]", category: "Action", id: "c4687ae26c8a53b8719fe6ea1d3b7f76")]
-public partial class ChangeColorAction : ActionBase
+public partial class ChangeColorAction : Action
 {
     [SerializeReference] public BlackboardVariable<Color> Color;
     [SerializeReference] public BlackboardVariable<bool> IsAdd;
@@ -15,8 +15,13 @@ public partial class ChangeColorAction : ActionBase
 		// オブジェクトの Renderer と Material を取得
 		Renderer targetRenderer = GameObject.GetComponent<Renderer>();
 
+        if (targetRenderer == null)
+            return Status.Failure;
 		// 使用しているマテリアルを取得
         Material targetMaterial = targetRenderer.material;
+
+        if (targetMaterial == null)
+            return Status.Failure;
 
         if (IsAdd)
         {

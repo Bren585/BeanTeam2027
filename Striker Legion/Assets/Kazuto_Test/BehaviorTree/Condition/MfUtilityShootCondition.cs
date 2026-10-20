@@ -1,4 +1,5 @@
 using System;
+using Unity.AppUI.Redux;
 using Unity.Behavior;
 using UnityEngine;
 
@@ -7,51 +8,52 @@ using UnityEngine;
 public partial class MfUtilityShootCondition : Condition
 {
     // 評価対象のミッドフィルダー(BehaviorGraphで指定)
-    [SerializeReference] public BlackboardVariable<SampleCharacter> Midfielder;
+    [SerializeReference] public BlackboardVariable<CharacterAIAgent> Midfielder;
 
     public override bool IsTrue()
     {
+#if true
         // 評価を下すスコア
-        // 高いとミッドフィルダーがシュートを可能性が高い
-        float score = 0.0f;
+        // 高いとミッドフィルダーがパスを可能性が高い
+        float score = 0.3f;
 
         // フォワードを取得する
-        SampleCharacter Forward = MatchManager.Instance.GetAllyByRole(Midfielder.Value.TeamType, CharacterRole.Forward);
-        //SampleCharacter Forward = Midfielder.Value.CharacterSensor.GetAllyByRole(CharacterRole.Forward);
+        CharacterBase Forward = Midfielder.Value.PassTarget();
 
-		// フォワードが存在しない場合はシュートをするためにtrueを返す
-		if (Forward == null)
+        // フォワードが存在しない場合はシュートをするためにtrueを返す
+        if (Forward == null)
+        {
             return true;
-
+        }
         // フォワードがスタン中なら、自身でシュートをする
-        if (Forward.IsStan())
+        if (Forward.isDown)
             return true;
 
-        // フォワードとゴールまでの距離
-        float distanceToGoalFromForward = Forward.GetDistanceToGoal();
+        // ゴールの座標
+        Vector3 GoalPosition = MatchManager.Instance.GetGoalPosition(Midfielder.Value.TeamNumber);
+
+		// フォワードとゴールまでの距離
+		float distanceToGoalFromForward = (Forward.transform.position - GoalPosition).magnitude;
 		// ミッドフィルダーのゴールまでの距離
-		float distanceToGoalFromMidFielder = Midfielder.Value.GetDistanceToGoal();
+		float distanceToGoalFromMidFielder = (Midfielder.Value.transform.position - GoalPosition).magnitude;
+		//float distanceToGoalFromMidFielder = Midfielder.Value.GetDistanceToGoal();
 
 		// フォワードのほうがゴールまで遠い場合、スコアを加算する
 		if (distanceToGoalFromForward > distanceToGoalFromMidFielder)
-            score += 0.3f;
-
-		// パスが成功するかどうか
-		String LayerStr = GameObject.layer == LayerMask.NameToLayer("Player") ? "Enemy" : "Player";
-		bool IsPassSuccess = PassUtility.IsPassSuccess(GameObject.transform, Forward.transform, LayerMask.NameToLayer(LayerStr));
-		//bool IsPassSuccess = Midfielder.Value.CharacterSensor.IsPassSuccess(Forward.transform);
-
-        // パスが成功しないようであれば、シュートがいいとしてスコア上昇
-		if (!IsPassSuccess)
             score += 0.6f;
 
         float rand = UnityEngine.Random.Range(0.0f, 1.0f);
 
-        // 乱数よりスコアのほうが高ければ、シュートをする
+        //Debug.Log("MFシュート判定：Score=" + score + "Rand = " +rand);
+
+        // 乱数よりスコアのほうが低ければ、シュートをする
         if (score < rand)
             return true;
 
 		return false;
+#else
+        return true;
+#endif
     }
 
     public override void OnStart()

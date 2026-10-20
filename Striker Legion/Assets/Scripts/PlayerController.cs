@@ -6,8 +6,11 @@ using Unity.VisualScripting;
 
 public class PlayerController : MonoBehaviour
 {
+    // ç¹§ï½­ç¹ï½£ç¹ï½©ç¹§ï½¯ç¹§ï½¿ç¹ï½¼ç¸ºï½®è›»ï¿½ï½Šè­–ï½¿ç¸ºåŒ»ï½’é™¦å¾Œâ‰§ç¸ºä¹ï¿½ç¹è¼”Î›ç¹§ï½°
+    [SerializeField] bool               changePlayerCharacter;
     [SerializeField] int                teamNo;
-    [SerializeField] GameBall           gameBall; 
+    [SerializeField] GameBall           gameBall;
+
 
     public CharacterBase playerCharacter { get; private set; }
     [SerializeField] CinemachineCamera  playerCamera;
@@ -120,10 +123,10 @@ public class PlayerController : MonoBehaviour
         if (playerCharacter == null) { PossessCharacter(GetClosestPossessableCharacter()); }
         if (playerCharacter.hasBall)
         {
-            //ƒLƒƒƒ‰ƒNƒ^[‚ªƒ{[ƒ‹‚ğ‚Á‚Ä‚¢‚éê‡‚ÍƒVƒ…[ƒg‚·‚é
+            //ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ãŒãƒœãƒ¼ãƒ«ã‚’æŒã£ã¦ã„ã‚‹å ´åˆã¯ã‚·ãƒ¥ãƒ¼ãƒˆã™ã‚‹
             playerCharacter.KickBall();
 
-            //ƒ{[ƒ‹‚ğ‚Á‚Ä‚¢‚éƒLƒƒƒ‰ƒNƒ^[‚ªƒVƒ…[ƒg‚µ‚½ê‡‚ÍAƒ{[ƒ‹‚ÌŠ—LÒ‚ğŠm”F‚µ‚ÄA“¯‚¶ƒ`[ƒ€‚ÌƒLƒƒƒ‰ƒNƒ^[‚ª‚¢‚ê‚Î‚»‚ÌƒLƒƒƒ‰ƒNƒ^[‚É‘€ì‚ğˆÚ‚·
+            //ãƒœãƒ¼ãƒ«ã‚’æŒã£ã¦ã„ã‚‹ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ãŒã‚·ãƒ¥ãƒ¼ãƒˆã—ãŸå ´åˆã¯ã€ãƒœãƒ¼ãƒ«ã®æ‰€æœ‰è€…ã‚’ç¢ºèªã—ã¦ã€åŒã˜ãƒãƒ¼ãƒ ã®ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ãŒã„ã‚Œã°ãã®ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã«æ“ä½œã‚’ç§»ã™
             CharacterBase ballOwner = gameBall.GetOwner() as CharacterBase;
             if (ballOwner != playerCharacter && ballOwner != null)
             {

@@ -11,12 +11,17 @@ public class DebugText : MonoBehaviour
 	// 常に表示するメッセージ(SetTextで消えない)
 	private string DefaultMessage = "";
 
+	// オブジェクトの状態
+	private bool isActive = true;
+
 	private void Start()
 	{
 		mainCamera = Camera.main;
 
 		// デバッグテキストの生成
 		DebugTextManager.Instance.AddDebugText(out text);
+
+		Debug.Log("テキストの生成");
 	}
 
 	private void LateUpdate()
@@ -36,8 +41,14 @@ public class DebugText : MonoBehaviour
 		// その後、スクリーン座標にする
 		Vector3 screenPos = mainCamera.WorldToScreenPoint(transform.position + worldOffset);
 		
-		if (screenPos.z < 0)
+		if(!isActive && screenPos.z >= 0)
 		{
+			isActive = true;
+			text.gameObject.SetActive(isActive);
+		}
+		else if (screenPos.z < 0)
+		{
+			isActive = false;
 			text.gameObject.SetActive(false);
 			return;
 		}
@@ -56,8 +67,8 @@ public class DebugText : MonoBehaviour
 	public void SetText(string textStr)
 	{
 		//text.text = textStr;
-
-		text.text = DefaultMessage + '\n' +textStr;
+		if(text != null)
+			text.text = DefaultMessage + '\n' +textStr;
 	}
 	public void SetDefaultText(string defaultStr)
 	{

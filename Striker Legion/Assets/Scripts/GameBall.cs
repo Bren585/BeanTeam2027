@@ -10,7 +10,7 @@ public class GameBall : MonoBehaviour
         Vector3 end;
         public float maxHeight;
         public float duration;
-        public float t; // ƒ^ƒCƒ€
+        public float t; // ã‚¿ã‚¤ãƒ 
         public const float MAX_DURATION = 3f;
 
         public flight(BallHolder from, BallHolder to, float height, float speed)
@@ -23,7 +23,7 @@ public class GameBall : MonoBehaviour
 
             duration = Mathf.Infinity;
 
-            //speed‚©‚çduration‚ğ‹‚Ü‚é
+            //speedã‹ã‚‰durationã‚’æ±‚ã¾ã‚‹
             float a = Vector3.Dot(velocity, velocity) - (speed * speed);
             float b = 2f * Vector3.Dot(offset, velocity);
             float c = Vector3.Dot(offset, offset);
@@ -53,7 +53,7 @@ public class GameBall : MonoBehaviour
                 }
             }
 
-            //duration‚ğ§ŒÀ‚·‚é
+            //durationã‚’åˆ¶é™ã™ã‚‹
             duration = Mathf.Min(duration, MAX_DURATION);
 
             end = target + velocity * duration;
@@ -69,7 +69,7 @@ public class GameBall : MonoBehaviour
                 position = end;
                 return false;
             }
-            float p = t / duration; // ƒp[ƒZƒ“ƒg
+            float p = t / duration; // ãƒ‘ãƒ¼ã‚»ãƒ³ãƒˆ
             float h = 1 - Mathf.Pow(2 * p - 1, 2);
 
             position.x = Mathf.Lerp(start.x, end.x, p);

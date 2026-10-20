@@ -144,6 +144,7 @@ public class CharacterBase : BallHolder
         UpdateMovement();
     }
 
+
     void UpdatePassTarget()
     {
         if (hasBall)
@@ -416,14 +417,19 @@ public class CharacterBase : BallHolder
             if (distance > bestDistance && blockers == null) { continue; }
 
             List<RaycastHit> hits = new(Physics.SphereCastAll(new Ray(transform.position, toCharacter), 0.5f, distance));
+
+            // ヒット対象からキャラクター以外とチームメンバーを除外
             hits.RemoveAll(hit =>
             {
                 CharacterBase hitCharacter = hit.transform.GetComponent<CharacterBase>();
                 return hitCharacter == null || hitCharacter.teamNo == teamNo;
             });
 
-
-            if (blockers != null) { if (hits.Count > blockers.Count) { continue; } }
+            // ヒット数が前回までのヒット数より多かったら飛ばす
+            if (blockers != null) { 
+                if (hits.Count > blockers.Count) 
+                    continue; 
+            }
 
             if (distance < bestDistance)
             {
@@ -440,9 +446,24 @@ public class CharacterBase : BallHolder
 
     public CharacterBase PassTarget() { return PassTarget(out _); }
 
-    //public CharacterBase GetPassTarget() { return passTarget; }
+	public bool EnablePass()
+	{
+		CharacterBase target = PassTarget();
 
-    public void MarkAsPassTarget(bool isTarget)
+        // ボールを保持していて、パスターゲットがいるか
+        if (!hasBall || target == null)
+            return false;
+
+        // パスターゲットがパスできる範囲内にいるか
+        if ((target.transform.position - transform.position).magnitude > baseInfo.maxPassDistance)
+            return false;
+
+        return true;
+	}
+
+	//public CharacterBase GetPassTarget() { return passTarget; }
+
+	public void MarkAsPassTarget(bool isTarget)
     {
         ball.SetActive(isTarget);
     }
@@ -528,3 +549,4 @@ public class CharacterBase : BallHolder
     public void lockMove() { moveLocked = true; }
     public void unlockMove() { moveLocked = false; }
 }
+

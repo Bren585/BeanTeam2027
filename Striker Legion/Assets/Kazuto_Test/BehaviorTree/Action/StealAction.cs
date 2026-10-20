@@ -16,7 +16,7 @@ public partial class StealAction : ActionBase
 		base.OnStart();
 
 		// 行動をデバッグで表示
-		characterComponent.DebugText.SetText("ボールを奪う");
+		characterAIAgent.DebugText.SetText("ボールを奪う");
 
 		//Debug.Log(GameObject.name + ": StealAction started.");
 
@@ -25,8 +25,9 @@ public partial class StealAction : ActionBase
 
 	protected override Status OnUpdate()
 	{
+#if false
 		// ボールを持っているキャラクターを取得
-		characterComponent.CharacterSensor.GetCharacterHavingBall("", 1.0f, out SampleCharacter characterWithBall);
+		characterAIAgent.CharacterSensor.GetCharacterHavingBall("", 1.0f, out SampleCharacter characterWithBall);
 
 		if (characterWithBall == null)
 		{
@@ -40,8 +41,9 @@ public partial class StealAction : ActionBase
 
 		// ボールを奪う処理
 		characterWithBall.isHoldingBall = false;
-		characterComponent.isHoldingBall = true;
-
+		characterAIAgent.isHoldingBall = true;
+#endif
+		characterAIAgent.Tackle();
 		return Status.Success;
 	}
 

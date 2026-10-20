@@ -20,7 +20,8 @@ public class MatchManager : MonoBehaviour
 	public Transform BallTransform { get; private set; }
 
 	// ボールを持っているキャラをマネージャーで集約して保持すると超軽量化できる
-	public SampleCharacter CurrentBallHolder { get; private set; }
+	private CharacterBase currentBallHolder;
+	public CharacterBase CurrentBallHolder => currentBallHolder;
 
 	private void Awake()
 	{
@@ -35,6 +36,11 @@ public class MatchManager : MonoBehaviour
 
 		// 初期化処理
 		Initialize();
+	}
+
+	private void Start()
+	{
+		UpdateBallHolder();
 	}
 
 	void Initialize()
@@ -64,24 +70,43 @@ public class MatchManager : MonoBehaviour
 		UpdateBallHolder();
 	}
 
+	// ボールを持っているキャラクターを検索する
 	void UpdateBallHolder()
 	{
-		foreach (SampleCharacter c in PlayerTeam.teamObjects)
+		if (PlayerTeam == null || EnemyTeam == null)
+			return;
+
+		if (PlayerTeam.teamObjects == null || EnemyTeam.teamObjects == null)
+			return;
+
+		//if(currentBallHolder)
+		//Debug.Log("今ボールを持っているキャラのチーム番号:"+currentBallHolder.teamNo);
+
+		foreach (CharacterBase c in PlayerTeam.teamObjects)
 		{
-			if (!c.isHoldingBall)
+			if (!c.hasBall)
 				continue;
 
-			CurrentBallHolder = c;
+			if (currentBallHolder == c)
+				return;
+
+			Debug.Log("Playerチームがボールを持った");
+
+			currentBallHolder = c;
 			return;
 		}
-		foreach (SampleCharacter c in EnemyTeam.teamObjects)
+		foreach (CharacterBase c in EnemyTeam.teamObjects)
 		{
-			if (!c.isHoldingBall)
+			if (!c.hasBall)
 				continue;
 
-			CurrentBallHolder = c;
+			if (currentBallHolder == c)
+				return;
+			Debug.Log("Enemyチームがボールを持った");
+			currentBallHolder = c;
 			return;
 		}
+		//Debug.Log("だれもボールを持っていない");
 	}
 
 	// ゴールした際の処理
@@ -111,11 +136,16 @@ public class MatchManager : MonoBehaviour
 			EnemyTeam.OrderGetBall();
 		}
 	}
-
-	public SampleCharacter GetAllyByRole(CharacterTeam team, CharacterRole role)
+	public CharacterBase GetAllyByRole(int teamNumber, CharacterRole role)
 	{
+		return GetAllyByRole((CharacterTeam)teamNumber, role);
+	}
+
+	public CharacterBase GetAllyByRole(CharacterTeam team, CharacterRole role)
+	{
+#if false
 		// 味方のオブジェクトを取得する
-		foreach (SampleCharacter ally in GetTeamManager(team).teamObjects)
+		foreach (CharacterBase ally in GetTeamManager(team).teamObjects)
 		{
 			// キャラクターのコンポーネントをヌルチェック
 			if (ally == null)
@@ -126,11 +156,22 @@ public class MatchManager : MonoBehaviour
 				return ally;
 
 		}
+#endif
 		return null;
 	}
-	public IReadOnlyList<SampleCharacter> GetActiveCharacters(CharacterTeam team)
+
+	public IReadOnlyList<CharacterBase> GetActiveCharacters(CharacterTeam team)
 	{
 		return GetTeamManager(team).GetActiveCharacters();
+	}
+
+	public Vector3 GetGoalPosition(int teamNumber)
+	{
+		return GetGoalPosition((CharacterTeam)teamNumber);
+	}
+	public Vector3 GetGoalPosition(CharacterTeam team)
+	{
+		return (team == CharacterTeam.Player) ? PlayerGoal.position : EnemyGoal.position;
 	}
 
 	private TeamManager GetTeamManager(CharacterTeam team)

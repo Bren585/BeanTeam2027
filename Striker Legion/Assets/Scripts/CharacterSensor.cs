@@ -47,7 +47,7 @@ public class CharacterSensor : MonoBehaviour
 	/// ボールを持ってるキャラクターを探す。
 	/// ゲーム性として、キャラの探知範囲に制限をかけている
 	/// </summary>
-	public bool GetCharacterHavingBall(string Layer, float radius, out SampleCharacter character)
+	public bool GetCharacterHavingBall(string Layer, float radius, out CharacterBase character)
 	{
 		// 呼び出し元へ帰す結果を初期化
 		character = null;
@@ -56,7 +56,7 @@ public class CharacterSensor : MonoBehaviour
 		LayerMask enemyLayer = LayerMask.GetMask(Layer);
 
 		// ボールを持っているキャラクター
-		SampleCharacter BallerCharacter  = (MatchManager.Instance.CurrentBallHolder != null) ? MatchManager.Instance.CurrentBallHolder : null;
+		CharacterBase BallerCharacter  = (MatchManager.Instance.CurrentBallHolder != null) ? MatchManager.Instance.CurrentBallHolder : null;
 
 		// 距離判定
 		if (Vector3.Distance(BallerCharacter.transform.position, gameObject.transform.position) > radius)
@@ -76,15 +76,16 @@ public class CharacterSensor : MonoBehaviour
 		LayerMask enemyLayer = LayerMask.GetMask(enemyLayerStr);
 
 		// レイがヒットしたか
-		if (!Physics.Raycast(ray, out RaycastHit hit, radius, enemyLayer))
+		if (!Physics.SphereCast(ray, 5.0f, out RaycastHit hit, radius, enemyLayer))
 		{
-			Debug.Log("敵が見つかりませんでした");
+			Debug.Log("敵が見つかりませんでした Layer :" + enemyLayer);
 
 			return false;
 		}
 		// ヒットしたオブジェクトがキャラクターかどうかを判定
 		if (!hit.collider.CompareTag("Character"))
 		{
+			Debug.Log("ヒット対象がCharacter以外:" + hit.collider.tag);
 			return false;
 		}
 		return true;

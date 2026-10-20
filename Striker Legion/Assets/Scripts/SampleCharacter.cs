@@ -184,7 +184,6 @@ public class SampleCharacter : MonoBehaviour
 	// ボールをステアリング制御のターゲットとする
 	public void SetTargetIsBall()
 	{
-
 		steeringController.TargetPosition = ballObject.transform.position;
 	}
 
@@ -208,7 +207,7 @@ public class SampleCharacter : MonoBehaviour
 	public void StartMoveBasePos(float limitMax)
 	{
 		// 移動開始フラグを立てる
-		steeringController.StartMove();
+		steeringController.StartMove(SteeringMode.Avoid);
 
 		// 円状の乱数を作成する
 		Vector2 random = Random.insideUnitCircle;

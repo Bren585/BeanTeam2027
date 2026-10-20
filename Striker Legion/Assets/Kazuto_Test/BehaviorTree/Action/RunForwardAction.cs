@@ -8,55 +8,52 @@ using Unity.Properties;
 [NodeDescription(name: "RunForward", story: "Run To Enemy Goal", category: "Action", id: "cc37bb13f82b2ebb2615a50cb044bac5")]
 public partial class RunForwardAction : ActionBase
 {
-	PitchEvaluator pitchEvaluator;
-
-    TeamType teamType;
-
     float timer = 0.0f;
+
+    Vector3 goalPosition;
 
     protected override Status OnStart()
     {
         // 基底クラスの初期化
         base.OnStart();
 
-        // PitchEvaluatorの取得
-        //if(GameObject.FindWithTag("PitchManager").GetComponent<PitchEvaluator>())
-            pitchEvaluator = GameObject.FindWithTag("PitchManager").GetComponent<PitchEvaluator>();
-
-        if (pitchEvaluator == null)
-        {
-            Debug.LogError("PitchEvaluator not found.");
-            return Status.Failure;
-        }
-        else
-            Debug.Log("RunForward Start");
-
         // 移動処理を開始
-        characterComponent.SteeringController.StartMove();
-
-        teamType = LayerMask.LayerToName(GameObject.layer) == "Player" ? TeamType.Player : TeamType.Enemy;
+        characterAIAgent.SteeringController.StartMove(SteeringMode.Avoid);
 
         timer = 0.0f;
 
-		characterComponent.DebugText.SetText("前に走る");
+		characterAIAgent.DebugText.SetText("前に走る");
+
+        // 敵のゴール座標を取得
+        CharacterTeam team = CharacterTeam.Player == (CharacterTeam)characterAIAgent.TeamNumber ? CharacterTeam.Enemy : CharacterTeam.Player;
+		goalPosition = MatchManager.Instance.GetGoalPosition(team);
+
+        // ゴールまでのベクトル
+        Vector3 Direction = goalPosition - GameObject.transform.position;
+		characterAIAgent.SetTargetPosition(GameObject.transform.position + Direction.normalized * 10.5f);
+		//characterAIAgent.SteeringController.TargetPosition = GameObject.transform.position + Direction.normalized * 10.5f;
 
 		return Status.Running;
     }
 
     protected override Status OnUpdate()
     {
-        characterComponent.SteeringController.TargetPosition = GameObject.transform.position + GameObject.transform.forward * 1.5f;
+        //Vector3 Direction = goalPosition - GameObject.transform.position;
+
+		//characterAIAgent.SteeringController.TargetPosition = GameObject.transform.position + Direction.normalized * 1.5f;
 		//characterComponent.SteeringController.TargetPosition = pitchEvaluator.GetBestPosition(teamType); 
 		//characterComponent.SteeringController.TargetPosition = new Vector3(0, 0, 0);
 
 		timer += Time.deltaTime;
-        if(timer >= 0.5f)
-		{
-			Debug.Log(GameObject.name + ": Success RunForwardAction.");
+        // 時間経過で終了
+        if(timer >= 3.0f)
 			return Status.Success;
-		}
-        //if (!characterComponent.isHoldingBall)
-        //    return Status.Failure;
+        // 目標地点到達で終了
+        if (!characterAIAgent.SteeringController.IsMove)
+            return Status.Success;
+        // 途中でボールを失うと失敗
+        if (!characterAIAgent.HasBall)
+            return Status.Failure;
 
 		return Status.Running;
     }
