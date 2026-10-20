@@ -27,6 +27,7 @@ public class AimMarkerController : BallHolder
 
     void Update()
     {
+        if (playerController == null || playerController.playerCharacter == null) { return; }
         if(playerController.playerCharacter.isShooting)
         {
             // AimMarker ‚ð•\Ž¦‚·‚é
