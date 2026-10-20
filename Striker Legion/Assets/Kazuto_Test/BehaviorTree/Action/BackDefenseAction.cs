@@ -30,7 +30,8 @@ public partial class BackDefenseAction : ActionBase
     protected override Status OnUpdate()
     {
 		// 目標地点をキャラクターの後ろ方向に設定
-		characterAIAgent.SteeringController.TargetPosition = GameObject.transform.position + -GameObject.transform.forward * 1.5f;
+		characterAIAgent.SetTargetPosition(GameObject.transform.position + -GameObject.transform.forward * 1.5f);
+		//characterAIAgent.SteeringController.TargetPosition = GameObject.transform.position + -GameObject.transform.forward * 1.5f;
 
 		timer += Time.deltaTime;
 		if (timer >= 0.5f)

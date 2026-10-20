@@ -15,7 +15,8 @@ public partial class EnablePassCondition : Condition
 
 	public override bool IsTrue()
     {
-        return CharacterAIAgent.Value.EnablePass();
+        bool result = CharacterAIAgent.Value.EnablePass();
+        return InverseButton ? !result : result;
     }
 
     public override void OnStart()

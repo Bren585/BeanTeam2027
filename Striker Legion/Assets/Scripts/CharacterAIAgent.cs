@@ -37,10 +37,14 @@ public class CharacterAIAgent : MonoBehaviour
 	
     public CharacterRole Role { get; private set; }
 
+	Vector3 endTargetPosition = Vector3.zero;
+
 	//------------------------------ getter -----------------------------------
     public SteeringController SteeringController => steeringController;
 
     public CharacterSensor CharacterSensor => characterSensor;
+
+	public Vector3 BasePosition => positioningBase;
 
 	// キャラクターがボールを持っているか
 	public bool HasBall => owner.hasBall;
@@ -59,6 +63,13 @@ public class CharacterAIAgent : MonoBehaviour
 
     public void Tackle() => owner.Tackle();
 
+	// 追跡座標を設定
+	public void SetTargetPosition(Vector3 position)
+	{
+		navMeshAgent.SetDestination(position);
+		endTargetPosition = position;
+	}
+
     protected void Awake()
     {
         // コンポーネントを取得
@@ -72,6 +83,7 @@ public class CharacterAIAgent : MonoBehaviour
 		characterSensor = gameObject.AddComponent<CharacterSensor>();
 
         navMeshAgent.updatePosition = true;
+		navMeshAgent.isStopped = true;
 	}
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -106,11 +118,17 @@ public class CharacterAIAgent : MonoBehaviour
         // 親の速度を元に計算する
         steeringController.SetParentVelocity(ParentVelocity);
 
-        if (steeringController.Velocity.magnitude < 0.01f)
+		// 操舵コントローラの目標座標をナビメッシュから取得
+		steeringController.TargetPosition = navMeshAgent.steeringTarget;
+
+		// 速力計算
+		steeringController.UpdateVelocity();
+
+		if (steeringController.Velocity.magnitude < 0.01f)
             return;
 
 		//navMeshAgent.SetDestination(steeringController.CurrentPosition);
-		navMeshAgent.SetDestination(steeringController.TargetPosition);
+		//navMeshAgent.SetDestination(steeringController.TargetPosition);
         
 		//navMeshAgent.velocity = steeringController.Velocity;
 		//owner.Move((navMeshAgent.steeringTarget - transform.position).normalized * 1.0f);
@@ -183,7 +201,8 @@ public class CharacterAIAgent : MonoBehaviour
 		Vector3 offset = new Vector3(random.x, 0.0f, random.y) * limitMax;
 
 		// ロールで決定された場所を目指す
-		steeringController.TargetPosition = positioningBase + offset;
+		SetTargetPosition(positioningBase + offset);
+		//steeringController.TargetPosition = positioningBase + offset;
 	}
 
 	// ゴールまでの距離
@@ -211,8 +230,17 @@ public class CharacterAIAgent : MonoBehaviour
 		{
 			Gizmos.color = Color.blue;
 			Gizmos.DrawSphere(navMeshAgent.steeringTarget, 1f);
-			Gizmos.color = Color.red;
-			Gizmos.DrawSphere(navMeshAgent.nextPosition, 1f);
+			//Gizmos.color = Color.green;
+			//Gizmos.DrawSphere(navMeshAgent.pathEndPosition, 1f);
+
+			//foreach(Vector3 point in navMeshAgent.path.corners)
+			//{
+			//	Gizmos.color = Color.black;
+			//	Gizmos.DrawSphere(point, 1f);
+			//}
 		}
+		//Gizmos.color = Color.red;
+		//Gizmos.DrawSphere(endTargetPosition, 1f);
+		
 	}
 }

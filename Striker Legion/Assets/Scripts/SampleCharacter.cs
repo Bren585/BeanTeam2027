@@ -184,7 +184,6 @@ public class SampleCharacter : MonoBehaviour
 	// ボールをステアリング制御のターゲットとする
 	public void SetTargetIsBall()
 	{
-
 		steeringController.TargetPosition = ballObject.transform.position;
 	}
 

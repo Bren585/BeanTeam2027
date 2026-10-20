@@ -55,7 +55,8 @@ public partial class PressAction : ActionBase
         if (!TargetCharacter.hasBall)
             return Status.Failure;
 		// 追跡する座標をターゲットの位置に更新
-		characterAIAgent.SteeringController.TargetPosition = TargetCharacter.transform.position;
+		characterAIAgent.SetTargetPosition(TargetCharacter.transform.position);
+		//characterAIAgent.SteeringController.TargetPosition = TargetCharacter.transform.position;
 
         Vector3 Distance = TargetCharacter.transform.position - characterAIAgent.transform.position;
 

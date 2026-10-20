@@ -1,6 +1,7 @@
 using System;
 using Unity.Behavior;
 using Unity.Properties;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Action = Unity.Behavior.Action;
@@ -39,7 +40,8 @@ public partial class LateralTrackingAction : ActionBase
             return Status.Failure;
 
         // ターゲットを更新
-        characterAIAgent.SteeringController.TargetPosition = CalculateContainTargetPosition();
+        characterAIAgent.SetTargetPosition(CalculateContainTargetPosition());
+        //characterAIAgent.SteeringController.TargetPosition = CalculateContainTargetPosition();
         //characterAIAgent.SteeringController.TargetPosition = CalculateMovePosition();
 
         timer += Time.deltaTime;
@@ -65,6 +67,7 @@ public partial class LateralTrackingAction : ActionBase
 
 		// 対象の座標
 		Vector3 targetPosition = targetCharacter.transform.position;
+        float targetZ = targetPosition.z;
 
 		// 位置から敵へのベクトル
 		Vector3 toEnemy = targetPosition - basePosition;
@@ -73,13 +76,15 @@ public partial class LateralTrackingAction : ActionBase
 		float rawRightOffset = Vector3.Dot(toEnemy, Vector3.right);
 
         // 少し後ろ（自身のゴール）よりになるようにする
-        Vector3 offsetVector = Vector3.right;
-        offsetVector.z = (toEnemy.z > 0.0f) ? -0.3f : 0.3f;
+        Vector3 offsetVector = Vector3.right * rawRightOffset;
+        //offsetVector.z = (toEnemy.z > 0.0f) ? -0.3f : 0.3f;
         //offsetVector.z = (toEnemy.z > 0.0f) ? 0.1f : -0.1f;
-		offsetVector.Normalize();
+        Vector3 result = basePosition + (offsetVector);
+
+        result.z = characterAIAgent.BasePosition.z;
 
 		// 位置から計算した射影ベクトルを足した座標を返す
-		return basePosition + (offsetVector * rawRightOffset);
+		return result;
 		//return basePosition + (Vector3.right * rawRightOffset);
 	}
 }

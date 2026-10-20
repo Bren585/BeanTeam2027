@@ -64,14 +64,14 @@ public class SteeringController : MonoBehaviour
 
 	}
 
-    // Update is called once per frame
-    void Update()
+    // 外部呼び出し用
+    public void UpdateVelocity()
     {
         if (!isMove)
             return;
 
         // ターゲットまでの移動ベクトル
-		Vector3 moveDirection = TargetPosition - transform.position;
+		Vector3 moveDirection = targetPosition - transform.position;
 		//Vector3 MoveDirection = Vector3.Normalize(TargetPosition - transform.position);
 		moveDirection.y = 0.0f;
 
@@ -83,8 +83,6 @@ public class SteeringController : MonoBehaviour
         }
 
 		// 移動処理
-		//velocity = AvoidOpponentVector(MoveDirection.normalized);
-		//transform.position += AvoidOpponentVector(MoveDirection);
 		UpdateVelocity(moveDirection);
 	}
 
@@ -108,7 +106,6 @@ public class SteeringController : MonoBehaviour
 			case SteeringMode.Avoid:
 				Vector3 avoidVelocity = AvoidOpponentVector(direction.normalized);
 				velocity = SeekVector(avoidVelocity);
-				TargetPosition = FixedAvoidTargetPosition(avoidVelocity, direction.magnitude);
 			break;
 		}
 	}
@@ -185,7 +182,7 @@ public class SteeringController : MonoBehaviour
 		if (hitInfo.collider.tag != gameObject.tag)
 		    return Vector3.zero;
 
-		Debug.Log("ヒットした法線:" + hitInfo.normal + "名前:" + hitInfo.collider.name);
+		//Debug.Log("ヒットした法線:" + hitInfo.normal + "名前:" + hitInfo.collider.name);
 
 		// 法線で返す
 		return hitInfo.normal;
@@ -195,18 +192,18 @@ public class SteeringController : MonoBehaviour
 	private void OnDrawGizmosSelected()
 	{
 		// 移動方向の向き（目標位置がない場合は前方）
-		Vector3 dir = (TargetPosition != Vector3.zero)
-			? (TargetPosition - transform.position).normalized
-			: transform.forward;
+		//Vector3 dir = (targetPosition != Vector3.zero)
+		//	? (targetPosition - transform.position).normalized
+		//	: transform.forward;
 
-		// ギズモの色を設定（半透明の黄色）
-		Gizmos.color = new Color(1.0f, 0.92f, 0.015f, 0.5f);
+		//// ギズモの色を設定（半透明の黄色）
+		//Gizmos.color = new Color(1.0f, 0.92f, 0.015f, 0.5f);
 
-		// 3. 目的地の位置に小さな球を描画
-		if (TargetPosition != Vector3.zero)
-		{
-			Gizmos.color = Color.green;
-			Gizmos.DrawSphere(TargetPosition, 1f);
-		}
+		//// 3. 目的地の位置に小さな球を描画
+		//if (targetPosition != Vector3.zero)
+		//{
+		//	Gizmos.color = Color.green;
+		//	Gizmos.DrawSphere(targetPosition, 1f);
+		//}
 	}
 }
