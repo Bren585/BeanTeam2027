@@ -5,10 +5,10 @@ using Action = Unity.Behavior.Action;
 using Unity.Properties;
 
 [Serializable, GeneratePropertyBag]
-[NodeDescription(name: "Init Ball", story: "Init Ball", category: "Action", id: "46822a97ab083161d3d1ddf103d9266a")]
-public partial class InitBallAction : Action
+[NodeDescription(name: "Increment", story: "Add dTime to [Time]", category: "Action", id: "6d5e60af780a2f45d3b3ffb85482f2b3")]
+public partial class IncrementAction : Action
 {
-
+    [SerializeReference] public BlackboardVariable<float> Time;
     protected override Status OnStart()
     {
         return Status.Running;
@@ -16,6 +16,7 @@ public partial class InitBallAction : Action
 
     protected override Status OnUpdate()
     {
+        Time += (BlackboardVariable<float>)UnityEngine.Time.deltaTime;
         return Status.Success;
     }
 
