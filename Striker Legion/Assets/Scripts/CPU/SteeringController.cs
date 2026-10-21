@@ -50,11 +50,14 @@ public class SteeringController : MonoBehaviour
 
     // 移動開始用
     public void StartMove(SteeringMode mode) {
+		//Debug.Log(name+":ステアリング開始");
 		isMove = true;
 		steeringMode = mode;
     }
 	public void CancelMove()	{
+		//Debug.Log(name + ":ステアリング終了");
 		isMove = false;
+		
 	}
 
 
@@ -78,9 +81,10 @@ public class SteeringController : MonoBehaviour
 		// 規定の距離まで移動したら、移動終了
 		if (moveDirection.magnitude < minMagnitude)
         {
-            //Debug.Log("ステアリング終了");
-            isMove = false;
-        }
+
+			CancelMove();
+
+		}
 
 		// 移動処理
 		UpdateVelocity(moveDirection);

@@ -114,9 +114,11 @@ public class CharacterAIAgent : MonoBehaviour
 
     void UpdateSteering(Vector3 ParentVelocity)
     {
-        if (!steeringController.IsMove)
-            return;
-
+		if (!steeringController.IsMove)
+		{
+			owner.Move(Vector3.zero);
+			return;
+		}
         // 親の速度を元に計算する
         steeringController.SetParentVelocity(ParentVelocity);
 
@@ -127,8 +129,10 @@ public class CharacterAIAgent : MonoBehaviour
 		steeringController.UpdateVelocity();
 
 		if (steeringController.Velocity.magnitude < 0.01f)
-            return;
-
+		{
+			owner.Move(Vector3.zero);
+			return;
+		}
 		//navMeshAgent.SetDestination(steeringController.CurrentPosition);
 		//navMeshAgent.SetDestination(steeringController.TargetPosition);
         
@@ -225,6 +229,45 @@ public class CharacterAIAgent : MonoBehaviour
         return Distance.magnitude;
     }
 
+	public void GetAllowedDirectionRange2D(Vector2 forward, float halfAngleRad, out Vector2 leftBoundary, out Vector2 rightBoundary)
+	{
+		// 正面の絶対角度（ラジアン）を算出
+		float baseAngle = Mathf.Atan2(forward.y, forward.x);
+
+		// 左右の限界角度を計算
+		float leftAngle = baseAngle + halfAngleRad;
+		float rightAngle = baseAngle - halfAngleRad;
+
+		// 角度から単位ベクトルを復元
+		leftBoundary = new Vector2(Mathf.Cos(leftAngle), Mathf.Sin(leftAngle));
+		rightBoundary = new Vector2(Mathf.Cos(rightAngle), Mathf.Sin(rightAngle));
+	}
+
+	public void GetAllowedDirectionRangeByQuaternion(Vector3 forward, float halfAngleDeg, out Vector3 leftBoundary, out Vector3 rightBoundary)
+	{
+		// 正面ベクトルを基準に、指定角度だけ左と右に回転させたベクトルを作る
+		Quaternion leftRot = Quaternion.Euler(0f, -halfAngleDeg, 0f);
+		Quaternion rightRot = Quaternion.Euler(0f, halfAngleDeg, 0f);
+
+		// ※Unityの座標系や回転方向に合わせて軸を調整してください
+		leftBoundary = leftRot * forward;
+		rightBoundary = rightRot * forward;
+	}
+
+	public void GetAllowedDirectionRange3D(Vector3 forward, float halfAngleRad, out Vector3 leftBoundary, out Vector3 rightBoundary)
+	{
+		// XZ平面における基準の絶対角度（ラジアン）を算出
+		float baseAngle = Mathf.Atan2(forward.z, forward.x);
+
+		// 左右の限界角度を計算
+		float leftAngle = baseAngle + halfAngleRad;
+		float rightAngle = baseAngle - halfAngleRad;
+
+		// 角度からXZ平面上の単位ベクトルを復元（Y成分は 0）
+		leftBoundary = new Vector3(Mathf.Cos(leftAngle), 0f, Mathf.Sin(leftAngle));
+		rightBoundary = new Vector3(Mathf.Cos(rightAngle), 0f, Mathf.Sin(rightAngle));
+	}
+
 	private void OnDrawGizmosSelected()
 	{
 		// 3. 目的地の位置に小さな球を描画
@@ -235,14 +278,31 @@ public class CharacterAIAgent : MonoBehaviour
 			//Gizmos.color = Color.green;
 			//Gizmos.DrawSphere(navMeshAgent.pathEndPosition, 1f);
 
-			//foreach(Vector3 point in navMeshAgent.path.corners)
+			//foreach (Vector3 point in navMeshAgent.path.corners)
 			//{
-			//	Gizmos.color = Color.black;
+			//	Gizmos.color = Color.gray;
 			//	Gizmos.DrawSphere(point, 1f);
 			//}
 		}
+
+		// キャラクターの視界を描画する
+		GetAllowedDirectionRange3D(transform.forward, Mathf.PI / 4.0f, out Vector3 leftBoundary, out Vector3 rightBoundary);
+		Gizmos.color = Color.black;
+		// 描画する長さを調整
+		leftBoundary = leftBoundary.normalized * 10.0f;
+		rightBoundary = rightBoundary.normalized * 10.0f;
+
+		// 本来の座標から少し上を始点にする
+		Vector3 from = transform.position + Vector3.up;
+		// 描画処理
+		Gizmos.DrawLine(from, from + leftBoundary);
+		Gizmos.DrawLine(from, from + rightBoundary);
+
+		//Gizmos.color = Color.red;
+		//Gizmos.DrawSphere(endTargetPosition, 1.0f);
+
 		//Gizmos.color = Color.red;
 		//Gizmos.DrawSphere(endTargetPosition, 1f);
-		
+
 	}
 }
