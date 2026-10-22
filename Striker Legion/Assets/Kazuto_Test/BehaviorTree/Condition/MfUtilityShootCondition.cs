@@ -30,7 +30,7 @@ public partial class MfUtilityShootCondition : Condition
             return true;
 
         // ゴールの座標
-        Vector3 GoalPosition = MatchManager.Instance.GetGoalPosition(Midfielder.Value.TeamNumber);
+        Vector3 GoalPosition = MatchManager.Instance.GetGoalPosition(Midfielder.Value.Team);
 
 		// フォワードとゴールまでの距離
 		float distanceToGoalFromForward = (Forward.transform.position - GoalPosition).magnitude;

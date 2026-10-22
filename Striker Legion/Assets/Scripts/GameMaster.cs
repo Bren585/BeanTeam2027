@@ -16,8 +16,8 @@ public class GameMaster : MonoBehaviour
     void Start()
     {
         SkillBar skillBar = FindAnyObjectByType<SkillBar>();
-        skillBar.RegisterTeam(0);
-        skillBar.RegisterTeam(1);
+        skillBar.RegisterTeam(CharacterTeam.Player);
+        skillBar.RegisterTeam(CharacterTeam.Enemy);
     }
 
     // Update is called once per frame

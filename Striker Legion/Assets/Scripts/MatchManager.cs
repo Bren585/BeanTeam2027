@@ -17,11 +17,12 @@ public class MatchManager : MonoBehaviour
 	// 敵側のゴール
 	public Transform EnemyGoal { get; private set; }
 
-	public Transform BallTransform { get; private set; }
+	//　ゲームバール
+	[SerializeField] GameBall gameBall;
 
 	// ボールを持っているキャラをマネージャーで集約して保持すると超軽量化できる
-	private CharacterBase currentBallHolder;
-	public CharacterBase CurrentBallHolder => currentBallHolder;
+	//private CharacterBase currentBallHolder;
+	public CharacterBase CurrentBallHolder => gameBall.GetOwner() as CharacterBase;
 
 	private void Awake()
 	{
@@ -40,7 +41,7 @@ public class MatchManager : MonoBehaviour
 
 	private void Start()
 	{
-		UpdateBallHolder();
+		//UpdateBallHolder();
 	}
 
 	void Initialize()
@@ -60,54 +61,54 @@ public class MatchManager : MonoBehaviour
 			else
 				EnemyGoal = goalObject.transform;
 		}
-
-		BallTransform = GameObject.FindGameObjectWithTag("Ball").transform;
 	}
 
 	void Update()
 	{
 		// ボールが誰が持っているか検索する
-		UpdateBallHolder();
+		// UpdateBallHolder();
 	}
 
-	// ボールを持っているキャラクターを検索する
-	void UpdateBallHolder()
-	{
-		if (PlayerTeam == null || EnemyTeam == null)
-			return;
+	// ゲームボールのGetOwnerに変更
+	//
+	//// ボールを持っているキャラクターを検索する
+	//void UpdateBallHolder()
+	//{
+	//	if (PlayerTeam == null || EnemyTeam == null)
+	//		return;
 
-		if (PlayerTeam.teamObjects == null || EnemyTeam.teamObjects == null)
-			return;
+	//	if (PlayerTeam.teamObjects == null || EnemyTeam.teamObjects == null)
+	//		return;
 
-		//if(currentBallHolder)
-		//Debug.Log("今ボールを持っているキャラのチーム番号:"+currentBallHolder.teamNo);
+	//	//if(currentBallHolder)
+	//	//Debug.Log("今ボールを持っているキャラのチーム番号:"+currentBallHolder.team);
 
-		foreach (CharacterBase c in PlayerTeam.teamObjects)
-		{
-			if (!c.hasBall)
-				continue;
+	//	foreach (CharacterBase c in PlayerTeam.teamObjects)
+	//	{
+	//		if (!c.hasBall)
+	//			continue;
 
-			if (currentBallHolder == c)
-				return;
+	//		if (currentBallHolder == c)
+	//			return;
 
-			Debug.Log("Playerチームがボールを持った");
+	//		Debug.Log("Playerチームがボールを持った");
 
-			currentBallHolder = c;
-			return;
-		}
-		foreach (CharacterBase c in EnemyTeam.teamObjects)
-		{
-			if (!c.hasBall)
-				continue;
+	//		currentBallHolder = c;
+	//		return;
+	//	}
+	//	foreach (CharacterBase c in EnemyTeam.teamObjects)
+	//	{
+	//		if (!c.hasBall)
+	//			continue;
 
-			if (currentBallHolder == c)
-				return;
-			Debug.Log("Enemyチームがボールを持った");
-			currentBallHolder = c;
-			return;
-		}
-		//Debug.Log("だれもボールを持っていない");
-	}
+	//		if (currentBallHolder == c)
+	//			return;
+	//		Debug.Log("Enemyチームがボールを持った");
+	//		currentBallHolder = c;
+	//		return;
+	//	}
+	//	//Debug.Log("だれもボールを持っていない");
+	//}
 
 	// ゴールした際の処理
 	public void GoalEvent(CharacterTeam team)

@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 
 public class SkillBar : MonoBehaviour
 {
-    Dictionary<int, float> energyBars = new Dictionary<int, float>();
+    Dictionary<CharacterTeam, float> energyBars = new Dictionary<CharacterTeam, float>();
 
     [SerializeField] private SkillBarInfo barInfo;
 
@@ -14,9 +14,9 @@ public class SkillBar : MonoBehaviour
 
     float secondTimer = 1.0f;
 
-    public void RegisterTeam(int teamNo) { energyBars[teamNo] = barInfo.startingEnergy; }
+    public void RegisterTeam(CharacterTeam team) { energyBars[team] = barInfo.startingEnergy; }
 
-    public float GetEnergy(int teamNo) { return energyBars[teamNo]; }
+    public float GetEnergy(CharacterTeam team) { return energyBars[team]; }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -32,18 +32,18 @@ public class SkillBar : MonoBehaviour
         {
             secondTimer += 1;
             
-            Dictionary<int, float>.KeyCollection keys = energyBars.Keys;
-            int[] teams = new int[keys.Count];
+            Dictionary<CharacterTeam, float>.KeyCollection keys = energyBars.Keys;
+            CharacterTeam[] teams = new CharacterTeam[keys.Count];
             int i = 0;
 
-            foreach (int teamNo in keys)
+            foreach (CharacterTeam team in keys)
             {
-              teams[i++] = teamNo;
+              teams[i++] = team;
             }
 
-            foreach (int teamNo in teams)
+            foreach (CharacterTeam team in teams)
             {
-                Charge(barInfo.passiveGain, teamNo);
+                Charge(barInfo.passiveGain, team);
             }
         }
 
@@ -51,21 +51,21 @@ public class SkillBar : MonoBehaviour
         test_slider.value = test_value / barInfo.maxEnergy;
     }
 
-    public bool Ready(int teamNo) { return energyBars[teamNo] >= barInfo.reqEnergy; }
+    public bool Ready(CharacterTeam team) { return energyBars[team] >= barInfo.reqEnergy; }
 
-    void Charge(float amount, int teamNo) 
+    void Charge(float amount, CharacterTeam team) 
     {
-        energyBars[teamNo] = Mathf.Clamp(energyBars[teamNo] + amount, 0, barInfo.maxEnergy);
+        energyBars[team] = Mathf.Clamp(energyBars[team] + amount, 0, barInfo.maxEnergy);
     }
     
-    public bool PayForSkill(int teamNo) 
+    public bool PayForSkill(CharacterTeam team) 
     {
-        if (!Ready(teamNo)) return false;
-        Charge(-barInfo.maxEnergy, teamNo);
+        if (!Ready(team)) return false;
+        Charge(-barInfo.maxEnergy, team);
         return true;
     }
 
-    public void GainForTackle(int teamNo) { Charge(barInfo.tackleGain, teamNo); }
-    public void GainForShoot(int teamNo) { Charge(barInfo.shootGain, teamNo); }
+    public void GainForTackle(CharacterTeam team) { Charge(barInfo.tackleGain, team); }
+    public void GainForShoot(CharacterTeam team) { Charge(barInfo.shootGain, team); }
 
 }

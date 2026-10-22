@@ -346,7 +346,7 @@ public class CharacterBase : BallHolder
             CharacterBase opponent = other.GetComponentInParent<CharacterBase>();
             if (BallHandlingFail())
             {
-                //if (opponent.teamNo == teamNo) { return; } // 繝・せ繝医＠繧・☆縺・◆繧√が繝・ヵ
+                //if (opponent.team == team) { return; } // 繝・せ繝医＠繧・☆縺・◆繧√が繝・ヵ
 
                 GameBall gameBall = FindAnyObjectByType<GameBall>();
 
@@ -355,7 +355,7 @@ public class CharacterBase : BallHolder
                 opponent.lockMove();
                 LoseBall();
                 ClearPassTarget();
-                skillBar.GainForTackle(opponent.teamNo);
+                skillBar.GainForTackle(opponent.team);
 
                 // 繝繧ｦ繝ｳ
                 downTimer = baseInfo.maxDownTime * (1 - constition);
@@ -363,7 +363,7 @@ public class CharacterBase : BallHolder
             }
         }
         //HACK: if譁・′髟ｷ縺吶℃繧・
-        else if (other.gameObject.tag == "Goal" && other.transform.Find("ShootCamOrigin").Find("AimMarker").GetComponent<AimMarkerController>().teamNo != this.teamNo && hasBall == true)
+        else if (other.gameObject.tag == "Goal" && other.transform.Find("ShootCamOrigin").Find("AimMarker").GetComponent<AimMarkerController>().team != this.team && hasBall == true)
         {
             // Enter Shooting Mode
             //
@@ -405,7 +405,7 @@ public class CharacterBase : BallHolder
         foreach (CharacterBase character in characters)
         {
             if (character == this) continue;
-            if (character.teamNo != teamNo) continue;
+            if (character.team != team) continue;
 
             Vector3 toCharacter = character.transform.position - transform.position;
             float dot = Vector3.Dot(transform.forward, toCharacter.normalized);
@@ -422,7 +422,7 @@ public class CharacterBase : BallHolder
             hits.RemoveAll(hit =>
             {
                 CharacterBase hitCharacter = hit.transform.GetComponent<CharacterBase>();
-                return hitCharacter == null || hitCharacter.teamNo == teamNo;
+                return hitCharacter == null || hitCharacter.team == team;
             });
 
             // ヒット数が前回までのヒット数より多かったら飛ばす
@@ -488,7 +488,7 @@ public class CharacterBase : BallHolder
             AimMarkerController[] targets = FindObjectsByType<AimMarkerController>();
             foreach (AimMarkerController goalCandidate in targets)
             {
-                if (goalCandidate.teamNo == teamNo) continue;
+                if (goalCandidate.team == team) continue;
                 Debug.Log("Shooting to Goal");
                 // Kick the ball to Goal
                 gameBall.Kick(new GameBall.flight(this, goalCandidate, 0, 20));
@@ -537,12 +537,12 @@ public class CharacterBase : BallHolder
 
     public bool CanSkill()
     {
-        return skillBar.Ready(teamNo);
+        return skillBar.Ready(team);
     }
 
     public virtual void Skill()
     {
-        skillBar.PayForSkill(teamNo);
+        skillBar.PayForSkill(team);
         Debug.Log("Used Skill");
     }
 

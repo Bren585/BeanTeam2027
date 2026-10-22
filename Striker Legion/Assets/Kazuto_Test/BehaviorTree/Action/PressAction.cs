@@ -35,7 +35,7 @@ public partial class PressAction : ActionBase
             return Status.Failure;
 
         // キャラのタグが同一なら、同じ陣営のキャラを追いかけようとしているからFalse
-        if (TargetCharacter.teamNo == characterAIAgent.TeamNumber)
+        if (TargetCharacter.team == characterAIAgent.Team)
             return Status.Failure;
 
 		// 行動をデバッグで表示

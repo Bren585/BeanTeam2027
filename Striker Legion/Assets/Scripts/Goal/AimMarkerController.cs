@@ -55,5 +55,6 @@ public class AimMarkerController : BallHolder
     protected override void OnGetBall()
     {
         onGoalEvent.SendEventMessage();
+        MatchManager.Instance.GoalEvent(team);
     }
 }

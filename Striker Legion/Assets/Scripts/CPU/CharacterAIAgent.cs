@@ -49,7 +49,7 @@ public class CharacterAIAgent : MonoBehaviour
 	// キャラクターがボールを持っているか
 	public bool HasBall => owner.hasBall;
     // キャラのチーム番号
-    public int TeamNumber => owner.teamNo;
+    public CharacterTeam Team => owner.team;
 
     // パス関数（CharacterBaseから呼び出し）
     public void Pass() => owner.KickBall();
@@ -175,7 +175,7 @@ public class CharacterAIAgent : MonoBehaviour
             if(owner.hasBall)
              	behaviorGraphAgent.SetVariableValue("TeamHavingBall", true);
             else if (MatchManager.Instance.CurrentBallHolder)
-               	behaviorGraphAgent.SetVariableValue("TeamHavingBall", owner.teamNo == MatchManager.Instance.CurrentBallHolder.teamNo);
+               	behaviorGraphAgent.SetVariableValue("TeamHavingBall", owner.team == MatchManager.Instance.CurrentBallHolder.team);
             else
                	behaviorGraphAgent.SetVariableValue("TeamHavingBall", false);
             
@@ -208,7 +208,7 @@ public class CharacterAIAgent : MonoBehaviour
 	// ゴールまでの距離
 	public float GetDistanceToGoal()
 	{
-		Transform Goal = (owner.teamNo == 0) ? MatchManager.Instance.EnemyGoal : MatchManager.Instance.PlayerGoal;
+		Transform Goal = (owner.team == 0) ? MatchManager.Instance.EnemyGoal : MatchManager.Instance.PlayerGoal;
 
 		return Vector3.Distance(transform.position, Goal.position);
 	}
