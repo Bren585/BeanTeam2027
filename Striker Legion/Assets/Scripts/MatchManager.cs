@@ -70,6 +70,8 @@ public class MatchManager : MonoBehaviour
 				EnemyGoal = goalObject.transform;
 		}
 
+		SkillBar.instance = new SkillBar();
+
         SkillBar.instance.RegisterTeam(CharacterTeam.Player);
         SkillBar.instance.RegisterTeam(CharacterTeam.Enemy);
 
@@ -130,7 +132,7 @@ public class MatchManager : MonoBehaviour
 	{
 		Debug.Log(team + "側のゴールにボールが入りました。");
 
-		scores[team]++;
+		scores[team] += 1;
 
 		// エネルギーを与える
 		SkillBar.instance.GainForShoot(team);

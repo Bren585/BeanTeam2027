@@ -9,78 +9,40 @@ using static UnityEngine.Mathf;
 [RequireComponent(typeof(CharacterController))]
 public class CharacterBase : BallHolder
 {
-    // 繧ｳ繝ｳ繝昴ロ繝ｳ繝・******************************************************************************************
+    // コンポネント ******************************************************************************************
 
-    protected CharacterController body;
-    protected GameObject ball;
-    protected GameObject tackleHitbox;
+    private CharacterController body;
+    private GameObject ball;
+    private GameObject tackleHitbox;
+    private Animator animator;
 
     // 繧ｭ繝｣繝ｩ螳夂ｾｩ *******************************************************************************************
 
     [Header("ベース設定")]
-    [SerializeField] protected CharacterBaseInfo baseInfo;
+    [SerializeField] private CharacterBaseInfo baseInfo;
 
     // 繧ｭ繝｣繝ｩ繝代Λ繝｡繝ｼ繧ｿ **************************************************************************************
 
     [Header("継承パラメータ")]
 
-    /// <summary>
-    ///                                             蠕ｩ豢ｻ蜉・
-    ///                                             <br/>
-    ///                                             蛟､縺ｯ0.0・亥ｼｱ縺・∵掠縺乗ｲｻ繧峨↑縺・ｼ峨°繧会ｼ托ｼ趣ｼ撰ｼ亥ｼｷ縺・∵掠縺乗ｲｻ繧具ｼ峨∪縺ｧ縺ｨ縺励∪縺吶・
-    /// </summary>
-    [SerializeField, Range(0f, 1f)] protected float constition;
+    [SerializeField] private CharacterInfo info;
 
-    /// <summary>
-    ///                                             繝懊・繝ｫ縺ｮ謇ｱ縺・ｄ縺吶＆
-    ///                                             <br/>
-    ///                                             蛟､縺ｯ0.0・域判謦・＆繧後◆繧臥ｵｶ蟇ｾ關ｽ縺ｨ縺吶↑縺ｩ・峨°繧会ｼ托ｼ趣ｼ撰ｼ医・繝ｼ繝ｫ關ｽ縺ｨ縺輔↑縺・↑縺ｩ・峨∪縺ｧ縺ｨ縺励∪縺吶・
-    /// </summary>
-    [SerializeField, Range(0f, 1f)] protected float ballHandling;
+    // キャラ状態 *******************************************************************************************
 
-    /// <summary>
-    ///                                             襍ｰ繧九→縺阪・蟆丞屓繧雁鴨縲∵ｨｪ遘ｻ蜍輔せ繝斐・繝峨√い繧ｯ繧ｻ繝ｫ                      
-    ///                                             <br/>            
-    ///                                             蛟､縺ｯ・撰ｼ趣ｼ撰ｼ域怙菴弱↓驕・＞・峨°繧会ｼ托ｼ趣ｼ撰ｼ域怙鬮倥↓譌ｩ縺・ｼ峨∪縺ｧ縺ｨ縺励∪縺吶・
-    /// </summary>
-    [SerializeField, Range(0f, 1f)] protected float groundMobility;
-
-    /// <summary>
-    ///                                             繧ｷ繝ｧ繝ｼ繝亥鴨
-    /// </summary>
-    [SerializeField, Range(0f, 1f)] protected float power;
-
-    [Header("魑･邉ｻ")]
-    /// <summary>
-    ///                                             鬟帙∋繧九°縺ｩ縺・°
-    /// </summary>
-    [SerializeField] protected bool canFly = false;
-
-    /// <summary>
-    ///                                             鬟帙・繝槭ャ繧ｯ繧ｹ繧ｹ繝斐・繝・
-    /// </summary>
-    [SerializeField] protected float maxFlySpeed = 0;
-
-    /// <summary>
-    ///                                             鬟帙・縺ｨ縺阪・蟆丞屓繧雁鴨縲∵ｨｪ遘ｻ蜍輔せ繝斐・繝峨√い繧ｯ繧ｻ繝ｫ
-    /// </summary>
-    [SerializeField, Range(0f, 1f)] protected float airMobility = 0.1f;
-
-    // 繧ｭ繝｣繝ｩ迥ｶ諷・*******************************************************************************************
+    // スキル
+    [SerializeField] private SkillEffectBase skillEffect;
 
     [field: Header("状態")]
 
     private Vector3 _velocity;
     public Vector3 velocity => _velocity;
-    Animator animator;
-    SkillBar skillBar;
 
-    // 繧ｪ繝ｼ繝舌・繝ｩ繧､繝・***************************************************************************************
+    // オーバーライド ***************************************************************************************
     public override Vector3 GetHoldPosition() { return transform.Find("Feet").position; }
     public override Vector3 GetVelocity() { return velocity; }
 
     /// <summary>
-    /// true縺ｪ繧牙虚縺・※縺・ｋ蜷代″縺ｫ蝗槭ｋ縲’alse縺ｪ繧牙髄縺九↑縺・
+    /// trueなら動いている向きに回る、falseなら向かない
     /// </summary>
     bool strafing = false;
     bool moving = false;
@@ -92,9 +54,9 @@ public class CharacterBase : BallHolder
     { 
         get 
         {
-            if      (flying)    return maxFlySpeed;
-            else if (strafing)  return baseInfo.maxRunSpeed * (0.1f + 0.9f * groundMobility);
-            else                return baseInfo.maxRunSpeed;
+            if      (flying)    return info.maxFlySpeed;
+            else if (strafing)  return info.speed * baseInfo.maxRunSpeed * (0.1f + 0.9f * info.groundMobility);
+            else                return info.speed * baseInfo.maxRunSpeed;
         } 
     }
 
@@ -105,7 +67,7 @@ public class CharacterBase : BallHolder
 
     CharacterBase passTarget = null;
 
-    // 髢｢謨ｰ *******************************************************************************************
+    // 関数 *******************************************************************************************
 
     protected virtual void Awake()
     {
@@ -121,7 +83,6 @@ public class CharacterBase : BallHolder
     void Start()
     {
         tackleTimer = baseInfo.tackleCooldown;
-        skillBar = FindAnyObjectByType<SkillBar>();
     }
 
     void Update()
@@ -173,12 +134,12 @@ public class CharacterBase : BallHolder
 
     void UpdateMovement()
     {
-        if (flying) // 鬟帙ｓ縺ｧ繧・
+        if (flying) // 飛んでる
         {
         }
-        else // 襍ｰ縺｣縺ｦ繧・
+        else // 走ってる
         {
-            // 騾溷ｺｦ繝√ぉ繝・け
+            // 速度チェック
             Vector3 groundVelocity = velocity;
             groundVelocity.y = 0;
 
@@ -186,12 +147,12 @@ public class CharacterBase : BallHolder
 
             Vector3 movement = Vector3.zero;
 
-            if (strafing) // 讓ｪ遘ｻ蜍・
+            if (strafing) // 横移動
             {
                 movement = (groundVelocity * Time.deltaTime);
                 animator.SetFloat("forward", 0);
             }
-            else // 譎ｮ騾壹↓襍ｰ繧・
+            else //　普通に走る
             {
                 UpdateRotation(groundVelocity);
 
@@ -238,7 +199,7 @@ public class CharacterBase : BallHolder
         {
             Quaternion targetRotation = Quaternion.LookRotation(groundVelocity);
 
-            float turnSpeed = (baseInfo.minTurnSpeed + Lerp(baseInfo.minTurnSpeed, baseInfo.maxTurnSpeed, groundMobility)) * Time.deltaTime;
+            float turnSpeed = (baseInfo.minTurnSpeed + Lerp(baseInfo.minTurnSpeed, baseInfo.maxTurnSpeed, info.groundMobility)) * Time.deltaTime;
 
             body.transform.rotation = Quaternion.RotateTowards(
                 body.transform.rotation,
@@ -256,9 +217,9 @@ public class CharacterBase : BallHolder
     }
 
     /// <summary>
-    /// 繧ｭ繝｣繝ｩ縺ｫ騾溷ｺｦ繧貞刈縺医ｋ
+    /// キャラに速度を加える
     /// </summary>
-    /// <param name="input">騾溷ｺｦ</param>
+    /// <param name="input">速度</param>
     public void Move(Vector3 input)
     {
         if (moveLocked) { return; }
@@ -268,7 +229,7 @@ public class CharacterBase : BallHolder
 
         input = input.normalized;
 
-        float mobility = body.isGrounded ? groundMobility : airMobility;
+        float mobility = body.isGrounded ? info.groundMobility : info.airMobility;
 
         float accelerationModifier = Mathf.Pow(2, (mobility - 1));
 
@@ -280,9 +241,9 @@ public class CharacterBase : BallHolder
         {
             float dot = Vector3.Dot(input, groundVelocity.normalized);
 
-            if (dot < 0) // 遘ｻ蜍募・縺悟虚縺・※縺・ｋ蜷代″縺ｨ驕輔≧
+            if (dot < 0)  // 移動先が動いている向きと違う
             {
-                // 蜷代″縺碁＆縺・・縲∵掠縺丞髄縺代ｋ縺溘ａ縲∵掠縺上↑繧九・
+                // 向きが違う分、早く向けるため、早くなる。
                 acceleration *= 1 - dot * mobility;
             }
         }
@@ -291,9 +252,9 @@ public class CharacterBase : BallHolder
     }
 
     /// <summary>
-    /// 遘ｻ蜍募・縺ｫ蜷代￥縺ｹ縺阪°
+    /// 移動先に向くべきか
     /// </summary>
-    /// <param name="strafe">true縺ｪ繧牙虚縺・※縺・ｋ蜷代″縺ｫ蝗槭ｋ縲’alse縺ｪ繧牙髄縺九↑縺・/param>
+    /// <param name="strafe">trueなら動いている向きに回る、falseなら向かない</param>
     public void SetStrafe(bool strafe)
     {
         if (flying) strafing = false;
@@ -304,9 +265,9 @@ public class CharacterBase : BallHolder
     {
         if (!body.isGrounded) { return; }
         animator.SetTrigger("Jump");
-        if (canFly) 
-        { 
-            // 鬟帙・蟋九ａ縺ｦ
+        if (info.canFly) 
+        {
+            // 飛び始めて
         }
         else 
         {
@@ -325,12 +286,12 @@ public class CharacterBase : BallHolder
 
     bool BallHandlingFail()
     {
-        return Random.value > ballHandling;
+        return Random.value > info.ballHandling;
     }
 
     bool BallHandlingSuccess()
     {
-        return Random.value < ballHandling;
+        return Random.value < info.ballHandling;
     }
 
     protected override void OnGetBall()
@@ -346,7 +307,7 @@ public class CharacterBase : BallHolder
             CharacterBase opponent = other.GetComponentInParent<CharacterBase>();
             if (BallHandlingFail())
             {
-                //if (opponent.team == team) { return; } // 繝・せ繝医＠繧・☆縺・◆繧√が繝・ヵ
+                //if (opponent.teamNo == teamNo) { return; } // テストしやすいためオッフ
 
                 GameBall gameBall = FindAnyObjectByType<GameBall>();
 
@@ -355,14 +316,14 @@ public class CharacterBase : BallHolder
                 opponent.lockMove();
                 LoseBall();
                 ClearPassTarget();
-                skillBar.GainForTackle(opponent.team);
+                SkillBar.instance.GainForTackle(opponent.team);
 
-                // 繝繧ｦ繝ｳ
-                downTimer = baseInfo.maxDownTime * (1 - constition);
+                // ダウン
+                downTimer = baseInfo.maxDownTime * (1 - info.constition);
                 animator.SetTrigger("Down");
             }
         }
-        //HACK: if譁・′髟ｷ縺吶℃繧・
+        //HACK: if文が長すぎる
         else if (other.gameObject.tag == "Goal" && other.transform.Find("ShootCamOrigin").Find("AimMarker").GetComponent<AimMarkerController>().team != this.team && hasBall == true)
         {
             // Enter Shooting Mode
@@ -537,12 +498,13 @@ public class CharacterBase : BallHolder
 
     public bool CanSkill()
     {
-        return skillBar.Ready(team);
+        return SkillBar.instance.Ready(team);
     }
 
-    public virtual void Skill()
+    public void Skill()
     {
-        skillBar.PayForSkill(team);
+        SkillBar.instance.PayForSkill(team);
+        skillEffect.Activate(this);
         Debug.Log("Used Skill");
     }
 
