@@ -36,6 +36,8 @@ public partial class LateralTrackingAction : ActionBase
     protected override Status OnUpdate()
     {
         // ターゲットがボールを失うか手放したら失敗として終了
+        if (targetCharacter == null) 
+            return Status.Failure;
         if (!targetCharacter.hasBall)
             return Status.Failure;
 

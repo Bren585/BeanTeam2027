@@ -20,9 +20,17 @@ public class MatchManager : MonoBehaviour
 	//　ゲームバール
 	[SerializeField] GameBall gameBall;
 
-	// ボールを持っているキャラをマネージャーで集約して保持すると超軽量化できる
-	//private CharacterBase currentBallHolder;
-	public CharacterBase CurrentBallHolder => gameBall.GetOwner() as CharacterBase;
+	// ゲームクロック
+    float gametimer;
+
+	//　スコアボード
+    private Dictionary<CharacterTeam, int> scores;
+
+	public Dictionary<CharacterTeam, int> Score => scores;
+
+    // ボールを持っているキャラをマネージャーで集約して保持すると超軽量化できる
+    //private CharacterBase currentBallHolder;
+    public CharacterBase CurrentBallHolder => gameBall.GetOwner() as CharacterBase;
 
 	private void Awake()
 	{
@@ -41,8 +49,8 @@ public class MatchManager : MonoBehaviour
 
 	private void Start()
 	{
-		//UpdateBallHolder();
-	}
+        //UpdateBallHolder();
+    }
 
 	void Initialize()
 	{
@@ -61,7 +69,14 @@ public class MatchManager : MonoBehaviour
 			else
 				EnemyGoal = goalObject.transform;
 		}
-	}
+
+        SkillBar.instance.RegisterTeam(CharacterTeam.Player);
+        SkillBar.instance.RegisterTeam(CharacterTeam.Enemy);
+
+		scores = new Dictionary<CharacterTeam, int>();
+		scores[CharacterTeam.Player] = 0;
+		scores[CharacterTeam.Enemy]	= 0;
+    }
 
 	void Update()
 	{
@@ -114,6 +129,11 @@ public class MatchManager : MonoBehaviour
 	public void GoalEvent(CharacterTeam team)
 	{
 		Debug.Log(team + "側のゴールにボールが入りました。");
+
+		scores[team]++;
+
+		// エネルギーを与える
+		SkillBar.instance.GainForShoot(team);
 
 		// キャラクターの座標などをリセットする
 		ResetForKickoff(team);

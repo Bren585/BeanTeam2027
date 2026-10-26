@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using System.Linq;
-using System.Collections.ObjectModel;
 
 public class SkillBar : MonoBehaviour
 {
@@ -17,6 +15,15 @@ public class SkillBar : MonoBehaviour
     public void RegisterTeam(CharacterTeam team) { energyBars[team] = barInfo.startingEnergy; }
 
     public float GetEnergy(CharacterTeam team) { return energyBars[team]; }
+
+    static public SkillBar instance = null;
+
+    private void Awake()
+    {
+        if      (instance == null) instance = this;
+        else if (instance != this) Destroy(gameObject); return;
+    }
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
