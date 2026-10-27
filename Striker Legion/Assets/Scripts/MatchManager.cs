@@ -7,9 +7,9 @@ public class MatchManager : MonoBehaviour
 	public static MatchManager Instance { get; private set; }
 
 	// プレイヤー陣営のチーム
-	[SerializeField] private TeamManager PlayerTeam;
+	private TeamManager PlayerTeam;
 	// 敵陣営のチーム
-	[SerializeField] private TeamManager EnemyTeam;
+	private TeamManager EnemyTeam;
 
 	// プレイヤー側のゴール
 	public Transform PlayerGoal { get; private set; }
@@ -22,6 +22,8 @@ public class MatchManager : MonoBehaviour
 	// ボールを持っているキャラをマネージャーで集約して保持すると超軽量化できる
 	private CharacterBase currentBallHolder;
 	public CharacterBase CurrentBallHolder => currentBallHolder;
+
+	private PitchEvaluator pitchEvaluator;
 
 	private void Awake()
 	{
@@ -62,6 +64,9 @@ public class MatchManager : MonoBehaviour
 		}
 
 		BallTransform = GameObject.FindGameObjectWithTag("Ball").transform;
+
+		// このオブジェクトについているコンポーネントを保存
+		pitchEvaluator = gameObject.GetComponentInChildren<PitchEvaluator>();
 	}
 
 	void Update()
@@ -73,9 +78,16 @@ public class MatchManager : MonoBehaviour
 	// ボールを持っているキャラクターを検索する
 	void UpdateBallHolder()
 	{
-		if (PlayerTeam == null || EnemyTeam == null)
+		if (PlayerTeam == null)
+		{
+			Debug.Log("プレイヤーチームが未登録");
 			return;
-
+		}
+		if(EnemyTeam == null)
+		{
+			Debug.Log("エネミーチームが未登録");
+			return;
+		}
 		if (PlayerTeam.teamObjects == null || EnemyTeam.teamObjects == null)
 			return;
 
@@ -176,7 +188,7 @@ public class MatchManager : MonoBehaviour
 
 	private TeamManager GetTeamManager(CharacterTeam team)
 	{
-		if (team == PlayerTeam.GetTeamType())
+		if (team == PlayerTeam.TeamType)
 			return PlayerTeam;
 		else
 			return EnemyTeam;
@@ -187,5 +199,52 @@ public class MatchManager : MonoBehaviour
 	{
 		PlayerTeam.DebugGUI();
 		EnemyTeam.DebugGUI();
+	}
+
+	public void RegisterTeam(TeamManager team)
+	{
+		if(team.TeamType == CharacterTeam.Player)
+		{
+			// チームが登録済みなら終了
+			if (PlayerTeam != null)
+			{
+				Debug.Log("プレイヤーチームは登録済み");
+				return;
+			}
+			PlayerTeam = team;
+			PitchEvaluatorRegister(team.teamObjects);
+		}
+		else
+		{
+			// チームが登録済みなら終了
+			if (EnemyTeam != null)
+			{
+				Debug.Log("エネミーチームは登録済み");
+				return;
+			}
+			EnemyTeam = team;
+			PitchEvaluatorRegister(team.teamObjects);
+		}
+	}
+
+	// ------------------------ ピッチグリッド計算クラスの呼び出し関数 --------------------------
+	void PitchEvaluatorRegister(List<CharacterBase> characters)
+	{
+		if (pitchEvaluator != null)
+		{
+			pitchEvaluator.Register(characters);
+		}
+		else
+			Debug.Log("評価用コンポーネントがNull");
+	}
+
+	public void GetGridScores(float[,] buffer, CharacterTeam team, CharacterRole role)
+	{
+		//return pitchEvaluator.GetGridScores(team, role);
+		pitchEvaluator.GetGridScores(buffer, team, role);
+	}
+	public void GetPitchInfo(out int cols, out int rows, out Vector2 size, out Vector3 origin)
+	{
+		pitchEvaluator.GetPitchInfo(out cols, out rows, out size, out origin);
 	}
 }

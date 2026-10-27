@@ -17,6 +17,8 @@ public partial class MoveEnableReceiveAction : ActionBase
 
     const float RetryTime = 1.0f;
 
+    Vector3 goalPosition = Vector3.zero;
+
     protected override Status OnStart()
     {
         // 基底クラスの初期化
@@ -70,7 +72,7 @@ public partial class MoveEnableReceiveAction : ActionBase
 		// 時間経過で目標座標を再計算
 		// Todo:時間で更新させているけど、大きく動きすぎる。制限をかけないといけない
 
-		if (RetryTime < timer)
+		if (/*RetryTime < timer ||*/ DotToBallHolder() < (0.7f))
         {
             timer = 0.0f;
 			characterAIAgent.SetTargetPosition(CalculateEnableReceivePos());
@@ -83,6 +85,20 @@ public partial class MoveEnableReceiveAction : ActionBase
     {
 
 	}
+
+    float DotToBallHolder()
+    {
+		// ボールを持っている対象の座標
+		Vector3 targetPosition = ballHolder.transform.position;
+		// 対象の正面ベクトル
+		Vector3 targetForward = ballHolder.transform.forward;
+
+		// ボールを持っているキャラまでのベクトル
+		Vector3 direction = goalPosition - targetPosition;
+		//Vector3 direction = (targetPosition - GameObject.transform.position);
+
+		return Vector3.Dot(direction.normalized, targetForward);
+    }
 
     Vector3 CalculateEnableReceivePos()
     {
@@ -130,7 +146,10 @@ public partial class MoveEnableReceiveAction : ActionBase
         // 旋回する半径
 		float radius = 20.0f;
 
-		return GameObject.transform.position + vec.normalized * radius;
+        // 目標地点を保存
+        goalPosition = GameObject.transform.position + vec.normalized * radius;
+
+		return goalPosition;
 
     }
 }

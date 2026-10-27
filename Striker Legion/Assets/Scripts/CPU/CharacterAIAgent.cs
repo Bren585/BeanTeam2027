@@ -31,6 +31,9 @@ public class CharacterAIAgent : MonoBehaviour
 	// ステアリング制御コントローラ
 	private SteeringController steeringController;
 
+	// キャラのピッチ上のスコアを管理する
+	private CharacterPitchScore pitchScore;
+
     // デバッグ用のテキスト表示
     public DebugText DebugText { get; private set; }
 
@@ -39,6 +42,7 @@ public class CharacterAIAgent : MonoBehaviour
 	
     public CharacterRole Role { get; private set; }
 
+	// 一応、終点座標を保持できるようにしてある。ほとんどデバッグ用
 	Vector3 endTargetPosition = Vector3.zero;
 
 	//------------------------------ getter -----------------------------------
@@ -47,6 +51,8 @@ public class CharacterAIAgent : MonoBehaviour
     public CharacterSensor CharacterSensor => characterSensor;
 
 	public Vector3 BasePosition(PositioningName name) => positioningBase[name];
+
+	public Vector3 BestPosition => pitchScore.GetBestPosition();
 
 	// キャラクターがボールを持っているか
 	public bool HasBall => owner.hasBall;
@@ -83,6 +89,7 @@ public class CharacterAIAgent : MonoBehaviour
 		// デバッグテキストコンポーネントを追加
 		DebugText = gameObject.AddComponent<DebugText>();
 		characterSensor = gameObject.AddComponent<CharacterSensor>();
+		pitchScore = gameObject.AddComponent<CharacterPitchScore>();
 
         navMeshAgent.updatePosition = true;
 		navMeshAgent.isStopped = true;
@@ -98,6 +105,7 @@ public class CharacterAIAgent : MonoBehaviour
         this.positioningBase = positioningBase;
         Role = role;
 		DebugText.SetDefaultText(owner.name +" " + Role);
+		pitchScore.Initialize(role, (CharacterTeam)(TeamNumber));
 	}
 
 	// Update is called once per frame
@@ -298,8 +306,8 @@ public class CharacterAIAgent : MonoBehaviour
 		Gizmos.DrawLine(from, from + leftBoundary);
 		Gizmos.DrawLine(from, from + rightBoundary);
 
-		//Gizmos.color = Color.red;
-		//Gizmos.DrawSphere(endTargetPosition, 1.0f);
+		Gizmos.color = Color.red;
+		Gizmos.DrawSphere(endTargetPosition, 1.0f);
 
 		//Gizmos.color = Color.red;
 		//Gizmos.DrawSphere(endTargetPosition, 1f);

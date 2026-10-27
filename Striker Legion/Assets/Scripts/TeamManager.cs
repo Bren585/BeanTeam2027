@@ -19,7 +19,8 @@ public class TeamManager : MonoBehaviour
 	[SerializeField] public Dictionary<PositioningName, Transform> positioningBaseTransforms = new Dictionary<PositioningName, Transform>();
 	//[SerializeField] public Dictionary<CharacterRole, Transform> positioningBaseTransforms = new Dictionary<CharacterRole, Transform>();
 
-	[SerializeField] private CharacterTeam TeamType;
+	[SerializeField] private CharacterTeam teamType;
+	public CharacterTeam TeamType => teamType;
 
 	// 同じチームのオブジェクトを格納する
 	public List<CharacterBase> teamObjects { get; private set; }
@@ -63,6 +64,9 @@ public class TeamManager : MonoBehaviour
 		}
 
 		UpdateAllBehaviorGraph();
+
+		// マッチマネージャに登録する
+		MatchManager.Instance.RegisterTeam(this);
 	}
 
     // Update is called once per frame
@@ -108,11 +112,6 @@ public class TeamManager : MonoBehaviour
 	public void OrderGetBall()
 	{
 		//teamObjects[0].isHoldingBall = true;
-	}
-
-	public CharacterTeam GetTeamType()
-	{
-		return TeamType;
 	}
 
 	// スタン状態じゃないキャラを取得する（読み取り専用）
