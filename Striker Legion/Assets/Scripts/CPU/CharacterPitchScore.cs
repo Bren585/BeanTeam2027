@@ -19,8 +19,7 @@ public class CharacterPitchScore : MonoBehaviour
     int gridRows;
 	private Vector3 gridOrigin;
 	private Vector2 gridSize = new Vector2(10f, 20f);
-
-
+	bool isUpdate = false;
 
 	// このコンポーネントを持っているキャラのポジション
 	CharacterRole ownerRole;
@@ -28,7 +27,12 @@ public class CharacterPitchScore : MonoBehaviour
     // このコンポーネントを持っているキャラの所属チーム
     CharacterTeam ownerTeam;
 
-    // 初期化処理
+	public CharacterRole OwnerRole => ownerRole;
+	public CharacterTeam OwnerTeam => ownerTeam;
+
+	public bool IsUpdate => isUpdate;
+
+	// 初期化処理
 	public void Initialize(CharacterRole role, CharacterTeam team)
 	{
         // このコンポーネントを持っているキャラの情報を受け取る
@@ -36,7 +40,9 @@ public class CharacterPitchScore : MonoBehaviour
         ownerTeam = team;
 
         // グリッドの情報を取得
-        MatchManager.Instance.GetPitchInfo(out gridCols, out gridRows, out gridSize, out gridOrigin);
+        //MatchManager.Instance.GetPitchInfo(out gridCols, out gridRows, out gridSize, out gridOrigin);
+        MatchManager.Instance.RegisterEvaluatorScore(this);
+
 
         // 評価変数のメモリ確保
 		gridScores = new float[gridCols, gridRows];
@@ -46,36 +52,32 @@ public class CharacterPitchScore : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
-        RefreshEvaluation();
-    }
+		//RefreshEvaluation();
 
-    void RefreshEvaluation()
+		isUpdate = false;
+
+	}
+
+    public void RefreshEvaluation(float score, int x, int z)
     {
 		// メモリ確保前か確認
 		if (gridScores.Length <= 0)
 			return;
-        // グリッドの計算結果を受け取り
-        MatchManager.Instance.GetGridScores(gridScores, ownerTeam, ownerRole);
 
-		// このコンポーネントを持っているキャラとの距離でグリッドを再評価する
-		for (int z = 0; z < gridRows; z++)
-		{
-			//color.b = (float)z / (float)gridRows;
-			for (int x = 0; x < gridCols; x++)
-			{
-				// 計算中のグリッドの座標
-				Vector3 gridPosition = GetCellWorldPosition(x, z);
+		isUpdate = true;
 
-				// 現在のスコア
-				float currentScore = gridScores[x, z];
+		// 計算中のグリッドの座標
+		Vector3 gridPosition = GetCellWorldPosition(x, z);
 
-				// グリッドまでの距離で再度計算
-				currentScore += ScoreDistanceToGrid(gridPosition, 0.3f);
+		// 現在のスコア
+		float currentScore = score;
+		//float currentScore = gridScores[x, z];
 
-				// 計算結果で更新
-				gridScores[x, z] = currentScore;
-			}
-		}
+		// グリッドまでの距離で再度計算
+		//currentScore += ScoreDistanceToGrid(gridPosition, 0.1f);
+
+		// 計算結果で更新
+		gridScores[x, z] = currentScore;
 	}
 
 	float ScoreDistanceToGrid(Vector3 gridPosition, float weight)
@@ -117,6 +119,31 @@ public class CharacterPitchScore : MonoBehaviour
 		return bestPosition;
 	}
 
+	public Vector3 GetClosestPointOnBestGrid(Vector3 ballHolderPos)
+	{
+		// 最も評価の高いグリッドの中心座標
+		Vector3 bestGridCenter = GetBestPosition();
+		float halfSizeX = gridSize.x * 0.5f;
+		float halfSizeZ = gridSize.y * 0.5f;
+
+		// 2. セルのワールド空間での四隅の境界（最小・最大）を計算する
+		// （※XZ平面を前提とした例）
+		float minX = bestGridCenter.x - halfSizeX;
+		float maxX = bestGridCenter.x + halfSizeX;
+		float minZ = bestGridCenter.z - halfSizeZ;
+		float maxZ = bestGridCenter.z + halfSizeZ;
+
+		// 3. ボールホルダーの位置を、そのセルの範囲内にクランプ（制限）する
+		// これにより、ボールホルダーからそのマスへ下ろした垂線上の「マス上の最も近い点」が求まる
+		float closestX = Mathf.Clamp(ballHolderPos.x, minX, maxX);
+		float closestZ = Mathf.Clamp(ballHolderPos.z, minZ, maxZ);
+
+		// 高さ（Y軸）はピッチの高さに合わせる
+		float currentY = bestGridCenter.y;
+
+		return new Vector3(closestX, currentY, closestZ);
+	}
+
 	Vector3 GetCellWorldPosition(int x, int z)
 	{
 		float worldX = gridOrigin.x + (x * gridSize.x) + (gridSize.x / 2.0f);
@@ -131,7 +158,13 @@ public class CharacterPitchScore : MonoBehaviour
 		z = Mathf.Clamp(Mathf.FloorToInt((worldPosition.z + (gridSize.y / 2f)) / cellHeight), 0, gridRows - 1);
 	}
 
-
+	public void SetPitchInfo(int cols, int rows, Vector2 size, Vector3 origin)
+	{
+		gridCols   = cols;
+		gridRows   = rows;
+		gridSize   = size;
+		gridOrigin = origin;
+	}
 	void OnDrawGizmosSelected()
 	{
 		if (!IsDebugGizmo)

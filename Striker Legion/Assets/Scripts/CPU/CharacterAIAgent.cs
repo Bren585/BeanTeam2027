@@ -53,6 +53,9 @@ public class CharacterAIAgent : MonoBehaviour
 	public Vector3 BasePosition(PositioningName name) => positioningBase[name];
 
 	public Vector3 BestPosition => pitchScore.GetBestPosition();
+	public Vector3 GetClosestPointOnBestGrid(Vector3 position) => pitchScore.GetClosestPointOnBestGrid(position);
+
+	public bool IsUpdateScore => pitchScore.IsUpdate;
 
 	// キャラクターがボールを持っているか
 	public bool HasBall => owner.hasBall;

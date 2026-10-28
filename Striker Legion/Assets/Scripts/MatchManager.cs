@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class MatchManager : MonoBehaviour
 {
@@ -232,19 +233,17 @@ public class MatchManager : MonoBehaviour
 	{
 		if (pitchEvaluator != null)
 		{
-			pitchEvaluator.Register(characters);
+			pitchEvaluator.RegisterCharacter(characters);
 		}
 		else
 			Debug.Log("評価用コンポーネントがNull");
 	}
 
-	public void GetGridScores(float[,] buffer, CharacterTeam team, CharacterRole role)
+	public void RegisterEvaluatorScore(CharacterPitchScore score)
 	{
-		//return pitchEvaluator.GetGridScores(team, role);
-		pitchEvaluator.GetGridScores(buffer, team, role);
-	}
-	public void GetPitchInfo(out int cols, out int rows, out Vector2 size, out Vector3 origin)
-	{
-		pitchEvaluator.GetPitchInfo(out cols, out rows, out size, out origin);
+		if (pitchEvaluator != null)
+		{
+			pitchEvaluator.RegisterPitchScore(score);
+		}
 	}
 }

@@ -16,7 +16,8 @@ public partial class MoveBestPositionAction : ActionBase
         base.OnStart();
 
         // 目標地点として、最も評価が高い場所を取得
-        bestPosition = characterAIAgent.BestPosition;
+        bestPosition = characterAIAgent.GetClosestPointOnBestGrid(GameObject.transform.position);
+        //bestPosition = characterAIAgent.BestPosition;
 
         // ステアリングの対象指定
         characterAIAgent.SetTargetPosition(bestPosition);
@@ -34,6 +35,15 @@ public partial class MoveBestPositionAction : ActionBase
         // 移動終了で成功を返す
         if (!characterAIAgent.SteeringController.IsMove)
             return Status.Success;
+
+        // 目標座標の更新
+        if(characterAIAgent.IsUpdateScore)
+        {
+			bestPosition = characterAIAgent.GetClosestPointOnBestGrid(GameObject.transform.position);
+
+			// ステアリングの対象指定
+			characterAIAgent.SetTargetPosition(bestPosition);
+		}    
 
         return Status.Running;
     }
