@@ -62,6 +62,8 @@ public class CharacterAIAgent : MonoBehaviour
     // キャラのチーム番号
     public int TeamNumber => owner.teamNo;
 
+	public CharacterTeam Team => (owner.teamNo == (int)CharacterTeam.Player) ? CharacterTeam.Player : CharacterTeam.Enemy;
+
     // パス関数（CharacterBaseから呼び出し）
     public void Pass() => owner.KickBall();
 
@@ -108,7 +110,7 @@ public class CharacterAIAgent : MonoBehaviour
         this.positioningBase = positioningBase;
         Role = role;
 		DebugText.SetDefaultText(owner.name +" " + Role);
-		pitchScore.Initialize(role, (CharacterTeam)(TeamNumber));
+		pitchScore.Initialize(role, Team);
 	}
 
 	// Update is called once per frame

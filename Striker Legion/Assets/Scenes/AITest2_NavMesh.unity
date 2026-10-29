@@ -431,7 +431,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7126219227288355338, guid: 1fe8f6deec4851b48a5f58979ccfb6bb, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.94
+      value: 9.7
       objectReference: {fileID: 0}
     - target: {fileID: 7126219227288355338, guid: 1fe8f6deec4851b48a5f58979ccfb6bb, type: 3}
       propertyPath: m_LocalPosition.y
@@ -439,7 +439,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7126219227288355338, guid: 1fe8f6deec4851b48a5f58979ccfb6bb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.18
+      value: -3.5
       objectReference: {fileID: 0}
     - target: {fileID: 7126219227288355338, guid: 1fe8f6deec4851b48a5f58979ccfb6bb, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1590,7 +1590,7 @@ MonoBehaviour:
           m_Value0: 15191202573895393006
           m_Value1: 13857773989495827951
         Name: Is Down
-        m_Value: 1
+        m_Value: 0
     - rid: 5601786937013698633
       type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -1598,7 +1598,7 @@ MonoBehaviour:
           m_Value0: 2189107667068063195
           m_Value1: 608500936222541205
         Name: Debug Stop
-        m_Value: 1
+        m_Value: 0
 --- !u!114 &710203606
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2283,7 +2283,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 830422437}
-  - component: {fileID: 830422443}
+  - component: {fileID: 830422445}
   - component: {fileID: 830422442}
   - component: {fileID: 830422441}
   - component: {fileID: 830422440}
@@ -2432,7 +2432,7 @@ MonoBehaviour:
           m_Value0: 2189107667068063195
           m_Value1: 608500936222541205
         Name: Debug Stop
-        m_Value: 1
+        m_Value: 0
 --- !u!114 &830422442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2445,55 +2445,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7823a1caa40ef2c4fbb9bc331bec249e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterAIAgent
---- !u!23 &830422443
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 830422436}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_MaskInteraction: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!195 &830422444
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2516,6 +2467,14 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!33 &830422445
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 830422436}
+  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &858739253
 GameObject:
   m_ObjectHideFlags: 0
@@ -3764,7 +3723,7 @@ MonoBehaviour:
           m_Value0: 2189107667068063195
           m_Value1: 608500936222541205
         Name: Debug Stop
-        m_Value: 1
+        m_Value: 0
 --- !u!114 &1492037344
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4606,21 +4565,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce4f31e68b7261b45bdface37e6b8b13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PitchEvaluator
-  isDrawGizmo: 0
+  isDrawGizmo: 1
   colorAlpha: 1
   debugRole: 1
   debugTeam: 0
   pitchPlaneMeshFilter: {fileID: 379643249}
   gridSize: {x: 9.8, y: 20.5}
-  goalWeight: 0.2
-  pressureWeight: 0.2
-  ballWeight: 0.3
-  frontWeight: 0.2
-  passWeight: 0.2
   updateTime: 0.5
   scoreEvaluators:
   - {fileID: 11400000, guid: 5b5a0b7b087890749abf05bc94462b8e, type: 2}
   - {fileID: 11400000, guid: 9c1d944d7da60fe408c972bae2c818a3, type: 2}
+  - {fileID: 11400000, guid: 1d34e1c6e20efef40a817f87aaf472e3, type: 2}
+  - {fileID: 11400000, guid: 5e54afaef2c61094092e40eb4b107396, type: 2}
+  - {fileID: 11400000, guid: aef86d343e2930d4fbf44f37dc2e0cc4, type: 2}
 --- !u!1 &1840398629
 GameObject:
   m_ObjectHideFlags: 0

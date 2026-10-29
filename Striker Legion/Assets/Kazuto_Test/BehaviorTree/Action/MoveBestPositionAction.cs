@@ -43,6 +43,7 @@ public partial class MoveBestPositionAction : ActionBase
 
 			// ステアリングの対象指定
 			characterAIAgent.SetTargetPosition(bestPosition);
+            Debug.Log("ベストな地点を更新");
 		}    
 
         return Status.Running;

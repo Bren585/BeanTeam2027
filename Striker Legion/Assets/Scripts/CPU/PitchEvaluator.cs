@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UIElements.Experimental;
 
 public struct PitchCharacter
@@ -44,19 +45,6 @@ public class PitchEvaluator : MonoBehaviour
 
 	//[Header("Grid Settings")]
 	public Vector2 gridSize = new Vector2(10f, 20f);
-
-	[Range(0.0f, 1.0f)]
-	public float goalWeight = 0.6f;
-	[Range(0.0f, 1.0f)]
-	public float pressureWeight = 0.4f;
-	[Range(0.0f, 1.0f)]
-	public float ballWeight = 0.3f;
-	[Range(0.0f, 1.0f)]
-	public float frontWeight = 0.3f;
-	//[Range(0.0f, 1.0f)]
-	//public float allyWeight = 0.3f;
-	[Range(0.0f, 1.0f)]
-	public float passWeight = 0.4f;
 
 	// 更新処理を行う時間
 	[Min(0.0f)]
@@ -197,7 +185,7 @@ public class PitchEvaluator : MonoBehaviour
 	// 全セルのスコアを計算・更新
 	void EvaluatePitch()
 	{
-#if true
+#if false
 		EvaluationContext context = new EvaluationContext(gridCols, gridRows, gridSize, totalSize, gridOrigin);
 		foreach (CharacterPitchScore s in pitchScores)
 		{
@@ -206,10 +194,10 @@ public class PitchEvaluator : MonoBehaviour
 				for (int z = 0; z < gridRows; z++)
 				{
 					float score = 0.0f;
+					// セルの中央ワールド座標を計算
+					Vector3 cellPos = GetCellWorldPosition(x, z);
 					foreach (ScoreEvaluatorBase evaluator in scoreEvaluators)
 					{
-						// セルの中央ワールド座標を計算
-						Vector3 cellPos = GetCellWorldPosition(x, z);
 
 						score += evaluator.CalculateScore(cellPos, s.OwnerTeam, s.OwnerRole, characters, context);
 					}
@@ -220,18 +208,26 @@ public class PitchEvaluator : MonoBehaviour
 		}
 
 #else
+		EvaluationContext context = new EvaluationContext(gridCols, gridRows, gridSize, totalSize, gridOrigin);
 		for (int x = 0; x < gridCols; x++)
 		{
 			for (int z = 0; z < gridRows; z++)
 			{
-				// セルの中央ワールド座標を計算
+				playersGrid[x,z] = 0.0f;
+				enemiesGrid[x,z] = 0.0f;
 				Vector3 cellPos = GetCellWorldPosition(x, z);
+				foreach (ScoreEvaluatorBase evaluator in scoreEvaluators)
+				{
 
-				// プレイヤーチームのスコア計算
-				playersGrid[x, z] = CalculateCellScore(cellPos, CharacterTeam.Player);
+					//score += evaluator.CalculateScore(cellPos, s.OwnerTeam, s.OwnerRole, characters, context);
+					// プレイヤーチームのスコア計算
+					playersGrid[x, z] += evaluator.CalculateScore(cellPos, CharacterTeam.Player, characters, context);
+					//playersGrid[x, z] = CalculateCellScore(cellPos, CharacterTeam.Player);
 
-				// 敵チームのスコア計算
-				enemiesGrid[x, z] = CalculateCellScore(cellPos, CharacterTeam.Enemy);
+					// 敵チームのスコア計算
+					enemiesGrid[x, z] += evaluator.CalculateScore(cellPos, CharacterTeam.Enemy, characters, context);
+					//enemiesGrid[x, z] = CalculateCellScore(cellPos, CharacterTeam.Enemy);
+				}
 			}
 		}
 		// 計算結果をキャラ側に渡す
@@ -248,126 +244,6 @@ public class PitchEvaluator : MonoBehaviour
 			}
 		}
 #endif
-	}
-
-	float CalculateCellScore(Vector3 cellPos, CharacterTeam teamType)
-	{
-		// ゴールまでの距離によるスコア
-		float goalScore = ScoreDistToGoal(cellPos, teamType, goalWeight);
-
-		// 敵との距離によるスコア調整
-		float pressureScore = CalculateOpponentPressure(cellPos, teamType, pressureWeight);
-
-		// 味方との距離による加算
-		//float allyScore = CalculateAllyDistance(cellPos, teamType, allyWeight);
-
-		// ボールまでの距離によるスコア
-		float ballScore = ScoreDistToBall(cellPos, teamType,ballWeight);
-		// グリッドがボールを持っているキャラの正面にあったらスコアを加算する
-		float frontScore = ScoreFrontToBaller(cellPos, frontWeight);
-
-		// パス可能かのスコア
-		float enablePassScore = ScoreEnablePass(cellPos, teamType, passWeight);
-
-		// 合算
-		return goalScore + pressureScore + ballScore + frontScore + enablePassScore;
-	}
-
-	private float ScoreDistToGoal(Vector3 cellPos, CharacterTeam team, float weight)
-	{
-		CharacterTeam opponentTeam = (team == CharacterTeam.Player) ? CharacterTeam.Enemy : CharacterTeam.Player;
-		// ゴールまでの距離
-		float distToGoal = Vector3.Distance(cellPos, MatchManager.Instance.GetGoalPosition(opponentTeam));
-		// 逆数でゴールに近いほどスコアが高くなるようにする
-		float goalScore = Mathf.Clamp01(1.0f - (distToGoal / totalSize.y));
-
-		// ウェイト調整
-		return goalScore * weight;
-	}
-
-	private float ScoreDistToBall(Vector3 cellPos, CharacterTeam team, float weight)
-	{
-		float score = 0.0f;
-		float closerLength = gridSize.x;
-		Vector3 ballPosition = MatchManager.Instance.BallTransform.position;
-		// ボールまでの距離
-		float distToBall = Vector3.Distance(cellPos, ballPosition);
-
-		float minDistance = float.MaxValue;
-
-		// ボールに最も近い敵のキャラクターの距離を取得
-		foreach (var character in characters)
-		{
-			// 所属チームが同じならスキップ
-			if (character.team == team)
-				continue;
-
-			// 距離測定
-			float dist = Vector3.Distance(ballPosition, character.transform.position);
-
-			// 距離が影響範囲外ならスキップ
-			if (dist > minDistance)
-				continue;
-
-			minDistance = dist;
-		}
-
-		// 近すぎる場合は逆にスコアを下げる
-		if (distToBall < closerLength)
-			score = Mathf.Clamp01(distToBall / closerLength);
-		else
-		// 逆数でゴールに近いほどスコアが高くなるようにする
-			score = Mathf.Clamp01(1.0f - (distToBall / totalSize.y));
-
-		// ボールの近くに敵がいる場合は、スコアが高い場所がより高くなるようにする
-		if (minDistance < gridSize.y)
-			score = Easing.InOutQuad(score);
-
-		// ウェイト調整
-		return score * weight;
-	}
-
-	private float ScoreFrontToBaller(Vector3 cellPos, float weight)
-	{
-		// ボールを持っているキャラがいなければ、終了
-		if (MatchManager.Instance.CurrentBallHolder == null)
-			return 0.0f;
-
-		Vector3 forward = MatchManager.Instance.CurrentBallHolder.transform.forward;
-		Vector3 direction = cellPos - MatchManager.Instance.CurrentBallHolder.transform.position;
-
-		float dot = Vector3.Dot(forward, direction.normalized);
-
-		//// 正面方向にあったらウェイト分加算
-		//if (dot > Mathf.PI / 5.0f)
-		//	return weight * dot;
-		return Mathf.Clamp01(dot * weight);
-	}
-
-	private float ScoreEnablePass(Vector3 cellPos, CharacterTeam team, float weight)
-	{
-		if (MatchManager.Instance.CurrentBallHolder == null)
-			return 0.0f;
-		// 所属チームで比較
-		if (MatchManager.Instance.CurrentBallHolder.teamNo != (int)team)
-			return 0.0f;
-
-		Vector3 ballPos = MatchManager.Instance.CurrentBallHolder.transform.position;
-		Vector3 direction = (cellPos - ballPos);
-		//Vector3 direction = (ballPos - cellPos);
-
-		// 同じチームのキャラを除外する
-		LayerMask layer = ~(1 << MatchManager.Instance.CurrentBallHolder.gameObject.layer);
-
-		float radius = gridSize.x / 2.0f;
-		Ray ray = new Ray(ballPos, direction.normalized);
-		if (Physics.SphereCast(ray, radius, out RaycastHit hitInfo, direction.magnitude, layer))
-		{
-			if (hitInfo.transform.tag == "Character")
-				return 0.0f;
-		}
-		
-		return weight;
 	}
 
 	private float ScoreDistToOpponent(Vector3 cellPos, CharacterTeam team, float weight, float maxDist)
@@ -393,32 +269,6 @@ public class PitchEvaluator : MonoBehaviour
 
 		// ウェイト調整
 		return spaceScore * weight;
-	}
-	private float CalculateOpponentPressure(Vector3 cellPos, CharacterTeam team, float weight)
-	{
-		float pressure = 1.0f;
-		float influenceRadius = gridSize.x + gridSize.y; // 影響を及ぼす半径
-
-		// 登録されている全キャラクターから、
-		// 相手チームのキャラを探して距離に応じたプレッシャーを加算
-		foreach (var character in characters)
-		{
-			// 所属チームが同じならスキップ
-			if (character.team == team)
-				continue;
-
-			// 距離測定
-			float dist = Vector3.Distance(cellPos, character.transform.position);
-			
-			// 距離が影響範囲外ならスキップ
-			if (dist > influenceRadius)
-				continue;
-
-			// 近ければ近いほど強いプレッシャー（逆数や減衰関数）
-			pressure -= Mathf.Clamp01(1.0f - (dist / influenceRadius));
-		}
-		pressure = Mathf.Clamp01(pressure);
-		return pressure * weight;
 	}
 
 	private float CalculateAllyDistance(Vector3 cellPos, CharacterTeam team, float weight)
@@ -480,17 +330,6 @@ public class PitchEvaluator : MonoBehaviour
 				return Easing.InSine(1.0f-score);
 		}
 		return score;
-	}
-
-	// 最もスコアが高いマスのワールド座標を取得する
-	public Vector3 GetBestPosition(CharacterTeam teamType)
-	{
-		return Vector3.zero;
-	}
-
-	public Vector3 CuluBestPosition(CharacterTeam teamType, Vector3 Position)
-	{
-		return Vector3.zero;
 	}
 
 	Vector3 GetCellWorldPosition(int x, int z)

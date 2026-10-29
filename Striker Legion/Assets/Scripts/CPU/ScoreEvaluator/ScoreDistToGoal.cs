@@ -7,7 +7,7 @@ using static GameBall;
 [Serializable]
 public class ScoreDistToGoal : ScoreEvaluatorBase
 {
-	public override float CalculateScore(Vector3 worldPos, CharacterTeam team, CharacterRole role, in IReadOnlyList<PitchCharacter> pitchCharacters, EvaluationContext context)
+	public override float CalculateScore(Vector3 worldPos, CharacterTeam team, in IReadOnlyList<PitchCharacter> pitchCharacters, EvaluationContext context)
 	{
 		CharacterTeam opponentTeam = (team == CharacterTeam.Player) ? CharacterTeam.Enemy : CharacterTeam.Player;
 		// ゴールまでの距離
@@ -17,6 +17,6 @@ public class ScoreDistToGoal : ScoreEvaluatorBase
 
 		// ウェイト調整
 		//return 0.0f;
-		return goalScore * SelectWeight(role);
+		return goalScore * weight;
 	}
 }

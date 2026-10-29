@@ -25,7 +25,7 @@ public partial class RunForwardAction : ActionBase
 		characterAIAgent.DebugText.SetText("前に走る");
 
         // 敵のゴール座標を取得
-        CharacterTeam team = CharacterTeam.Player == (CharacterTeam)characterAIAgent.TeamNumber ? CharacterTeam.Enemy : CharacterTeam.Player;
+        CharacterTeam team = CharacterTeam.Player == characterAIAgent.Team ? CharacterTeam.Enemy : CharacterTeam.Player;
 		goalPosition = MatchManager.Instance.GetGoalPosition(team);
 
         // ゴールまでのベクトル

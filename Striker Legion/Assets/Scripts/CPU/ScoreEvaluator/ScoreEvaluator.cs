@@ -34,28 +34,8 @@ public abstract class ScoreEvaluatorBase:ScriptableObject
 {
 	// それぞれのポジションのウェイト
 	[SerializeField, Range(0.0f, 1.0f)]
-	protected float forwardWeight;
-	[SerializeField, Range(0.0f, 1.0f)]
-	protected float midWeight;
-	[SerializeField, Range(0.0f, 1.0f)]
-	protected float defendereWeight;
+	protected float weight;
 
 	// グリッドのスコアを計算して返す
-	public abstract float CalculateScore(Vector3 worldPos, CharacterTeam team, CharacterRole role, in IReadOnlyList<PitchCharacter> pitchCharacters,EvaluationContext context);
-
-	protected float SelectWeight(CharacterRole role)
-	{
-		switch(role)
-		{
-			case CharacterRole.Forward:
-				return forwardWeight;
-				
-			case CharacterRole.MidFielder:
-				return midWeight;
-				
-			case CharacterRole.Defender:
-				return defendereWeight;
-		}
-		return 0.0f;
-	}
+	public abstract float CalculateScore(Vector3 worldPos, CharacterTeam team, in IReadOnlyList<PitchCharacter> pitchCharacters,EvaluationContext context);
 }

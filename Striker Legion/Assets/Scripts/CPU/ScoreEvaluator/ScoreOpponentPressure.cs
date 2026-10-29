@@ -7,7 +7,7 @@ using static GameBall;
 // 周囲の敵キャラの数によって評価する
 public class ScoreOpponentPressure : ScoreEvaluatorBase
 {
-	public override float CalculateScore(Vector3 worldPos, CharacterTeam team, CharacterRole role, in IReadOnlyList<PitchCharacter> pitchCharacters, EvaluationContext context)
+	public override float CalculateScore(Vector3 worldPos, CharacterTeam team, in IReadOnlyList<PitchCharacter> pitchCharacters, EvaluationContext context)
 	{
 		float pressure = 1.0f;
 		float influenceRadius = context.GridSize.x + context.GridSize.y; // 影響を及ぼす半径
@@ -32,6 +32,6 @@ public class ScoreOpponentPressure : ScoreEvaluatorBase
 		}
 
 		pressure = Mathf.Clamp01(pressure);
-		return pressure * SelectWeight(role);
+		return pressure * weight;
 	}
 }

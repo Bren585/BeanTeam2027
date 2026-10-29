@@ -12,7 +12,7 @@ public partial class MfUtilityPassCondition : Condition
     public override bool IsTrue()
     {
 #if true
-        CharacterTeam team = (CharacterTeam)(Midfielder.Value.TeamNumber);
+        CharacterTeam team = Midfielder.Value.Team;
 
 		// 動けるキャラクターを探す
 		IReadOnlyList <CharacterBase> ActiveCharacters = MatchManager.Instance.GetActiveCharacters(team);
