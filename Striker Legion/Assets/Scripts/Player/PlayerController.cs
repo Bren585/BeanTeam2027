@@ -1,0 +1,163 @@
+using UnityEngine;
+using UnityEngine.InputSystem;
+using Unity.Cinemachine;
+using Unity.VisualScripting;
+
+
+public class PlayerController : MonoBehaviour
+{
+    // 繧ｭ繝｣繝ｩ繧ｯ繧ｿ繝ｼ縺ｮ蛻�ｊ譖ｿ縺医ｒ陦後≧縺九�繝輔Λ繧ｰ
+    [SerializeField] bool               changePlayerCharacter;
+    [SerializeField] int                teamNo;
+    [SerializeField] GameBall           gameBall;
+
+
+    public CharacterBase playerCharacter { get; private set; }
+    [SerializeField] CinemachineCamera  playerCamera;
+
+    [SerializeField] float              cameraMaxSpeed;
+    Transform                           cameraTarget;
+    
+    Vector2 moveInput;
+
+    CharacterBase GetClosestPossessableCharacter()
+    {
+        Vector3 target;
+        {
+            CharacterBase ballOwner = gameBall.GetOwner() as CharacterBase;
+            if (ballOwner == null) { target = gameBall.transform.position; }
+            else if (ballOwner.teamNo == teamNo) { return ballOwner; }
+            else { target = ballOwner.transform.position; }
+        }
+
+        CharacterBase closestCharacter = null;
+        float closest = float.MaxValue;
+
+        CharacterBase[] allCharacters = FindObjectsByType<CharacterBase>();
+
+        foreach (CharacterBase character in allCharacters)
+        {
+            if (character.teamNo != teamNo) { continue; }
+            float distance = (character.transform.position - target).magnitude;
+            if (distance < closest)
+            {
+                closest = distance;
+                closestCharacter = character;
+            }
+        }
+
+        return closestCharacter;
+    }
+
+    void Start()
+    {
+        //gameBall = FindAnyObjectByType<GameBall>();
+        if (gameBall)
+        {
+            PossessCharacter(GetClosestPossessableCharacter());
+        }
+        transform.position = cameraTarget.position;
+    }
+
+    void Update()
+    {
+        // Player Move Input, rotated to Camera
+        if (playerCharacter != null)
+        {
+            Quaternion cameraYaw = Quaternion.Euler(0, playerCamera.transform.rotation.eulerAngles.y, 0);
+            Vector3 rotatedInput = cameraYaw * new Vector3(moveInput.x, 0, moveInput.y);
+            playerCharacter.Move(rotatedInput);
+        }
+        else
+        {
+            // No player? Follow the ball as a fallback.
+            cameraTarget = gameBall.transform;
+        }
+
+        // Move the Camera.
+        Vector3 toTarget = cameraTarget.position - transform.position;
+        float distance = toTarget.magnitude;
+        float speedTime = Time.deltaTime * cameraMaxSpeed;
+        if (distance > speedTime) {
+            toTarget *= (speedTime / distance); 
+        }
+        toTarget.y = 0;
+        transform.position += toTarget;
+    }
+
+    public void PossessCharacter(CharacterBase character) 
+    { 
+        playerCharacter = character;
+        if (playerCharacter == null)
+        {
+            cameraTarget = gameBall.transform;
+        }
+        else
+        {
+            cameraTarget = playerCharacter.transform;
+        }
+    }
+
+    public void OnMove(InputValue input)
+    {
+        moveInput = input.Get<Vector2>();
+    }
+
+    public void OnJump()
+    {
+        if (playerCharacter == null) { return; }
+        playerCharacter.Jump();
+    }
+
+    public void OnSkill()
+    {
+        if (playerCharacter == null) { return; }
+        if (playerCharacter.CanSkill())
+        {
+            playerCharacter.Skill();
+        }
+    }
+
+    public void OnShoot()
+    {
+        if (playerCharacter == null) { PossessCharacter(GetClosestPossessableCharacter()); }
+        if (playerCharacter.hasBall)
+        {
+            //キャラクターがボールを持っている場合はシュートする
+            playerCharacter.KickBall();
+
+            //ボールを持っているキャラクターがシュートした場合は、ボールの所有者を確認して、同じチームのキャラクターがいればそのキャラクターに操作を移す
+            CharacterBase ballOwner = gameBall.GetOwner() as CharacterBase;
+            if (ballOwner != playerCharacter && ballOwner != null)
+            {
+                if (ballOwner.teamNo == teamNo)
+                {
+                    PossessCharacter(ballOwner);
+                }
+            }
+        }
+        else
+        {
+            //
+            if (gameBall.GetOwner() == playerCharacter) { return; }
+            CharacterBase possesionTarget = playerCharacter.PassTarget();
+            if (possesionTarget == null)
+            {
+                possesionTarget = GetClosestPossessableCharacter();
+            }
+            PossessCharacter(possesionTarget);
+        }
+    }
+
+    public void OnTackle()
+    {
+        if (playerCharacter == null) { PossessCharacter(GetClosestPossessableCharacter()); }
+        playerCharacter.Tackle();
+    }
+
+    public void OnStrafe(InputValue input)
+    {
+        if (playerCharacter == null) { return; }
+        playerCharacter.SetStrafe(input.isPressed);
+    }
+}
