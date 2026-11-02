@@ -340,12 +340,17 @@ public class PitchEvaluator : MonoBehaviour
 		//float worldZ = (z * h) - (gridSize.y / 2f) + (h / 2f);
 		return new Vector3(worldX, 0, worldZ);
 	}
+
+	// グリッドの番号を取得する
 	void GetCellIndexByWorldPosition(Vector3 worldPosition, out int x, out int z)
 	{
-		float cellWidth = gridSize.x / gridCols;
-		float cellHeight = gridSize.y / gridRows;
-		x = Mathf.Clamp(Mathf.FloorToInt((worldPosition.x + (gridSize.x / 2f)) / cellWidth), 0, gridCols - 1);
-		z = Mathf.Clamp(Mathf.FloorToInt((worldPosition.z + (gridSize.y / 2f)) / cellHeight), 0, gridRows - 1);
+		float cellWidth = totalSize.x / gridCols;
+		float cellHeight = totalSize.y / gridRows;
+
+		Vector3 vec = worldPosition - gridOrigin;
+
+		x = Mathf.Clamp(Mathf.FloorToInt(vec.x / cellWidth), 0,  gridCols - 1);
+		z = Mathf.Clamp(Mathf.FloorToInt(vec.z / cellHeight), 0, gridRows - 1);
 	}
 
 	void OnDrawGizmos()

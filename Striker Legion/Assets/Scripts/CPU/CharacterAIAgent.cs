@@ -311,7 +311,7 @@ public class CharacterAIAgent : MonoBehaviour
 		Gizmos.DrawLine(from, from + leftBoundary);
 		Gizmos.DrawLine(from, from + rightBoundary);
 
-		Gizmos.color = Color.red;
+		Gizmos.color = Color.floralWhite;
 		Gizmos.DrawSphere(endTargetPosition, 1.0f);
 
 		//Gizmos.color = Color.red;

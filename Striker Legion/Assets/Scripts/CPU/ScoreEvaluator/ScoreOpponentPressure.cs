@@ -10,7 +10,7 @@ public class ScoreOpponentPressure : ScoreEvaluatorBase
 	public override float CalculateScore(Vector3 worldPos, CharacterTeam team, in IReadOnlyList<PitchCharacter> pitchCharacters, EvaluationContext context)
 	{
 		float pressure = 1.0f;
-		float influenceRadius = context.GridSize.x + context.GridSize.y; // 影響を及ぼす半径
+		float influenceRadius = context.GridSize.x * 3.0f; // 影響を及ぼす半径
 
 		// 登録されている全キャラクターから、
 		// 相手チームのキャラを探して距離に応じたプレッシャーを加算

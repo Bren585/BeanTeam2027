@@ -15,8 +15,8 @@ public enum SteeringMode
 // キャラクターのステアリング制御を行うクラス
 public class SteeringController : MonoBehaviour
 {
-	private const float MoveWeight = 0.5f;
-	private const float AvoidWeight = 0.5f;
+	private const float MoveWeight = 0.6f;
+	private const float AvoidWeight = 0.4f;
 	private const float RayLength = 10.0f;
 	private const float SphereRadius = 3.0f;
 
@@ -30,7 +30,7 @@ public class SteeringController : MonoBehaviour
     }
 
 	// 速度
-	private Vector3 velocity;
+	[SerializeField]private Vector3 velocity;
 	public Vector3 Velocity => velocity;
 
 	// 親の速度
@@ -209,5 +209,11 @@ public class SteeringController : MonoBehaviour
 		//	Gizmos.color = Color.green;
 		//	Gizmos.DrawSphere(targetPosition, 1f);
 		//}
+
+		// キャラクターの位置から移動ベクトルを線で描画
+		Gizmos.color = Color.yellow;
+		Vector3 from = transform.position + Vector3.up * 2.0f;
+		Gizmos.DrawLine(from, from + velocity.normalized * 10.0f);
+
 	}
 }

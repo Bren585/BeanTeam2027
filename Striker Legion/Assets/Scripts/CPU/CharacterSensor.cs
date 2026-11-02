@@ -68,7 +68,7 @@ public class CharacterSensor : MonoBehaviour
 		return BallerCharacter != null;
 	}
 
-	public bool IsEnemyInRange(string targetLayer, float radius)
+	public bool IsEnemyInFrontRange(string targetLayer, float radius)
 	{
 		// プレイヤーの正面方向に Ray を発射
 		Ray ray = new Ray(transform.position, transform.forward);
@@ -91,6 +91,8 @@ public class CharacterSensor : MonoBehaviour
 		}
 		return true;
 	}
+
+
 
 
 	public bool IsNearbyOpponent(float radius)

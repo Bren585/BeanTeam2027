@@ -10,6 +10,8 @@ public partial class MoveBestPositionAction : ActionBase
 {
     Vector3 bestPosition;
 
+    bool isUpdateScore = false;
+
     protected override Status OnStart()
     {
         // 基底クラスの初期化
@@ -25,9 +27,12 @@ public partial class MoveBestPositionAction : ActionBase
 		// 行動をデバッグで表示
 		characterAIAgent.DebugText.SetText("スコアが最大の位置に移動");
 
-		characterAIAgent.SteeringController.StartMove(SteeringMode.Arrive);
+		characterAIAgent.SteeringController.StartMove(SteeringMode.Avoid);
 
-        return Status.Running;
+        isUpdateScore = false;
+
+
+		return Status.Running;
     }
 
     protected override Status OnUpdate()
@@ -37,9 +42,12 @@ public partial class MoveBestPositionAction : ActionBase
             return Status.Success;
 
         // 目標座標の更新
-        if(characterAIAgent.IsUpdateScore)
+        if(characterAIAgent.IsUpdateScore && !isUpdateScore)
         {
 			bestPosition = characterAIAgent.GetClosestPointOnBestGrid(GameObject.transform.position);
+
+            // 更新は一回だけ行う
+            isUpdateScore = true;
 
 			// ステアリングの対象指定
 			characterAIAgent.SetTargetPosition(bestPosition);
@@ -51,6 +59,7 @@ public partial class MoveBestPositionAction : ActionBase
 
     protected override void OnEnd()
     {
+        isUpdateScore = false;
     }
 }
 

@@ -19,9 +19,6 @@ public partial class PressAction : ActionBase
     {
         base.OnStart();
 
-        // ターゲットの設定
-#if true
-
         // 移動開始
         characterAIAgent.SteeringController.StartMove(SteeringMode.Seek);
 
@@ -40,7 +37,6 @@ public partial class PressAction : ActionBase
 
 		// 行動をデバッグで表示
 		characterAIAgent.DebugText.SetText("プレスをかける");
-#endif
 
 		return Status.Running;
     }
@@ -49,19 +45,24 @@ public partial class PressAction : ActionBase
     {
         // ターゲットがいなかったら失敗
         if (TargetCharacter == null)
+        {
+            //Debug.Log(GameObject.name + "プレス失敗：ターゲットを見失った");
             return Status.Failure;
-
+        }
         // ターゲットがボールを手放したら失敗
         if (!TargetCharacter.hasBall)
-            return Status.Failure;
-		// 追跡する座標をターゲットの位置に更新
+        {
+			//Debug.Log(GameObject.name + "プレス失敗：ターゲットがボールを手放した");
+			return Status.Failure;
+        }
+        
+        // 追跡する座標をターゲットの位置に更新
 		characterAIAgent.SetTargetPosition(TargetCharacter.transform.position);
-		//characterAIAgent.SteeringController.TargetPosition = TargetCharacter.transform.position;
 
         Vector3 Distance = TargetCharacter.transform.position - characterAIAgent.transform.position;
 
         // ターゲットまでの距離を取得
-        if (Distance.magnitude <= PressDistance)
+        if (Distance.magnitude <= PressDistance || !characterAIAgent.SteeringController.IsMove)
         {
             //Debug.Log(GameObject.name + ": Success Press. Distance : " + distanceFromBall.Value);
 

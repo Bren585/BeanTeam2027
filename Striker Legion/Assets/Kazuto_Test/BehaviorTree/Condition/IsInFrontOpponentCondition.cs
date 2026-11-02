@@ -13,7 +13,7 @@ public partial class IsInFrontOpponentCondition : Condition
     public override bool IsTrue()
     {
         // 敵がいるかどうかをレイキャストで判定する
-        return CharacterAIAgent.Value.CharacterSensor.IsEnemyInRange(LayerMask.LayerToName(CharacterAIAgent.Value.gameObject.layer), Distance.Value);
+        return CharacterAIAgent.Value.CharacterSensor.IsEnemyInFrontRange(LayerMask.LayerToName(CharacterAIAgent.Value.gameObject.layer), Distance.Value);
     }
 
     public override void OnStart()

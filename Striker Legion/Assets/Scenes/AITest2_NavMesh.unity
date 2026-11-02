@@ -837,6 +837,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19c8326ea6633874591bae1745a694b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SteeringController
+  velocity: {x: 0, y: 0, z: 0}
   parentVelocity: {x: 0, y: 0, z: 0}
   minMagnitude: 1
 --- !u!114 &437465446
@@ -1494,6 +1495,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19c8326ea6633874591bae1745a694b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SteeringController
+  velocity: {x: 0, y: 0, z: 0}
   parentVelocity: {x: 0, y: 0, z: 0}
   minMagnitude: 3
 --- !u!114 &710203603
@@ -2306,7 +2308,7 @@ Transform:
   m_GameObject: {fileID: 830422436}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 17.6, y: 0, z: 25.8}
+  m_LocalPosition: {x: 10.5, y: 0, z: 21.88}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2328,6 +2330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19c8326ea6633874591bae1745a694b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SteeringController
+  velocity: {x: 0, y: 0, z: 0}
   parentVelocity: {x: 0, y: 0, z: 0}
   minMagnitude: 1
 --- !u!114 &830422439
@@ -2500,7 +2503,7 @@ Transform:
   m_GameObject: {fileID: 858739253}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 17}
+  m_LocalPosition: {x: 0, y: 0, z: 21}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3619,6 +3622,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19c8326ea6633874591bae1745a694b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SteeringController
+  velocity: {x: 0, y: 0, z: 0}
   parentVelocity: {x: 0, y: 0, z: 0}
   minMagnitude: 1
 --- !u!114 &1492037341
@@ -4207,7 +4211,7 @@ Transform:
   m_GameObject: {fileID: 1690081807}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 1.8, y: 0, z: 31.9}
+  m_LocalPosition: {x: -2.85, y: 0, z: 29.34}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4229,6 +4233,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19c8326ea6633874591bae1745a694b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SteeringController
+  velocity: {x: 0, y: 0, z: 0}
   parentVelocity: {x: 0, y: 0, z: 0}
   minMagnitude: 2
 --- !u!114 &1690081810
@@ -4578,6 +4583,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1d34e1c6e20efef40a817f87aaf472e3, type: 2}
   - {fileID: 11400000, guid: 5e54afaef2c61094092e40eb4b107396, type: 2}
   - {fileID: 11400000, guid: aef86d343e2930d4fbf44f37dc2e0cc4, type: 2}
+  - {fileID: 11400000, guid: 92e368072f2f74345b53e162e0e54633, type: 2}
 --- !u!1 &1840398629
 GameObject:
   m_ObjectHideFlags: 0
@@ -4978,7 +4984,7 @@ Transform:
   m_GameObject: {fileID: 1982779074}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -17}
+  m_LocalPosition: {x: 0, y: 0, z: -23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
