@@ -26,6 +26,7 @@ public class CharacterBase : BallHolder
     [Header("継承パラメータ")]
 
     [SerializeField] private CharacterInfo info;
+    public void setInfo(CharacterInfo newInfo) { info = newInfo; }
 
     // キャラ状態 *******************************************************************************************
 

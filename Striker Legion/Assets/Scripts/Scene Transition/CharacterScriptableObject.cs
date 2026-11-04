@@ -14,5 +14,7 @@ public class CharacterScriptableObject : ScriptableObject
     public Sprite profileImage; // プロフィール画像
     public string description; // キャラクター説明
 
+    public CharacterInfo characterInfo; //　ゲーム用値
+
     public Character_Position position = Character_Position.None; // ポジション情報
 }

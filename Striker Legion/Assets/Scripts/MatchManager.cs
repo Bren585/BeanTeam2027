@@ -11,6 +11,9 @@ public class MatchManager : MonoBehaviour
 	// 敵陣営のチーム
 	[SerializeField] private TeamManager EnemyTeam;
 
+	[SerializeField] private TeamHandoff teamHandoff;
+	[SerializeField] private GameObject characterPrefab;
+
 	// プレイヤー側のゴール
 	public Transform PlayerGoal { get; private set; }
 
@@ -43,8 +46,9 @@ public class MatchManager : MonoBehaviour
 
 		Instance = this;
 
-		// 初期化処理
-		Initialize();
+		InitializeTeams();
+        // 初期化処理
+        Initialize();
 	}
 
 	private void Start()
@@ -126,6 +130,52 @@ public class MatchManager : MonoBehaviour
 	//	}
 	//	//Debug.Log("だれもボールを持っていない");
 	//}
+
+	void InitializeTeams()
+	{
+		foreach (Character_Position role in Enum.GetValues(typeof(Character_Position)))
+		{
+			// Player Team
+			if (teamHandoff.playerTeam.TryGetValue(role, out CharacterInfo playerInfo))
+			{
+				GameObject newCharacter = Instantiate(characterPrefab);
+				newCharacter.transform.SetParent(PlayerTeam.transform);
+				newCharacter.GetComponent<CharacterBase>().setInfo(playerInfo);
+			}
+			else
+			{
+				switch (role)
+				{
+					case Character_Position.None:
+					case Character_Position.Other:
+						break;
+					default:
+						Debug.Log("Missing Team Member!!!");
+						throw new Exception("Team Creation Failed");
+				}
+			}
+
+			// Enemy Team
+            if (teamHandoff.enemyTeam.TryGetValue(role, out CharacterInfo enemyInfo))
+            {
+                GameObject newCharacter = Instantiate(characterPrefab);
+                newCharacter.transform.SetParent(EnemyTeam.transform);
+                newCharacter.GetComponent<CharacterBase>().setInfo(enemyInfo);
+            }
+            else
+            {
+                switch (role)
+                {
+                    case Character_Position.None:
+                    case Character_Position.Other:
+                        break;
+                    default:
+                        Debug.Log("Missing Team Member!!!");
+                        throw new Exception("Team Creation Failed");
+                }
+            }
+        }
+	}
 
 	// ゴールした際の処理
 	public void GoalEvent(CharacterTeam team)
