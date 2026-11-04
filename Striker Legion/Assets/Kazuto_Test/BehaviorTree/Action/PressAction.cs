@@ -29,8 +29,10 @@ public partial class PressAction : ActionBase
         TargetCharacter = MatchManager.Instance.CurrentBallHolder;
 
         if (TargetCharacter == null)
-            return Status.Failure;
-
+        {
+			//Debug.Log(GameObject.name + "プレス失敗：ターゲットがNull");
+			return Status.Failure;
+        }
         // キャラのタグが同一なら、同じ陣営のキャラを追いかけようとしているからFalse
         if (TargetCharacter.teamNo == characterAIAgent.TeamNumber)
             return Status.Failure;
@@ -64,14 +66,16 @@ public partial class PressAction : ActionBase
         // ターゲットまでの距離を取得
         if (Distance.magnitude <= PressDistance || !characterAIAgent.SteeringController.IsMove)
         {
-            //Debug.Log(GameObject.name + ": Success Press. Distance : " + distanceFromBall.Value);
+            //Debug.Log(GameObject.name + ": プレス成功");
 
             // 一定距離まで近づいたら成功を返す
             return Status.Success;
         }
         else if (Distance.magnitude > CancelDistance)
-            return Status.Failure;
-
+        {
+			//Debug.Log(GameObject.name + "プレス失敗：ターゲットが遠すぎる");
+			return Status.Failure;
+        }
 		// 近くまで行ってない場合、実行し続ける
 		return Status.Running;
     }

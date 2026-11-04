@@ -130,6 +130,7 @@ public class CharacterAIAgent : MonoBehaviour
 		if (!steeringController.IsMove)
 		{
 			owner.Move(Vector3.zero);
+			
 			return;
 		}
         // 親の速度を元に計算する

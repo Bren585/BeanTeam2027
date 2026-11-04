@@ -429,6 +429,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 5108517601710094532, guid: 1fe8f6deec4851b48a5f58979ccfb6bb, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7126219227288355338, guid: 1fe8f6deec4851b48a5f58979ccfb6bb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 9.7
@@ -2348,7 +2352,7 @@ MonoBehaviour:
   <teamNo>k__BackingField: 1
   <hasBall>k__BackingField: 0
   baseInfo: {fileID: 11400000, guid: e0dd2aaaa08e4934eb84578a61a3da46, type: 2}
-  constition: 0
+  constition: 1
   ballHandling: 0
   groundMobility: 1
   power: 0
@@ -4211,7 +4215,7 @@ Transform:
   m_GameObject: {fileID: 1690081807}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: -2.85, y: 0, z: 29.34}
+  m_LocalPosition: {x: -9.28, y: 0, z: 35.86}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4251,8 +4255,8 @@ MonoBehaviour:
   <teamNo>k__BackingField: 1
   <hasBall>k__BackingField: 0
   baseInfo: {fileID: 11400000, guid: e0dd2aaaa08e4934eb84578a61a3da46, type: 2}
-  constition: 0
-  ballHandling: 0
+  constition: 1
+  ballHandling: 1
   groundMobility: 0
   power: 0
   canFly: 0

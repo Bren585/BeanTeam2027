@@ -52,7 +52,17 @@ public partial class MoveBestPositionAction : ActionBase
 			// ステアリングの対象指定
 			characterAIAgent.SetTargetPosition(bestPosition);
             Debug.Log("ベストな地点を更新");
-		}    
+		}
+
+		// このアクションでボールを持っている場合、近くに敵がいる場合は失敗を返す
+		if (characterAIAgent.HasBall)
+        {
+			if (characterAIAgent.CharacterSensor.IsNearbyOpponent(10.0f))
+			{
+				Debug.Log(GameObject.name + "近くに敵がいる場合、終了");
+				return Status.Failure;
+			}
+		}
 
         return Status.Running;
     }

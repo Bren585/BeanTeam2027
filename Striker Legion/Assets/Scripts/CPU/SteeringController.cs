@@ -57,7 +57,7 @@ public class SteeringController : MonoBehaviour
 	public void CancelMove()	{
 		//Debug.Log(name + ":ステアリング終了");
 		isMove = false;
-		
+		velocity = Vector3.zero;
 	}
 
 
@@ -211,9 +211,9 @@ public class SteeringController : MonoBehaviour
 		//}
 
 		// キャラクターの位置から移動ベクトルを線で描画
-		Gizmos.color = Color.yellow;
-		Vector3 from = transform.position + Vector3.up * 2.0f;
-		Gizmos.DrawLine(from, from + velocity.normalized * 10.0f);
+		//Gizmos.color = Color.yellow;
+		//Vector3 from = transform.position + Vector3.up * 2.0f;
+		//Gizmos.DrawLine(from, from + velocity.normalized * 10.0f);
 
 	}
 }

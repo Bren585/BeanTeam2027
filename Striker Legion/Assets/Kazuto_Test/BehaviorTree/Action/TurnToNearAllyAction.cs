@@ -14,6 +14,8 @@ public partial class TurnToNearAllyAction : ActionBase
 
     Transform targetTransform;
 
+    Quaternion startRotation;
+
     float timer = 0.0f;
 
     protected override Status OnStart()
@@ -45,32 +47,48 @@ public partial class TurnToNearAllyAction : ActionBase
         if (!isSuccess)
             return Status.Failure;
 
-        characterAIAgent.DebugText.SetText("最も近い味方に方向転換,距離:"+minDistance);
+        characterAIAgent.SteeringController.CancelMove();
+
+		characterAIAgent.DebugText.SetText("最も近い味方に方向転換,距離:"+minDistance);
 
         timer = 0.0f;
 
-        
-        //characterAIAgent.SetTargetPosition(Vector3.zero);
-        //characterAIAgent.SteeringController.StartMove(SteeringMode.Arrive);
-        //characterAIAgent.SteeringController.SetParentVelocity(Vector3.zero);
-        //characterAIAgent.SetTargetPosition(GameObject.transform.position + (GameObject.transform.position - targetPosition).normalized);
+		startRotation = GameObject.transform.rotation;
+
+        //characterAIAgent.SteeringController.StartMove(SteeringMode.Simple);
+        //characterAIAgent.SetTargetPosition(TargetPosition());
+
+		//characterAIAgent.SetTargetPosition(Vector3.zero);
+		//characterAIAgent.SteeringController.StartMove(SteeringMode.Arrive);
+		//characterAIAgent.SteeringController.SetParentVelocity(Vector3.zero);
+		//characterAIAgent.SetTargetPosition(GameObject.transform.position + (GameObject.transform.position - targetPosition).normalized);
 		return Status.Running;
     }
 
     protected override Status OnUpdate()
     {
-        if(Seconds > 0.0f)
-		    GameObject.transform.rotation = Quaternion.Lerp(GameObject.transform.rotation, Quaternion.LookRotation((targetTransform.position - GameObject.transform.position), Vector3.up), timer / Seconds);
+#if true
+        characterAIAgent.DebugText.SetText("最も近い味方に方向転換,係数:" + (timer / Seconds));
+
+		if (Seconds > 0.0f)
+		    GameObject.transform.rotation = Quaternion.Lerp(startRotation, Quaternion.LookRotation((targetTransform.position - GameObject.transform.position), GameObject.transform.up), timer / Seconds);
 		else
             GameObject.transform.rotation = Quaternion.LookRotation((GameObject.transform.position - targetTransform.position).normalized, Vector3.up);
+#else
+        //characterAIAgent.SetTargetPosition(TargetPosition());
+		//GameObject.transform.rotation = Quaternion.Lerp(GameObject.transform.rotation, Quaternion.LookRotation((targetTransform.position - GameObject.transform.position), GameObject.transform.up), timer / Seconds);
+        if(Quaternion.Dot(GameObject.transform.rotation, Quaternion.LookRotation((targetTransform.position - GameObject.transform.position), GameObject.transform.up)) > 0.7f)
+		{
+			return Status.Success;
+		}
+#endif
 
 		timer += Time.deltaTime;
         if(timer >= Seconds)
         {
             timer = 0.0f;
-        return Status.Success;
-
-        }    
+            return Status.Success;
+        }
 
         return Status.Running;
     }
@@ -78,5 +96,13 @@ public partial class TurnToNearAllyAction : ActionBase
     protected override void OnEnd()
     {
     }
+
+    Vector3 TargetPosition()
+    {
+        Vector3 direction = targetTransform.position - GameObject.transform.position;
+
+
+		return GameObject.transform.position + direction.normalized * 2.0f;
+	}
 }
 

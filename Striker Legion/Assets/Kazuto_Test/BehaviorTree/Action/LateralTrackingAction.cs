@@ -7,10 +7,11 @@ using UnityEngine.UIElements;
 using Action = Unity.Behavior.Action;
 
 [Serializable, GeneratePropertyBag]
-[NodeDescription(name: "LateralTracking", story: "Lateral Tracking for Defense from [base]", category: "Action", id: "721bbfcceaace68933e314f2138c56a3")]
+[NodeDescription(name: "LateralTracking", story: "Lateral Tracking for Defense from [base] limit [xlimit]", category: "Action", id: "721bbfcceaace68933e314f2138c56a3")]
 public partial class LateralTrackingAction : ActionBase
 {
     [SerializeReference] public BlackboardVariable<PositioningName> Base;
+    [SerializeReference] public BlackboardVariable<float> XLimit;
     CharacterBase targetCharacter;
 
     float timer = 0.0f;
@@ -119,6 +120,7 @@ public partial class LateralTrackingAction : ActionBase
         Vector3 result = targetPosition + vec;
 
 		result.z = characterAIAgent.BasePosition(Base.Value).z;
+        result.x = Mathf.Clamp(result.x, -XLimit.Value, XLimit.Value);
 		//result.z = characterAIAgent.BasePosition.z;
 
 		// 位置から計算した射影ベクトルを足した座標を返す

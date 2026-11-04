@@ -53,7 +53,7 @@ public partial class RunForwardAction : ActionBase
         if (characterAIAgent.CharacterSensor.IsNearbyOpponent(10.0f))
         {
             Debug.Log(GameObject.name + "近くに敵がいる場合、終了");
-            return Status.Success;
+            return Status.Failure;
         }
 
 		return Status.Running;
