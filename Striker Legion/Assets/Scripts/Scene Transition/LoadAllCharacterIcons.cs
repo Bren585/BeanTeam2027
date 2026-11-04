@@ -32,6 +32,8 @@ public class LoadAllCharacterIcons : MonoBehaviour
             newIcon.GetComponent<CharacterSelectButtonScript>().characterData = chara;
             newIcon.GetComponent<Image>().sprite = chara.icon;
             newIcon.GetComponent<Button>().onClick.AddListener(selectScript.SelectCharacter);
+            
+            newIcon.SetActive(true);
 
             count++;
         }
