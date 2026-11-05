@@ -1,0 +1,125 @@
+using Unity.Cinemachine;
+using Unity.VisualScripting;
+using UnityEngine;
+
+public class GameBall : MonoBehaviour
+{
+    public struct flight 
+    {
+        Vector3 start;
+        Vector3 end;
+        public float maxHeight;
+        public float duration;
+        public float t; // タイム
+        public const float MAX_DURATION = 3f;
+
+        public flight(BallHolder from, BallHolder to, float height, float speed)
+        {
+            start = from.GetHoldPosition();
+            Vector3 target = to.GetHoldPosition();
+            Vector3 velocity = new Vector3(to.GetVelocity().x, 0, to.GetVelocity().z);
+            Vector3 offset = target - start;
+            offset.y = 0;
+
+            duration = Mathf.Infinity;
+
+            //speedからdurationを求まる
+            float a = Vector3.Dot(velocity, velocity) - (speed * speed);
+            float b = 2f * Vector3.Dot(offset, velocity);
+            float c = Vector3.Dot(offset, offset);
+            if (Mathf.Approximately(a, 0))
+            {
+                if (!Mathf.Approximately(b, 0))
+                {
+                    float t = -c / b;
+                    if (t > 0)
+                    {
+                        duration = t;
+                    }
+                }
+            }
+            else
+            {
+                float discriminant = b * b - 4f * a * c;
+
+                if (discriminant >= 0)
+                {
+                    float sqrt = Mathf.Sqrt(discriminant);
+                    float t1 = (-b - sqrt) / (2f * a);
+                    float t2 = (-b + sqrt) / (2f * a);
+
+                    if (t1 > 0f) { duration = t1; }
+                    if (t2 > 0f && t2 < duration) { duration = t2; }
+                }
+            }
+
+            //durationを制限する
+            duration = Mathf.Min(duration, MAX_DURATION);
+
+            end = target + velocity * duration;
+            maxHeight = height;
+            t = 0;
+        }
+
+        public bool update(out Vector3 position)
+        {
+            t += Time.deltaTime;
+            if (t > duration)
+            {
+                position = end;
+                return false;
+            }
+            float p = t / duration; // パーセント
+            float h = 1 - Mathf.Pow(2 * p - 1, 2);
+
+            position.x = Mathf.Lerp(start.x, end.x, p);
+            position.y = Mathf.Lerp(start.y, end.y, p) + h * maxHeight;
+            position.z = Mathf.Lerp(start.z, end.z, p);
+            return true;
+        }
+    }
+
+    bool inFlight = false;
+    flight currentPath;
+
+    [SerializeField] float maxCatchupSpeed = 40;
+
+    [SerializeField] BallHolder owner = null;
+
+    public BallHolder GetOwner() { return owner; }
+
+    public void SetOwner(BallHolder holder) { owner = holder; }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (inFlight)
+        {
+            Vector3 position = new Vector3();
+            inFlight = currentPath.update(out position);
+            transform.position = position;
+            if (!inFlight)
+            {
+                owner.GetBall();
+            }
+        } 
+        else
+        {
+            Vector3 toTarget = owner.GetHoldPosition() - transform.position;
+            toTarget.y = 0;
+            float distance = toTarget.magnitude;
+            float speedTimme = maxCatchupSpeed * Time.deltaTime;
+            if (distance > speedTimme)
+            {
+                toTarget *= (speedTimme / distance);
+            }
+            transform.position += toTarget;
+        }
+    }
+
+    public void Kick(flight path)
+    {
+        inFlight = true;
+        currentPath = path;
+    }
+}

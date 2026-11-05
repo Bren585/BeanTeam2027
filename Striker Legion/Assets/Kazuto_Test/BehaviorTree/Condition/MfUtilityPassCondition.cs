@@ -1,0 +1,48 @@
+using System;
+using System.Collections.Generic;
+using Unity.Behavior;
+using UnityEngine;
+
+[Serializable, Unity.Properties.GeneratePropertyBag]
+[Condition(name: "MFUtilityPass", story: "[Midfielder] Compare Utility Score of Pass and Dribble", category: "Conditions", id: "06742bcbb93c4d6a229a7412f59c544a")]
+public partial class MfUtilityPassCondition : Condition
+{
+    [SerializeReference] public BlackboardVariable<CharacterAIAgent> Midfielder;
+
+    public override bool IsTrue()
+    {
+#if true
+        CharacterTeam team = (CharacterTeam)(Midfielder.Value.TeamNumber);
+
+		// 動けるキャラクターを探す
+		IReadOnlyList <CharacterBase> ActiveCharacters = MatchManager.Instance.GetActiveCharacters(team);
+        //IReadOnlyList<CharacterAIAgent> ActiveCharacters = MatchManager.Instance.GetActiveCharacters((CharacterTeam)(Midfielder.Value.TeamNumber));
+
+        // パス対象がいなければ、ドリブルをする
+        if (!Midfielder.Value.EnablePass())
+            return false;
+        else
+            return true;
+
+        // 最も低かったスコア
+        float MinCost = PassUtility.CostPassToAnyAlly(ActiveCharacters, Midfielder, MatchManager.Instance.GetGoalPosition(team));
+
+        // 乱数の取得
+		float rand = UnityEngine.Random.Range(0.0f, 1.0f);
+
+		// 乱数よりコストのほうが高ければ、パスせずにドリブルをする
+		if (MinCost > rand)
+			return false;
+#endif
+
+        return true;
+    }
+
+    public override void OnStart()
+    {
+    }
+
+    public override void OnEnd()
+    {
+    }
+}
