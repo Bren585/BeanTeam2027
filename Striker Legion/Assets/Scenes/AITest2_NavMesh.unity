@@ -2353,8 +2353,8 @@ MonoBehaviour:
   <hasBall>k__BackingField: 0
   baseInfo: {fileID: 11400000, guid: e0dd2aaaa08e4934eb84578a61a3da46, type: 2}
   constition: 1
-  ballHandling: 0
-  groundMobility: 1
+  ballHandling: 1
+  groundMobility: 0
   power: 0
   canFly: 0
   maxFlySpeed: 0
@@ -2934,7 +2934,7 @@ Transform:
   m_GameObject: {fileID: 1032747352}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 30}
+  m_LocalPosition: {x: 0, y: 0, z: 32.17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4574,7 +4574,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce4f31e68b7261b45bdface37e6b8b13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PitchEvaluator
-  isDrawGizmo: 1
+  isDrawGizmo: 0
   colorAlpha: 1
   debugRole: 1
   debugTeam: 0

@@ -57,11 +57,12 @@ public partial class MoveBestPositionAction : ActionBase
 		// このアクションでボールを持っている場合、近くに敵がいる場合は失敗を返す
 		if (characterAIAgent.HasBall)
         {
-			if (characterAIAgent.CharacterSensor.IsNearbyOpponent(10.0f))
+            if(characterAIAgent.CharacterSensor.IsNearbyOpponent(8.0f))
 			{
 				Debug.Log(GameObject.name + "近くに敵がいる場合、終了");
 				return Status.Failure;
 			}
+            
 		}
 
         return Status.Running;

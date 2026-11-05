@@ -68,6 +68,29 @@ public class CharacterSensor : MonoBehaviour
 		return BallerCharacter != null;
 	}
 
+	public bool IsEnemyInFrontRange(string myLayer, Vector3 targetPosition,float radius, float distance)
+	{
+		// 指定対象の方向に Ray を発射
+		Ray ray = new Ray(transform.position, targetPosition - transform.position);
+
+		string opponentLayerStr = (myLayer == "Player") ? "Enemy" : "Player";
+		LayerMask opponentLayer = LayerMask.GetMask(opponentLayerStr);
+
+		// レイがヒットしたか
+		if (!Physics.SphereCast(ray, radius, out RaycastHit hit, distance, opponentLayer))
+		{
+			Debug.Log("敵が見つかりませんでした Layer :" + opponentLayer);
+
+			return false;
+		}
+		// ヒットしたオブジェクトがキャラクターかどうかを判定
+		if (!hit.collider.CompareTag("Character"))
+		{
+			Debug.Log("ヒット対象がCharacter以外:" + hit.collider.tag);
+			return false;
+		}
+		return true;
+	}
 	public bool IsEnemyInFrontRange(string targetLayer, float radius)
 	{
 		// プレイヤーの正面方向に Ray を発射

@@ -17,26 +17,31 @@ public partial class DefenseLineCondition : Condition
         bool success = (Inverse.Value) ? false : true;
 
         // ボールを持っているキャラがいないなら、侵入されていない
-        if (MatchManager.Instance.CurrentBallHolder == null)
-            return !success;
+        //if (MatchManager.Instance.CurrentBallHolder == null)
+        //    return !success;
 
 		// ボールを持っているキャラのチームが自分と同じなら、侵入されていない
         if(MatchManager.Instance.CurrentBallHolder.teamNo == CharacterAIAgent.Value.TeamNumber)
 			return !success;
 
-        // 基準から符号を決定
-        bool sign = CharacterAIAgent.Value.BasePosition(PositionBaseName.Value).z > 0.0f;
+        if(MatchManager.Instance.BallTransform == null)
+			return !success;
+
+        Vector3 ballPosition = MatchManager.Instance.BallTransform.position;
+
+		// 基準から符号を決定
+		bool sign = CharacterAIAgent.Value.BasePosition(PositionBaseName.Value).z > 0.0f;
 
         if (sign)
         {
 			// 基準が正の時、基準点よりもボール保持者が後ろにいる場合、侵入されている
-			if (CharacterAIAgent.Value.BasePosition(PositionBaseName.Value).z < MatchManager.Instance.CurrentBallHolder.transform.position.z)
+			if (CharacterAIAgent.Value.BasePosition(PositionBaseName.Value).z < ballPosition.z)
                 return success;
         }
 		else
 		{
 			// 基準が負の時、基準点よりもボール保持者が前にいる場合、侵入されている
-			if (CharacterAIAgent.Value.BasePosition(PositionBaseName.Value).z > MatchManager.Instance.CurrentBallHolder.transform.position.z)
+			if (CharacterAIAgent.Value.BasePosition(PositionBaseName.Value).z > ballPosition.z)
 				return success;
 		}
 		return !success;

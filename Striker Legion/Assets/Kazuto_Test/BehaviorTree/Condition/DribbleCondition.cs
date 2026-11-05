@@ -32,7 +32,7 @@ public partial class DribbleCondition : Condition
                 return true;
 		}
 
-        Debug.Log(GameObject.name + " DribbleCondition: " + isHit + ", HitObject: " + (hit.collider != null ? hit.collider.name : "null"));
+        //Debug.Log(GameObject.name + " DribbleCondition: " + isHit + ", HitObject: " + (hit.collider != null ? hit.collider.name : "null"));
 		return !isHit;
     }
 

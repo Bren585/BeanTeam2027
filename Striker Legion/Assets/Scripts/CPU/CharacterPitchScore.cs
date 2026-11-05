@@ -1,7 +1,9 @@
+using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.Splines;
 using UnityEngine.TextCore.Text;
 
 public class CharacterPitchScore : MonoBehaviour
@@ -20,6 +22,8 @@ public class CharacterPitchScore : MonoBehaviour
 	private Vector3 gridOrigin;
 	private Vector2 gridSize = new Vector2(10f, 20f);
 	bool isUpdate = false;
+
+	private RingBuffer<int2> bestScoreLog;
 
 	// このコンポーネントを持っているキャラのポジション
 	CharacterRole ownerRole;
@@ -43,8 +47,10 @@ public class CharacterPitchScore : MonoBehaviour
         //MatchManager.Instance.GetPitchInfo(out gridCols, out gridRows, out gridSize, out gridOrigin);
         MatchManager.Instance.RegisterEvaluatorScore(this);
 
+		// 最高スコアのログを保持するリングバッファを初期化
+		bestScoreLog = new RingBuffer<int2>(5);
 
-        // 評価変数のメモリ確保
+		// 評価変数のメモリ確保
 		gridScores = new float[gridCols, gridRows];
 		//Debug.Log($"{gameObject.name}: cols{gridCols},rows{gridRows}");
 	}
@@ -53,6 +59,13 @@ public class CharacterPitchScore : MonoBehaviour
 	void Update()
     {
 		//RefreshEvaluation();
+		if(isUpdate)
+		{
+			// 最もスコアが高いグリッドの番号を計算
+			GetBestGridIndex(out int bestX, out int bestZ);
+			// リングバッファに登録
+			bestScoreLog.Add(new int2(bestX, bestZ));
+		}
 
 		isUpdate = false;
 
@@ -73,11 +86,41 @@ public class CharacterPitchScore : MonoBehaviour
 		float currentScore = score;
 		//float currentScore = gridScores[x, z];
 
+		// このキャラクターの座標のグリッド番号を取得
+		GetCellIndexByWorldPosition(transform.position, out int currentX, out int currentZ);
+
+		// 現在いるグリッドでとどまるのを防ぐため、現在いるグリッドのスコアは０にする
+		if(currentX == x && currentZ == z)
+		{
+			currentScore = 0.0f;
+		}
+		if(DuplicateBestGrid(new int2(x, z), 2))
+		{
+			currentScore = 0.0f;
+		}
+
 		// グリッドまでの距離で再度計算
 		//currentScore += ScoreDistanceToGrid(gridPosition, 0.1f);
 
 		// 計算結果で更新
 		gridScores[x, z] = currentScore;
+	}
+
+	// 指定された回数以上、最高スコアのグリッドが重複しているか確認する
+	bool DuplicateBestGrid(int2 bestGridIndex, int acceptValue)
+	{
+		int duplicateCount = 0;
+		foreach (int2 grid in bestScoreLog.GetAllItems())
+		{
+			// 重複チェックとカウント
+			if (grid.x == bestGridIndex.x && grid.y == bestGridIndex.y)
+				duplicateCount++;
+		}
+		// 引数の指定回数以上重複している場合はtrueを返す
+		if (duplicateCount >= acceptValue)
+			return true;
+		
+		return false;
 	}
 
 	float ScoreDistanceToGrid(Vector3 gridPosition, float weight)
@@ -92,6 +135,31 @@ public class CharacterPitchScore : MonoBehaviour
 		float score = Mathf.Clamp01(1.0f- (distance / MaxLength));
 
 		return score * weight;
+	}
+
+	public void GetBestGridIndex(out int outX, out int outZ)
+	{
+		// 初期化
+		outX = 0;
+		outZ = 0;
+
+		// 最高点
+		float bestScore = 0.0f;
+		for (int z = 0; z < gridRows; z++)
+		{
+			//color.b = (float)z / (float)gridRows;
+			for (int x = 0; x < gridCols; x++)
+			{
+				// 今までの最高点より小さい場合、飛ばす
+				if (gridScores[x, z] < bestScore)
+					continue;
+
+				// 結果を更新
+				bestScore = gridScores[x, z];
+				outX = x;
+				outZ = z;
+			}
+		}
 	}
 
 	public Vector3 GetBestPosition()
@@ -152,12 +220,11 @@ public class CharacterPitchScore : MonoBehaviour
 	}
 	void GetCellIndexByWorldPosition(Vector3 worldPosition, out int x, out int z)
 	{
-		float cellWidth = gridSize.x / gridCols;
-		float cellHeight = gridSize.y / gridRows;
-		x = Mathf.Clamp(Mathf.FloorToInt((worldPosition.x + (gridSize.x / 2f)) / cellWidth), 0, gridCols - 1);
-		z = Mathf.Clamp(Mathf.FloorToInt((worldPosition.z + (gridSize.y / 2f)) / cellHeight), 0, gridRows - 1);
-	}
+		Vector3 vec = worldPosition - gridOrigin;
 
+		x = Mathf.Clamp(Mathf.FloorToInt(vec.x / gridSize.x), 0, gridCols - 1);
+		z = Mathf.Clamp(Mathf.FloorToInt(vec.z / gridSize.y), 0, gridRows - 1);
+	}
 	public void SetPitchInfo(int cols, int rows, Vector2 size, Vector3 origin)
 	{
 		gridCols   = cols;
@@ -169,7 +236,7 @@ public class CharacterPitchScore : MonoBehaviour
 	{
 		if (!IsDebugGizmo)
 			return;
-		Vector3 offset = new Vector3(0.0f, 1.0f, 0.0f);
+		Vector3 offset = new Vector3(0.0f, 0.0f, 0.0f);
 		Vector3 size = new Vector3(gridSize.x, 1.0f, gridSize.y);
 		UnityEngine.Color color = UnityEngine.Color.white;
 		color.a = 1.0f;

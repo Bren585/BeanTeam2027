@@ -27,7 +27,7 @@ public partial class LateralTrackingAction : ActionBase
 		targetCharacter = MatchManager.Instance.CurrentBallHolder;
 
         // 移動開始
-        characterAIAgent.SteeringController.StartMove(SteeringMode.Seek);
+        characterAIAgent.SteeringController.StartMove(SteeringMode.Arrive);
 
         characterAIAgent.DebugText.SetText("スペースを空けないように防衛");
 
@@ -54,7 +54,7 @@ public partial class LateralTrackingAction : ActionBase
         if (!characterAIAgent.SteeringController.IsMove)
             return Status.Success;
 
-        if (timer > 5.0f)
+        if (timer > 1.0f)
             return Status.Success;
 
         return Status.Running;
