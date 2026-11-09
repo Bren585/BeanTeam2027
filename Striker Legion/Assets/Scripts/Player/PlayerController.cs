@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     // 繧ｭ繝｣繝ｩ繧ｯ繧ｿ繝ｼ縺ｮ蛻�ｊ譖ｿ縺医ｒ陦後≧縺九�繝輔Λ繧ｰ
     [SerializeField] bool               changePlayerCharacter;
-    [SerializeField] int                teamNo;
+    [SerializeField] CharacterTeam      team;
     [SerializeField] GameBall           gameBall;
 
 
@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
         {
             CharacterBase ballOwner = gameBall.GetOwner() as CharacterBase;
             if (ballOwner == null) { target = gameBall.transform.position; }
-            else if (ballOwner.teamNo == teamNo) { return ballOwner; }
+            else if (ballOwner.team == team) { return ballOwner; }
             else { target = ballOwner.transform.position; }
         }
 
@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
 
         foreach (CharacterBase character in allCharacters)
         {
-            if (character.teamNo != teamNo) { continue; }
+            if (character.team != team) { continue; }
             float distance = (character.transform.position - target).magnitude;
             if (distance < closest)
             {
@@ -130,7 +130,7 @@ public class PlayerController : MonoBehaviour
             CharacterBase ballOwner = gameBall.GetOwner() as CharacterBase;
             if (ballOwner != playerCharacter && ballOwner != null)
             {
-                if (ballOwner.teamNo == teamNo)
+                if (ballOwner.team == team)
                 {
                     PossessCharacter(ballOwner);
                 }

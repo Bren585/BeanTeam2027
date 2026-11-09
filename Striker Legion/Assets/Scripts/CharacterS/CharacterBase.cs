@@ -9,78 +9,41 @@ using static UnityEngine.Mathf;
 [RequireComponent(typeof(CharacterController))]
 public class CharacterBase : BallHolder
 {
-    // ã‚³ãƒ³ãƒãƒãƒ³ãƒE******************************************************************************************
+    // ƒRƒ“ƒ|ƒlƒ“ƒg ******************************************************************************************
 
-    protected CharacterController body;
-    protected GameObject ball;
-    protected GameObject tackleHitbox;
+    private CharacterController body;
+    private GameObject ball;
+    private GameObject tackleHitbox;
+    private Animator animator;
 
     // ã‚­ãƒ£ãƒ©å®šç¾© *******************************************************************************************
 
-    [Header("ãƒ™ãEã‚¹è¨­å®E")]
-    [SerializeField] protected CharacterBaseInfo baseInfo;
+    [Header("ƒx[ƒXİ’è")]
+    [SerializeField] private CharacterBaseInfo baseInfo;
 
     // ã‚­ãƒ£ãƒ©ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ **************************************************************************************
 
-    [Header("ç¶™æ‰¿ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿")]
+    [Header("Œp³ƒpƒ‰ƒ[ƒ^")]
 
-    /// <summary>
-    ///                                             å¾©æ´»åŠE
-    ///                                             <br/>
-    ///                                             å€¤ã¯0.0Eˆå¼±ãE€æ—©ãæ²»ã‚‰ãªãE¼‰ã‹ã‚‰ï¼‘ï¼ï¼ï¼ˆå¼·ãE€æ—©ãæ²»ã‚‹ï¼‰ã¾ã§ã¨ã—ã¾ã™ã€E
-    /// </summary>
-    [SerializeField, Range(0f, 1f)] protected float constition;
+    [SerializeField] private CharacterInfo info;
+    public void setInfo(CharacterInfo newInfo) { info = newInfo; }
 
-    /// <summary>
-    ///                                             ãƒœãEãƒ«ã®æ‰±ãE‚„ã™ã•
-    ///                                             <br/>
-    ///                                             å€¤ã¯0.0Eˆæ”»æ’E•ã‚ŒãŸã‚‰çµ¶å¯¾è½ã¨ã™ãªã©E‰ã‹ã‚‰ï¼‘ï¼ï¼ï¼ˆãEãƒ¼ãƒ«è½ã¨ã•ãªãEªã©E‰ã¾ã§ã¨ã—ã¾ã™ã€E
-    /// </summary>
-    [SerializeField, Range(0f, 1f)] protected float ballHandling;
+    // ƒLƒƒƒ‰ó‘Ô *******************************************************************************************
 
-    /// <summary>
-    ///                                             èµ°ã‚‹ã¨ããEå°å›ã‚ŠåŠ›ã€æ¨ªç§»å‹•ã‚¹ãƒ”ãEãƒ‰ã€ã‚¢ã‚¯ã‚»ãƒ«                      
-    ///                                             <br/>            
-    ///                                             å€¤ã¯Eï¼ï¼ï¼ˆæœ€ä½ã«éE„E‰ã‹ã‚‰ï¼‘ï¼ï¼ï¼ˆæœ€é«˜ã«æ—©ãE¼‰ã¾ã§ã¨ã—ã¾ã™ã€E
-    /// </summary>
-    [SerializeField, Range(0f, 1f)] protected float groundMobility;
+    // ƒXƒLƒ‹
+    [SerializeField] private SkillEffectBase skillEffect;
 
-    /// <summary>
-    ///                                             ã‚·ãƒ§ãƒ¼ãƒˆåŠ›
-    /// </summary>
-    [SerializeField, Range(0f, 1f)] protected float power;
-
-    [Header("é³¥ç³»")]
-    /// <summary>
-    ///                                             é£›ã¹ã‚‹ã‹ã©ãE‹
-    /// </summary>
-    [SerializeField] protected bool canFly = false;
-
-    /// <summary>
-    ///                                             é£›ãEãƒãƒƒã‚¯ã‚¹ã‚¹ãƒ”ãEãƒE
-    /// </summary>
-    [SerializeField] protected float maxFlySpeed = 0;
-
-    /// <summary>
-    ///                                             é£›ãEã¨ããEå°å›ã‚ŠåŠ›ã€æ¨ªç§»å‹•ã‚¹ãƒ”ãEãƒ‰ã€ã‚¢ã‚¯ã‚»ãƒ«
-    /// </summary>
-    [SerializeField, Range(0f, 1f)] protected float airMobility = 0.1f;
-
-    // ã‚­ãƒ£ãƒ©çŠ¶æ…E*******************************************************************************************
-
-    [field: Header("çŠ¶æ…E")]
+    [field: Header("ó‘Ô")]
 
     private Vector3 _velocity;
     public Vector3 velocity => _velocity;
-    Animator animator;
-    SkillBar skillBar;
 
-    // ã‚ªãƒ¼ãƒãEãƒ©ã‚¤ãƒE***************************************************************************************
+    // ƒI[ƒo[ƒ‰ƒCƒh ***************************************************************************************
     public override Vector3 GetHoldPosition() { return transform.Find("Feet").position; }
     public override Vector3 GetVelocity() { return velocity; }
 
     /// <summary>
-    /// trueãªã‚‰å‹•ãE¦ãE‚‹å‘ãã«å›ã‚‹ã€falseãªã‚‰å‘ã‹ãªãE
+    /// true‚È‚ç“®‚¢‚Ä‚¢‚éŒü‚«‚É‰ñ‚éAfalse‚È‚çŒü‚©‚È‚¢
     /// </summary>
     bool strafing = false;
     bool moving = false;
@@ -92,9 +55,9 @@ public class CharacterBase : BallHolder
     { 
         get 
         {
-            if      (flying)    return maxFlySpeed;
-            else if (strafing)  return baseInfo.maxRunSpeed * (0.1f + 0.9f * groundMobility);
-            else                return baseInfo.maxRunSpeed;
+            if      (flying)    return info.maxFlySpeed;
+            else if (strafing)  return info.speed * baseInfo.maxRunSpeed * (0.1f + 0.9f * info.groundMobility);
+            else                return info.speed * baseInfo.maxRunSpeed;
         } 
     }
 
@@ -105,7 +68,7 @@ public class CharacterBase : BallHolder
 
     CharacterBase passTarget = null;
 
-    // é–¢æ•° *******************************************************************************************
+    // ŠÖ” *******************************************************************************************
 
     protected virtual void Awake()
     {
@@ -121,7 +84,6 @@ public class CharacterBase : BallHolder
     void Start()
     {
         tackleTimer = baseInfo.tackleCooldown;
-        skillBar = FindAnyObjectByType<SkillBar>();
     }
 
     void Update()
@@ -173,12 +135,12 @@ public class CharacterBase : BallHolder
 
     void UpdateMovement()
     {
-        if (flying) // é£›ã‚“ã§ã‚E
+        if (flying) // ”ò‚ñ‚Å‚é
         {
         }
-        else // èµ°ã£ã¦ã‚E
+        else // ‘–‚Á‚Ä‚é
         {
-            // é€Ÿåº¦ãƒã‚§ãƒE‚¯
+            // ‘¬“xƒ`ƒFƒbƒN
             Vector3 groundVelocity = velocity;
             groundVelocity.y = 0;
 
@@ -186,12 +148,12 @@ public class CharacterBase : BallHolder
 
             Vector3 movement = Vector3.zero;
 
-            if (strafing) // æ¨ªç§»å‹E
+            if (strafing) // ‰¡ˆÚ“®
             {
                 movement = (groundVelocity * Time.deltaTime);
                 animator.SetFloat("forward", 0);
             }
-            else // æ™®é€šã«èµ°ã‚E
+            else //@•’Ê‚É‘–‚é
             {
                 UpdateRotation(groundVelocity);
 
@@ -238,7 +200,7 @@ public class CharacterBase : BallHolder
         {
             Quaternion targetRotation = Quaternion.LookRotation(groundVelocity);
 
-            float turnSpeed = (baseInfo.minTurnSpeed + Lerp(baseInfo.minTurnSpeed, baseInfo.maxTurnSpeed, groundMobility)) * Time.deltaTime;
+            float turnSpeed = (baseInfo.minTurnSpeed + Lerp(baseInfo.minTurnSpeed, baseInfo.maxTurnSpeed, info.groundMobility)) * Time.deltaTime;
 
             body.transform.rotation = Quaternion.RotateTowards(
                 body.transform.rotation,
@@ -256,9 +218,9 @@ public class CharacterBase : BallHolder
     }
 
     /// <summary>
-    /// ã‚­ãƒ£ãƒ©ã«é€Ÿåº¦ã‚’åŠ ãˆã‚‹
+    /// ƒLƒƒƒ‰‚É‘¬“x‚ğ‰Á‚¦‚é
     /// </summary>
-    /// <param name="input">é€Ÿåº¦</param>
+    /// <param name="input">‘¬“x</param>
     public void Move(Vector3 input)
     {
         if (moveLocked) { return; }
@@ -268,7 +230,7 @@ public class CharacterBase : BallHolder
 
         input = input.normalized;
 
-        float mobility = body.isGrounded ? groundMobility : airMobility;
+        float mobility = body.isGrounded ? info.groundMobility : info.airMobility;
 
         float accelerationModifier = Mathf.Pow(2, (mobility - 1));
 
@@ -280,9 +242,9 @@ public class CharacterBase : BallHolder
         {
             float dot = Vector3.Dot(input, groundVelocity.normalized);
 
-            if (dot < 0) // ç§»å‹•åEãŒå‹•ãE¦ãE‚‹å‘ãã¨é•ã†
+            if (dot < 0)  // ˆÚ“®æ‚ª“®‚¢‚Ä‚¢‚éŒü‚«‚Æˆá‚¤
             {
-                // å‘ããŒé•ãEEã€æ—©ãå‘ã‘ã‚‹ãŸã‚ã€æ—©ããªã‚‹ã€E
+                // Œü‚«‚ªˆá‚¤•ªA‘‚­Œü‚¯‚é‚½‚ßA‘‚­‚È‚éB
                 acceleration *= 1 - dot * mobility;
             }
         }
@@ -291,9 +253,9 @@ public class CharacterBase : BallHolder
     }
 
     /// <summary>
-    /// ç§»å‹•åEã«å‘ãã¹ãã‹
+    /// ˆÚ“®æ‚ÉŒü‚­‚×‚«‚©
     /// </summary>
-    /// <param name="strafe">trueãªã‚‰å‹•ãE¦ãE‚‹å‘ãã«å›ã‚‹ã€falseãªã‚‰å‘ã‹ãªãE/param>
+    /// <param name="strafe">true‚È‚ç“®‚¢‚Ä‚¢‚éŒü‚«‚É‰ñ‚éAfalse‚È‚çŒü‚©‚È‚¢</param>
     public void SetStrafe(bool strafe)
     {
         if (flying) strafing = false;
@@ -304,9 +266,9 @@ public class CharacterBase : BallHolder
     {
         if (!body.isGrounded) { return; }
         animator.SetTrigger("Jump");
-        if (canFly) 
-        { 
-            // é£›ãEå§‹ã‚ã¦
+        if (info.canFly) 
+        {
+            // ”ò‚Ñn‚ß‚Ä
         }
         else 
         {
@@ -325,12 +287,12 @@ public class CharacterBase : BallHolder
 
     bool BallHandlingFail()
     {
-        return Random.value > ballHandling;
+        return Random.value > info.ballHandling;
     }
 
     bool BallHandlingSuccess()
     {
-        return Random.value < ballHandling;
+        return Random.value < info.ballHandling;
     }
 
     protected override void OnGetBall()
@@ -346,7 +308,7 @@ public class CharacterBase : BallHolder
             CharacterBase opponent = other.GetComponentInParent<CharacterBase>();
             if (BallHandlingFail())
             {
-                //if (opponent.teamNo == teamNo) { return; } // ãƒE‚¹ãƒˆã—ã‚E™ãEŸã‚ã‚ªãƒEƒ•
+                //if (opponent.teamNo == teamNo) { return; } // ƒeƒXƒg‚µ‚â‚·‚¢‚½‚ßƒIƒbƒt
 
                 GameBall gameBall = FindAnyObjectByType<GameBall>();
 
@@ -355,15 +317,15 @@ public class CharacterBase : BallHolder
                 opponent.lockMove();
                 LoseBall();
                 ClearPassTarget();
-                skillBar.GainForTackle(opponent.teamNo);
+                SkillBar.instance.GainForTackle(opponent.team);
 
-                // ãƒ€ã‚¦ãƒ³
-                downTimer = baseInfo.maxDownTime * (1 - constition);
+                // ƒ_ƒEƒ“
+                downTimer = baseInfo.maxDownTime * (1 - info.constition);
                 animator.SetTrigger("Down");
             }
         }
-        //HACK: ifæ–EŒé•·ã™ãã‚E
-        else if (other.gameObject.name == "GoalZone" && other.transform.Find("ShootCamOrigin").Find("AimMarker").GetComponent<AimMarkerController>().teamNo != this.teamNo && hasBall == true)
+        //HACK: if•¶‚ª’·‚·‚¬‚é
+        else if (other.gameObject.tag == "Goal" && other.transform.Find("ShootCamOrigin").Find("AimMarker").GetComponent<AimMarkerController>().team != this.team && hasBall == true)
         {
             // Enter Shooting Mode
             //
@@ -376,15 +338,15 @@ public class CharacterBase : BallHolder
             // If defender reaches, they use they're constitution (and maybe ballhandle) to try to block
             // Player defender gets a bonus in speed and block if they aimed correctly 
             //
-            // æ—¥æœ¬èªE(æ©Ÿæ¢°ç¿»è¨³)
-            // ã‚·ãƒ¥ãƒ¼ãƒˆãƒ¢ãƒ¼ãƒ‰ãEåˆ¥ã‚¹ã‚¯ãƒªãƒ—ãƒˆã§å‡¦çE
-            // ã‚«ãƒ¡ãƒ©ãŒã‚·ãƒ¥ãƒ¼ã‚¿ãƒ¼ã«æ¥è¿‘ã—ã€æ™‚é–“ãEæµã‚ŒãŒé…ããªã‚E
-            // ã‚·ãƒ¥ãƒ¼ã‚¿ãƒ¼ã¯ã‚«ãƒ¼ã‚½ãƒ«ã‚’å‹•ã‹ã—ã¦ç‹™ã„ã‚’å®šã‚ã‚‹ï¼ˆã‚«ãƒ¼ã‚½ãƒ«ã®ç§»å‹•é€Ÿåº¦ã¯ã‚¹ãƒEEã‚¿ã‚¹ã®ã€Œã‚¹ãƒ”ãEãƒ‰ã€ã«ä¾å­˜ï¼E
-            // ãƒE‚£ãƒ•ã‚§ãƒ³ãƒ€ãƒ¼ãŒãEãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å ´åˆã€åŒæ§˜ã«ã‚«ãƒ¼ã‚½ãƒ«ã‚’ä½¿ã£ã¦å®ˆå‚™ä½ç½®ã‚’ç‹™ãE
-            // ã‚·ãƒ¥ãƒ¼ã‚¿ãƒ¼ãŒã‚·ãƒ¥ãƒ¼ãƒˆã‚’æ”¾ã¤
-            // ãƒE‚£ãƒ•ã‚§ãƒ³ãƒ€ãƒ¼ã¯ã€Œã‚¹ãƒ”ãEãƒ‰ã€ãEã‚¹ãƒEEã‚¿ã‚¹ã‚’æ´»ã‹ã—ã¦è·é›¢ã‚’è©°ã‚ã‚ˆãE¨ã™ã‚‹Eˆåˆ¶é™æ™‚é–“ãEã‚·ãƒ¥ãƒ¼ã‚¿ãƒ¼ã®ãƒ‘ãƒ¯ãƒ¼ã«ä¾å­˜ï¼E
-            // ãƒE‚£ãƒ•ã‚§ãƒ³ãƒ€ãƒ¼ãŒåˆ°é”ã—ãŸå ´åˆã€ã€Œã‚¹ã‚¿ãƒŸãƒŠEEonstitutionE‰ã€ï¼ˆãŠã‚ˆãEå ´åˆã«ã‚ˆã£ã¦ã¯ã€ŒãEãƒ¼ãƒ«ãƒãƒ³ãƒ‰ãƒªãƒ³ã‚°ã€ï¼‰ã‚’ä½¿ã£ã¦ãƒ–ãƒ­ãƒE‚¯ã‚’è©¦ã¿ã‚E
-            // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒãƒ‡ã‚£ãƒ•ã‚§ãƒ³ãƒ€ãƒ¼ã®å ´åˆã€ç‹™ãEŒæ­£ç¢ºã§ã‚ã‚Œã°ã‚¹ãƒ”ãEãƒ‰ã¨ãƒ–ãƒ­ãƒE‚¯ã«ãƒœãEãƒŠã‚¹ãŒåŠ ç®—ã•ã‚Œã‚‹
+            // “ú–{Œê (‹@ŠB–|–ó)
+            // ƒVƒ…[ƒgƒ‚[ƒh‚Í•ÊƒXƒNƒŠƒvƒg‚Åˆ—
+            // ƒJƒƒ‰‚ªƒVƒ…[ƒ^[‚ÉÚ‹ß‚µAŠÔ‚Ì—¬‚ê‚ª’x‚­‚È‚é
+            // ƒVƒ…[ƒ^[‚ÍƒJ[ƒ\ƒ‹‚ğ“®‚©‚µ‚Ä‘_‚¢‚ğ’è‚ß‚éiƒJ[ƒ\ƒ‹‚ÌˆÚ“®‘¬“x‚ÍƒXƒe[ƒ^ƒX‚ÌuƒXƒs[ƒhv‚ÉˆË‘¶j
+            // ƒfƒBƒtƒFƒ“ƒ_[‚ªƒvƒŒƒCƒ„[‚Ìê‡A“¯—l‚ÉƒJ[ƒ\ƒ‹‚ğg‚Á‚Äç”õˆÊ’u‚ğ‘_‚¤
+            // ƒVƒ…[ƒ^[‚ªƒVƒ…[ƒg‚ğ•ú‚Â
+            // ƒfƒBƒtƒFƒ“ƒ_[‚ÍuƒXƒs[ƒhv‚ÌƒXƒe[ƒ^ƒX‚ğŠˆ‚©‚µ‚Ä‹——£‚ğ‹l‚ß‚æ‚¤‚Æ‚·‚éi§ŒÀŠÔ‚ÍƒVƒ…[ƒ^[‚Ìƒpƒ[‚ÉˆË‘¶j
+            // ƒfƒBƒtƒFƒ“ƒ_[‚ª“’B‚µ‚½ê‡AuƒXƒ^ƒ~ƒiiConstitutionjvi‚¨‚æ‚Ñê‡‚É‚æ‚Á‚Ä‚Íuƒ{[ƒ‹ƒnƒ“ƒhƒŠƒ“ƒOvj‚ğg‚Á‚ÄƒuƒƒbƒN‚ğ‚İ‚é
+            // ƒvƒŒƒCƒ„[‚ªƒfƒBƒtƒFƒ“ƒ_[‚Ìê‡A‘_‚¢‚ª³Šm‚Å‚ ‚ê‚ÎƒXƒs[ƒh‚ÆƒuƒƒbƒN‚Éƒ{[ƒiƒX‚ª‰ÁZ‚³‚ê‚é
             // 
 
             //Debuging
@@ -405,7 +367,7 @@ public class CharacterBase : BallHolder
         foreach (CharacterBase character in characters)
         {
             if (character == this) continue;
-            if (character.teamNo != teamNo) continue;
+            if (character.team != team) continue;
 
             Vector3 toCharacter = character.transform.position - transform.position;
             float dot = Vector3.Dot(transform.forward, toCharacter.normalized);
@@ -422,7 +384,7 @@ public class CharacterBase : BallHolder
             hits.RemoveAll(hit =>
             {
                 CharacterBase hitCharacter = hit.transform.GetComponent<CharacterBase>();
-                return hitCharacter == null || hitCharacter.teamNo == teamNo;
+                return hitCharacter == null || hitCharacter.team == team;
             });
 
             // ƒqƒbƒg”‚ª‘O‰ñ‚Ü‚Å‚Ìƒqƒbƒg”‚æ‚è‘½‚©‚Á‚½‚ç”ò‚Î‚·
@@ -488,7 +450,7 @@ public class CharacterBase : BallHolder
             AimMarkerController[] targets = FindObjectsByType<AimMarkerController>();
             foreach (AimMarkerController goalCandidate in targets)
             {
-                if (goalCandidate.teamNo == teamNo) continue;
+                if (goalCandidate.team == team) continue;
                 Debug.Log("Shooting to Goal");
                 // Kick the ball to Goal
                 gameBall.Kick(new GameBall.flight(this, goalCandidate, 0, 20));
@@ -537,12 +499,13 @@ public class CharacterBase : BallHolder
 
     public bool CanSkill()
     {
-        return skillBar.Ready(teamNo);
+        return SkillBar.instance.Ready(team);
     }
 
-    public virtual void Skill()
+    public void Skill()
     {
-        skillBar.PayForSkill(teamNo);
+        SkillBar.instance.PayForSkill(team);
+        skillEffect.Activate(this);
         Debug.Log("Used Skill");
     }
 

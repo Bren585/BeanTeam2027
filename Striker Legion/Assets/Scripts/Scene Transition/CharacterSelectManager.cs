@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 // 自軍キャラの担当ポジション
@@ -23,6 +20,7 @@ public enum ExecuteState
     PositionSelect,
     Complete
 }
+
 
 public class CharacterSelectManager : MonoBehaviour
 { 
@@ -218,6 +216,7 @@ public class CharacterSelectManager : MonoBehaviour
     // ポジション選択情報の初期化
     public void ResetPositionData()
     {
+        if (selectedCharacters[0] == null) return;
         for (int i = 0; i < selectedCharacters.Length; ++i)
         {
             selectedCharacters[i].position = Character_Position.None;
