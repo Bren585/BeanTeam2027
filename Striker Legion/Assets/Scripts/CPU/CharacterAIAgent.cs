@@ -79,8 +79,14 @@ public class CharacterAIAgent : MonoBehaviour
 	// 追跡座標を設定
 	public void SetTargetPosition(Vector3 position)
 	{
-		navMeshAgent.SetDestination(position);
-		endTargetPosition = position;
+		Vector3 p = position;
+		// 引数の座標をピッチ内に収める
+		p.x = Mathf.Clamp(p.x, pitchScore.GridOrigin.x, pitchScore.GridEnd.x);
+		p.z = Mathf.Clamp(p.z, pitchScore.GridOrigin.z, pitchScore.GridEnd.z);
+
+		// ナビメッシュに座標を設定する
+		navMeshAgent.SetDestination(p);
+		endTargetPosition = p;
 	}
 
     protected void Awake()

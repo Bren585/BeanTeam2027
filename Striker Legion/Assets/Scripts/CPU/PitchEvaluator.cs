@@ -41,7 +41,8 @@ public class PitchEvaluator : MonoBehaviour
 	private int gridCols; // 横のマス数
 	private int gridRows; // 縦のマス数
 
-	private Vector3 gridOrigin; // グリッドの起点（左下などのワールド座標）
+	private Vector3 gridOrigin; // グリッドの起点（左下のワールド座標）
+	private Vector3 gridEnd;    // グリッドの終点（右上のワールド座標）
 
 	//[Header("Grid Settings")]
 	public Vector2 gridSize = new Vector2(10f, 20f);
@@ -70,7 +71,7 @@ public class PitchEvaluator : MonoBehaviour
 	float[,] enemiesGrid;
 
 	// 値を渡す時のための配列
-	float[,] cashedGrids;
+	//float[,] cashedGrids;
 
 	Vector2 totalSize = Vector2.zero;
 
@@ -96,7 +97,7 @@ public class PitchEvaluator : MonoBehaviour
 		playersGrid = new float[gridCols, gridRows];
 
 		enemiesGrid = new float[gridCols, gridRows];
-		cashedGrids = new float[gridCols, gridRows];
+		//cashedGrids = new float[gridCols, gridRows];
 
 		// 初期更新は早めにする
 		timer = updateTime;
@@ -125,7 +126,7 @@ public class PitchEvaluator : MonoBehaviour
 		pitchScores.Add(score);
 
 		// グリッドの構成情報を渡す
-		score.SetPitchInfo(gridCols, gridRows, gridSize, gridOrigin);
+		score.SetPitchInfo(gridCols, gridRows, gridSize, gridOrigin, gridEnd);
 	}
 
 	void Update()
@@ -178,6 +179,8 @@ public class PitchEvaluator : MonoBehaviour
 		Vector3 planeCenter = pitchPlaneMeshFilter.transform.position;
 		gridOrigin = planeCenter - (pitchPlaneMeshFilter.transform.right * (totalSize.x / 2f))
 								 - (pitchPlaneMeshFilter.transform.forward * (totalSize.y / 2f));
+
+		gridEnd = gridOrigin + new Vector3(totalSize.x, 0f, totalSize.y);
 
 		Debug.Log($"グリッドの初期化結果: Cols={gridCols}, Rows={gridRows}, Origin={gridOrigin}");
 	}
@@ -382,7 +385,8 @@ public class PitchEvaluator : MonoBehaviour
 			}
 		}
 
-		Gizmos.DrawSphere(gridOrigin, 1.0f);
+		Gizmos.DrawSphere(gridOrigin, 2.0f);
+		Gizmos.DrawSphere(gridEnd,2.0f);
 
 		if (characters==null)
 			return;

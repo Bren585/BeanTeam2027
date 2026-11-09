@@ -59,7 +59,8 @@ public partial class PressAction : ActionBase
         }
         
         // 追跡する座標をターゲットの位置に更新
-		characterAIAgent.SetTargetPosition(TargetCharacter.transform.position);
+		characterAIAgent.SetTargetPosition(TargetPosition());
+		//characterAIAgent.SetTargetPosition(TargetCharacter.transform.position);
 
         Vector3 Distance = TargetCharacter.transform.position - characterAIAgent.transform.position;
 
@@ -83,5 +84,19 @@ public partial class PressAction : ActionBase
     protected override void OnEnd()
     {
     }
+
+    Vector3 TargetPosition()
+    {
+        // 対象のキャラの座標
+        Vector3 targetCharacterPosition = TargetCharacter.transform.position;
+
+        // 対象のキャラの前方方向ベクトル
+        Vector3 targetForward = TargetCharacter.transform.forward;
+
+        // 前方方向を移動予想としてベクトルの補正を入れる
+        Vector3 result = targetCharacterPosition + targetForward * 5.0f;
+
+		return result;
+	}
 }
 

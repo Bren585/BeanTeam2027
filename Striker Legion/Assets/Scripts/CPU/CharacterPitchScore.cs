@@ -20,6 +20,8 @@ public class CharacterPitchScore : MonoBehaviour
     int gridCols;
     int gridRows;
 	private Vector3 gridOrigin;
+	private Vector3 gridEnd;
+
 	private Vector2 gridSize = new Vector2(10f, 20f);
 	bool isUpdate = false;
 
@@ -33,6 +35,9 @@ public class CharacterPitchScore : MonoBehaviour
 
 	public CharacterRole OwnerRole => ownerRole;
 	public CharacterTeam OwnerTeam => ownerTeam;
+
+	public Vector3 GridOrigin => gridOrigin;
+	public Vector3 GridEnd => gridEnd;
 
 	public bool IsUpdate => isUpdate;
 
@@ -225,12 +230,13 @@ public class CharacterPitchScore : MonoBehaviour
 		x = Mathf.Clamp(Mathf.FloorToInt(vec.x / gridSize.x), 0, gridCols - 1);
 		z = Mathf.Clamp(Mathf.FloorToInt(vec.z / gridSize.y), 0, gridRows - 1);
 	}
-	public void SetPitchInfo(int cols, int rows, Vector2 size, Vector3 origin)
+	public void SetPitchInfo(int cols, int rows, Vector2 size, Vector3 origin, Vector3 end)
 	{
 		gridCols   = cols;
 		gridRows   = rows;
 		gridSize   = size;
 		gridOrigin = origin;
+		gridEnd = end;
 	}
 	void OnDrawGizmosSelected()
 	{
