@@ -127,7 +127,28 @@ public class CharacterSensor : MonoBehaviour
 
 		// 近くにいるか判定する
 		numFound = Physics.OverlapSphereNonAlloc(transform.position, radius, hitColliders, OpponentLayer);
-		
+
+		bool isDown = true;
+		foreach(Collider collider in hitColliders)
+		{
+			if (collider == null)
+				continue;
+			if(collider.gameObject == gameObject)
+				continue;
+
+			CharacterBase character = collider.GetComponent<CharacterBase>();
+			if (character == null)
+				continue;
+
+			// ダウン中ではないキャラがいたらフラグを折る
+			if(!character.isDown)
+				isDown = false;
+		}
+
+		// ヒットしたキャラが全員ダウン中ならfalse
+		if (isDown)
+			return false;
+
 		// 検出された数が1以上ならtrue
 		return (numFound > 0) ? true : false;
 	}

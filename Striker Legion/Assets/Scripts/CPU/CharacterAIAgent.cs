@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using TMPro;
 using Unity.AppUI.UI;
 using Unity.Behavior;
@@ -45,10 +46,27 @@ public class CharacterAIAgent : MonoBehaviour
 	// 一応、終点座標を保持できるようにしてある。ほとんどデバッグ用
 	Vector3 endTargetPosition = Vector3.zero;
 
+	// パスの回数
+	private int passCount = 0;
+
+	// パスが一定回数以上続いたら、パスをしないようにする
+	private const int MaxPassCount = 1;
+
+	// パスの回数をリセットするためのタイマー
+	private float passResetTimer = 0.0f;
+
 	//------------------------------ getter -----------------------------------
-    public SteeringController SteeringController => steeringController;
+	public SteeringController SteeringController => steeringController;
 
     public CharacterSensor CharacterSensor => characterSensor;
+
+	public bool PermissiblePassCount => passCount < MaxPassCount;
+
+	public void IncrementPassCount()
+	{
+		passCount++;
+		Debug.Log(gameObject.name + "：パス回数" + passCount);
+	}
 
 	public Vector3 BasePosition(PositioningName name) => positioningBase[name];
 
@@ -128,7 +146,15 @@ public class CharacterAIAgent : MonoBehaviour
         // BlackBoard変数の更新処理
         UpdateBlackBoard();
 
-       
+		passResetTimer += Time.deltaTime;
+		if(passResetTimer > 2.0f)
+		{
+			// パスの回数を減らす
+			if (passCount > 0)
+				passCount--;
+
+			passResetTimer = 0.0f;
+		}
 	}
 
     void UpdateSteering(Vector3 ParentVelocity)
