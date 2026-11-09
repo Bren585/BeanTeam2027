@@ -71,6 +71,8 @@ public class CharacterSelectUIScript : MonoBehaviour
     // 選択したボタンのイメージコンポーネント
     private Image selectedButtonImage;
 
+    [SerializeField] TeamHandoff teamHandoff;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -122,6 +124,13 @@ public class CharacterSelectUIScript : MonoBehaviour
                 if (!positionSelectDisplayObjects.activeSelf)
                 {
                     Debug.Log("Active PositionSelect");
+
+                    CharacterSelectButtonScript[] select_buttons = characterButtonCanvasGroup.GetComponentsInChildren<CharacterSelectButtonScript>();
+                    for (int i = 0; i < 4; i++)
+                    {
+                        select_buttons[i].characterData = CharacterSelectManager.instance.selectedCharacters[i];
+                    }
+
                     positionSelectDisplayObjects.SetActive(true);
                     SetCanvasGroup(characterSelectCanvasGroup, false);
                     SetCanvasGroup(positionButtonCanvasGroup, true);
@@ -311,6 +320,18 @@ public class CharacterSelectUIScript : MonoBehaviour
     // 次のシーンの呼び出し
     public void ChangeNextScene()
     {
+        for (int i = 0; i < CharacterSelectManager.instance.selectedCharacters.Length; i++)
+        {
+            CharacterSelectManager man = CharacterSelectManager.instance;
+            teamHandoff.playerTeam.Add((Character_Position)man.GetSelectedPositionData(i), man.selectedCharacters[i].characterInfo);
+        }
+
+        foreach (Character_Position role in Enum.GetValues(typeof(Character_Position)))
+        {
+            if (role == Character_Position.None || role == Character_Position.Other) continue;
+            //teamHandoff.enemyTeam.Add(role, )
+        }
+
         SceneTransitionManager.instance.LoadScene((int)SceneID.SoloGame);
     }
 }

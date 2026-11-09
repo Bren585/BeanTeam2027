@@ -6,5 +6,6 @@ public enum CharacterRole
 {
 	Forward,
 	MidFielder,
-	Defender
+	Defender,
+	Keeper
 }
