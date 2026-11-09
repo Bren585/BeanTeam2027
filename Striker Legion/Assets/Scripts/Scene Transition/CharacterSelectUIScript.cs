@@ -124,6 +124,13 @@ public class CharacterSelectUIScript : MonoBehaviour
                 if (!positionSelectDisplayObjects.activeSelf)
                 {
                     Debug.Log("Active PositionSelect");
+
+                    CharacterSelectButtonScript[] select_buttons = characterButtonCanvasGroup.GetComponentsInChildren<CharacterSelectButtonScript>();
+                    for (int i = 0; i < 4; i++)
+                    {
+                        select_buttons[i].characterData = CharacterSelectManager.instance.selectedCharacters[i];
+                    }
+
                     positionSelectDisplayObjects.SetActive(true);
                     SetCanvasGroup(characterSelectCanvasGroup, false);
                     SetCanvasGroup(positionButtonCanvasGroup, true);
