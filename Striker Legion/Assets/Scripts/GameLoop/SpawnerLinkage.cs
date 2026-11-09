@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class SpawnerLinkage : MonoBehaviour
 {
-    [SerializeField] int teamNo;
+    [SerializeField] CharacterTeam team;
     [SerializeField] CharacterRole role;
 
     [SerializeField] public CharacterBase character;
