@@ -217,6 +217,11 @@ RectTransform:
   m_AnchoredPosition: {x: -5, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &96568066 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5108517601710094532, guid: 1fe8f6deec4851b48a5f58979ccfb6bb, type: 3}
+  m_PrefabInstance: {fileID: 295236162}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &118436414
 GameObject:
   m_ObjectHideFlags: 0
@@ -413,6 +418,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 426248030}
     m_Modifications:
+    - target: {fileID: 4160795269092267091, guid: 1fe8f6deec4851b48a5f58979ccfb6bb, type: 3}
+      propertyPath: info
+      value: 
+      objectReference: {fileID: 11400000, guid: 4b53760f8e567aa41adcb3e012093990, type: 2}
+    - target: {fileID: 4160795269092267091, guid: 1fe8f6deec4851b48a5f58979ccfb6bb, type: 3}
+      propertyPath: skillEffect
+      value: 
+      objectReference: {fileID: 11400000, guid: a80a55bc9357068498415e9a6644b250, type: 2}
     - target: {fileID: 4160795269092267091, guid: 1fe8f6deec4851b48a5f58979ccfb6bb, type: 3}
       propertyPath: ballHandling
       value: 0
@@ -856,16 +869,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd2498d6b10955e43b90da69872b7482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
-  <teamNo>k__BackingField: 0
+  <team>k__BackingField: 0
   <hasBall>k__BackingField: 0
   baseInfo: {fileID: 11400000, guid: e0dd2aaaa08e4934eb84578a61a3da46, type: 2}
-  constition: 0
-  ballHandling: 0
-  groundMobility: 0
-  power: 0
-  canFly: 0
-  maxFlySpeed: 0
-  airMobility: 0.1
+  info: {fileID: 11400000, guid: 4b53760f8e567aa41adcb3e012093990, type: 2}
+  skillEffect: {fileID: 11400000, guid: a80a55bc9357068498415e9a6644b250, type: 2}
 --- !u!143 &437465447
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1514,16 +1522,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd2498d6b10955e43b90da69872b7482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
-  <teamNo>k__BackingField: 0
+  <team>k__BackingField: 0
   <hasBall>k__BackingField: 0
   baseInfo: {fileID: 11400000, guid: e0dd2aaaa08e4934eb84578a61a3da46, type: 2}
-  constition: 0
-  ballHandling: 0
-  groundMobility: 0
-  power: 0
-  canFly: 0
-  maxFlySpeed: 0
-  airMobility: 0.1
+  info: {fileID: 11400000, guid: 4b53760f8e567aa41adcb3e012093990, type: 2}
+  skillEffect: {fileID: 11400000, guid: a80a55bc9357068498415e9a6644b250, type: 2}
 --- !u!143 &710203604
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2106,7 +2109,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   changePlayerCharacter: 0
-  teamNo: 0
+  team: 0
   gameBall: {fileID: 2059711733}
   playerCamera: {fileID: 815410303}
   cameraMaxSpeed: 40
@@ -2349,16 +2352,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd2498d6b10955e43b90da69872b7482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
-  <teamNo>k__BackingField: 1
+  <team>k__BackingField: 0
   <hasBall>k__BackingField: 0
   baseInfo: {fileID: 11400000, guid: e0dd2aaaa08e4934eb84578a61a3da46, type: 2}
-  constition: 0
-  ballHandling: 0
-  groundMobility: 0
-  power: 0
-  canFly: 0
-  maxFlySpeed: 0
-  airMobility: 0.1
+  info: {fileID: 11400000, guid: 4b53760f8e567aa41adcb3e012093990, type: 2}
+  skillEffect: {fileID: 11400000, guid: a80a55bc9357068498415e9a6644b250, type: 2}
 --- !u!143 &830422440
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2909,6 +2907,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 708550964463ba847bece5b361bd9f1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MatchManager
+  teamHandoff: {fileID: 11400000, guid: 34759d1ef0698ff4b8f84177669c9a6c, type: 2}
+  characterPrefab: {fileID: 96568066}
+  gameBall: {fileID: 2059711733}
 --- !u!1 &1032747352
 GameObject:
   m_ObjectHideFlags: 0
@@ -3641,16 +3642,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd2498d6b10955e43b90da69872b7482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
-  <teamNo>k__BackingField: 1
+  <team>k__BackingField: 0
   <hasBall>k__BackingField: 0
   baseInfo: {fileID: 11400000, guid: e0dd2aaaa08e4934eb84578a61a3da46, type: 2}
-  constition: 0
-  ballHandling: 0
-  groundMobility: 0
-  power: 0
-  canFly: 0
-  maxFlySpeed: 0
-  airMobility: 0.1
+  info: {fileID: 11400000, guid: 4b53760f8e567aa41adcb3e012093990, type: 2}
+  skillEffect: {fileID: 11400000, guid: a80a55bc9357068498415e9a6644b250, type: 2}
 --- !u!143 &1492037342
 CharacterController:
   m_ObjectHideFlags: 0
@@ -4252,16 +4248,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd2498d6b10955e43b90da69872b7482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
-  <teamNo>k__BackingField: 1
+  <team>k__BackingField: 0
   <hasBall>k__BackingField: 0
   baseInfo: {fileID: 11400000, guid: e0dd2aaaa08e4934eb84578a61a3da46, type: 2}
-  constition: 0
-  ballHandling: 0
-  groundMobility: 0
-  power: 0
-  canFly: 0
-  maxFlySpeed: 0
-  airMobility: 0.1
+  info: {fileID: 11400000, guid: 4b53760f8e567aa41adcb3e012093990, type: 2}
+  skillEffect: {fileID: 11400000, guid: a80a55bc9357068498415e9a6644b250, type: 2}
 --- !u!143 &1690081811
 CharacterController:
   m_ObjectHideFlags: 0
@@ -4952,7 +4943,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4160795269092267091, guid: 1fe8f6deec4851b48a5f58979ccfb6bb, type: 3}
   m_PrefabInstance: {fileID: 295236162}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 96568066}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fd2498d6b10955e43b90da69872b7482, type: 3}
@@ -5343,9 +5334,9 @@ SceneRoots:
   - {fileID: 1943818449}
   - {fileID: 1255449749}
   - {fileID: 1503886374}
+  - {fileID: 700305729}
   - {fileID: 1019770831}
   - {fileID: 475200301}
-  - {fileID: 700305729}
   - {fileID: 232092441}
   - {fileID: 426248030}
   - {fileID: 756626223}

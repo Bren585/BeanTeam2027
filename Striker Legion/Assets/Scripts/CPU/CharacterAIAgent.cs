@@ -80,7 +80,7 @@ public class CharacterAIAgent : MonoBehaviour
     // キャラのチーム番号
     public CharacterTeam Team => owner.team;
 
-	public CharacterTeam Team => (owner.teamNo == (int)CharacterTeam.Player) ? CharacterTeam.Player : CharacterTeam.Enemy;
+	//public CharacterTeam Team => (owner.teamNo == (int)CharacterTeam.Player) ? CharacterTeam.Player : CharacterTeam.Enemy;
 
     // パス関数（CharacterBaseから呼び出し）
     public void Pass() => owner.KickBall();

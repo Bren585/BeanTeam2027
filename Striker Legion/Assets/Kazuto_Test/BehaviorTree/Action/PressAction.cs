@@ -24,9 +24,20 @@ public partial class PressAction : ActionBase
 
         //Debug.Log(GameObject.name + " : Start Press");
 
-        // ターゲットを設定
-        // Todo:MatchManagerコンポーネントを修正
-        TargetCharacter = MatchManager.Instance.CurrentBallHolder;
+        if(MatchManager.Instance == null)
+		{
+			Debug.Log("MatchManagerがNull");
+			return Status.Failure;
+		}
+        else if (MatchManager.Instance.CurrentBallHolder == null)
+		{
+			Debug.Log("CurrentBallHolderがNull");
+			return Status.Failure;
+		}
+
+		// ターゲットを設定
+		// Todo:MatchManagerコンポーネントを修正
+		TargetCharacter = MatchManager.Instance.CurrentBallHolder;
 
         if (TargetCharacter == null)
         {

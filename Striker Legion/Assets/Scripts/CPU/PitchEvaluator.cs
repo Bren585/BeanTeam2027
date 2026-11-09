@@ -114,7 +114,7 @@ public class PitchEvaluator : MonoBehaviour
 		// プレイヤーチームの追加
 		foreach (CharacterBase p in characterBases)
 		{
-			CharacterTeam team = (p.teamNo == (int)CharacterTeam.Player) ? CharacterTeam.Player : CharacterTeam.Enemy;
+			CharacterTeam team = p.team;
 			PitchCharacter pitchCharacter = new PitchCharacter(team, p.transform);
 			this.characters.Add(pitchCharacter);
 		}

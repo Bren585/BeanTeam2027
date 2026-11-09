@@ -21,7 +21,7 @@ public partial class DefenseLineCondition : Condition
         //    return !success;
 
 		// ボールを持っているキャラのチームが自分と同じなら、侵入されていない
-        if(MatchManager.Instance.CurrentBallHolder.teamNo == CharacterAIAgent.Value.TeamNumber)
+        if(MatchManager.Instance.CurrentBallHolder.team == CharacterAIAgent.Value.Team)
 			return !success;
 
         if(MatchManager.Instance.BallTransform == null)

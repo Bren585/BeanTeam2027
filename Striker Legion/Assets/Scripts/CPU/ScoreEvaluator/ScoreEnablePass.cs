@@ -12,7 +12,7 @@ public class ScoreEnablePass : ScoreEvaluatorBase
 		if (MatchManager.Instance.CurrentBallHolder == null)
 			return 0.0f;
 		// 所属チームで比較
-		if (MatchManager.Instance.CurrentBallHolder.teamNo != (int)team)
+		if (MatchManager.Instance.CurrentBallHolder.team != team)
 			return 0.0f;
 
 		Vector3 ballPos = MatchManager.Instance.CurrentBallHolder.transform.position;

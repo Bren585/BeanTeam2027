@@ -38,6 +38,8 @@ public class MatchManager : MonoBehaviour
 
 	private PitchEvaluator pitchEvaluator;
 
+	public Transform BallTransform => gameBall.transform;
+
 	private void Awake()
 	{
 		// シングルトンのチェック
@@ -71,18 +73,19 @@ public class MatchManager : MonoBehaviour
 		// ゴールの姿勢情報を保存する
 		foreach(GameObject goalObject in goalObjects)
 		{
-			if (LayerMask.LayerToName(goalObject.layer) == "Player")
+			if (goalObject.name.StartsWith("Player"))
+			//if (LayerMask.LayerToName(goalObject.layer) == "Player")
 				PlayerGoal = goalObject.transform;
 			else
 				EnemyGoal = goalObject.transform;
 		}
 
-		BallTransform = GameObject.FindGameObjectWithTag("Ball").transform;
+		//BallTransform = GameObject.FindGameObjectWithTag("Ball").transform;
 
 		// このオブジェクトについているコンポーネントを保存
 		pitchEvaluator = gameObject.GetComponentInChildren<PitchEvaluator>();
 
-		SkillBar.instance = new SkillBar();
+		//SkillBar.instance = new SkillBar();
 
         SkillBar.instance.RegisterTeam(CharacterTeam.Player);
         SkillBar.instance.RegisterTeam(CharacterTeam.Enemy);
