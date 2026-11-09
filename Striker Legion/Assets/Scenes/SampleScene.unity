@@ -189,10 +189,8 @@ GameObject:
   m_Component:
   - component: {fileID: 73280708}
   - component: {fileID: 73280707}
-  - component: {fileID: 73280714}
-  - component: {fileID: 73280715}
-  - component: {fileID: 73280710}
-  - component: {fileID: 73280713}
+  - component: {fileID: 73280705}
+  - component: {fileID: 73280706}
   m_Layer: 0
   m_Name: PlayerCamera
   m_TagString: Untagged
@@ -268,8 +266,8 @@ MonoBehaviour:
   m_StreamingVersion: 20241001
   m_LegacyPriority: 0
   Target:
-    TrackingTarget: {fileID: 1706729932}
-    LookAtTarget: {fileID: 106065462}
+    TrackingTarget: {fileID: 0}
+    LookAtTarget: {fileID: 0}
     CustomLookAtTarget: 0
   Lens:
     FieldOfView: 60.000004
@@ -400,6 +398,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd2498d6b10955e43b90da69872b7482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
+  <teamNo>k__BackingField: 0
+  <hasBall>k__BackingField: 1
   baseInfo: {fileID: 11400000, guid: e0dd2aaaa08e4934eb84578a61a3da46, type: 2}
   constition: 0
   ballHandling: 0
@@ -408,8 +408,6 @@ MonoBehaviour:
   canFly: 0
   maxFlySpeed: 0
   airMobility: 0.25
-  <teamNo>k__BackingField: 0
-  <hasBall>k__BackingField: 1
 --- !u!143 &296223719
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1071,10 +1069,7 @@ Transform:
   m_LocalPosition: {x: 4.26134, y: -0, z: 2.51311}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1706729932}
-  - {fileID: 85146880}
-  - {fileID: 176479704}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &926308160
@@ -1089,6 +1084,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b470068e5d55f0b429d863e6a054ef49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  changePlayerCharacter: 0
   teamNo: 0
   gameBall: {fileID: 1427417286}
   playerCamera: {fileID: 73280707}
@@ -1949,9 +1945,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: -0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1001518970}
-  m_Father: {fileID: 1807511943}
+  m_Children: []
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -1965,10 +1960,9 @@ SceneRoots:
   - {fileID: 847914003}
   - {fileID: 926308159}
   - {fileID: 1427417285}
-  - {fileID: 1807511943}
-  - {fileID: 106065462}
   - {fileID: 73280708}
   - {fileID: 365047053}
   - {fileID: 1939390608}
   - {fileID: 1313339657}
   - {fileID: 58354880}
+  - {fileID: 1969489930}

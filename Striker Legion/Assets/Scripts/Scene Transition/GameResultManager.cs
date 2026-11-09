@@ -30,9 +30,9 @@ public class GameResultManager : MonoBehaviour
     private int enemySideTotalScore = 0;
     // 敵側の得点者リスト
     private List<Scorer> enemySideScorerList = new();
-
+    // 経過時間
     private float timer = 0;
-
+    // タイマーのフラグ
     private bool isStart = false;
 
     // 得点側判別用
@@ -77,11 +77,13 @@ public class GameResultManager : MonoBehaviour
             timer += Time.deltaTime;
     }
 
+    // ゲーム開始時に呼び出す
     public void GameStart()
     {
         isStart = true;
     }
 
+    // ゲーム終了時に呼び出す
     public void GameSet()
     {
         isStart = false;
@@ -106,6 +108,7 @@ public class GameResultManager : MonoBehaviour
         }
     }
 
+    // ゲーム終了かどうかを取得する処理
     public bool IsGameSet()
     {
         if (playerSideTotalScore >= 5)

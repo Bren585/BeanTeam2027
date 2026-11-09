@@ -6,9 +6,10 @@ using UnityEngine.UI;
 
 public class SharedUIScript : MonoBehaviour
 {
+    // キーボードの戻るボタンガイド画像
     //[SerializeField]
     //private GameObject keyboardBackButtonGuide;
-
+    // パッドの戻るボタンガイド画像
     //[SerializeField]
     //private GameObject gamepadBackButtonGuide;
 

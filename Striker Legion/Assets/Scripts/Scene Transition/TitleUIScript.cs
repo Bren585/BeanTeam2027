@@ -5,12 +5,15 @@ using Unity.Mathematics;
 
 public class TitleUIScript : MonoBehaviour
 {
+    // タイトル画面で最初に選択されるボタン」
     [SerializeField]
     GameObject firstSelectButton;
 
+    // 選択中を示すカーソル
     [SerializeField]
     private RectTransform cursor;
 
+    // カーソルのオフセット位置
     [SerializeField]
     private float cursorOffset;
     // Start is called once before the first execution of Update after the MonoBehaviour is created

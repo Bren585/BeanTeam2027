@@ -27,10 +27,9 @@ public enum ExecuteState
 public class CharacterSelectManager : MonoBehaviour
 { 
     public static CharacterSelectManager instance {  get; private set; }
-    public int nextSceneId;
+    // public int nextSceneId;
+    // 選択されたキャラクターの配列
     public CharacterScriptableObject[] selectedCharacters;
-    // キャラクターに割り振られたポジションの番号
-    // public int[] selectedPositionIndexs;
     // ポジションから見たキャラクターの割り当て
     public int[] positionToCharacter;
 
@@ -58,7 +57,6 @@ public class CharacterSelectManager : MonoBehaviour
     {
         Array.Resize(ref selectedCharacters, size);
         ResetCharacterData();
-        //Array.Resize(ref selectedPositionIndexs, size);
         Array.Resize(ref positionToCharacter, (int)Character_Position.Other);
         ResetPositionData();
     }
@@ -82,15 +80,14 @@ public class CharacterSelectManager : MonoBehaviour
         }
     }
 
+    // キャラクターにポジションを割り当てる
     public void SetPositionData(int characterIndex, Character_Position pos_index)
     {
-        //if (characterIndex >= selectedPositionIndexs.Length) return;
-        //selectedPositionIndexs[characterIndex] = (int)pos_index;
-
         if (characterIndex >= selectedCharacters.Length) return;
         selectedCharacters[characterIndex].position = pos_index;
     }
 
+    // ポジション配列から見たキャラクターインデックスを保管
     public void SetPositionToCharacterData(int characterIndex, Character_Position pos_index)
     {
         if (pos_index != Character_Position.None)
@@ -103,7 +100,7 @@ public class CharacterSelectManager : MonoBehaviour
     // キャラクター選択情報の取得
     public CharacterScriptableObject GetSelectedCharacterData(int index)
     {
-        if (index >= selectedCharacters.Length) return null;
+        if (index >= selectedCharacters.Length || index < 0) return null;
         else return selectedCharacters[index];
     }
 
@@ -116,8 +113,6 @@ public class CharacterSelectManager : MonoBehaviour
     // ポジション選択情報の取得
     public int GetSelectedPositionData(int index)
     {
-        //if (index >= selectedPositionIndexs.Length) return (int)Character_Position.None;
-        //else return selectedPositionIndexs[index];
         if (index >= selectedCharacters.Length) return (int)Character_Position.None;
         else return (int)selectedCharacters[index].position;
     }
@@ -131,8 +126,6 @@ public class CharacterSelectManager : MonoBehaviour
     // ポジション選択情報のデータ長取得
     public int GetPositionDataLength()
     {
-        //return selectedPositionIndexs.Length;
-        
         return selectedCharacters.Length;
     }
 
@@ -156,23 +149,17 @@ public class CharacterSelectManager : MonoBehaviour
     // 実行中のステート
     public ExecuteState CurrentExecuteState()
     {
+        //if(SceneTransitionManager.instance)
+
+        // キャラクター選択
         for (int i = selectedCharacters.Length - 1; i >= 0; --i)
         {
-            if (selectedCharacters[i] == null)
+            if (!selectedCharacters[i])
             {
                 return ExecuteState.CharacterSelect;
             }
         }
-
-        //for(int i = selectedPositionIndexs.Length - 1; i >= 0; --i)
-        //{
-        //    if (selectedPositionIndexs[i] == (int)Character_Position.None)
-        //    {
-        //        return ExecuteState.PositionSelect;
-        //    }
-        //    int index = selectedPositionIndexs[i];
-        //}
-
+        // ポジション選択
         for (int i = selectedCharacters.Length - 1; i >= 0; --i)
         {
             if (selectedCharacters[i].position == Character_Position.None)
@@ -180,7 +167,7 @@ public class CharacterSelectManager : MonoBehaviour
                 return ExecuteState.PositionSelect;
             }
         }
-
+        // 次へ
         return ExecuteState.Complete;
     }
 
@@ -210,17 +197,6 @@ public class CharacterSelectManager : MonoBehaviour
     // 一番後ろのポジション情報を null
     public bool DeleteLastPositionData()
     {
-        //for (int i = selectedPositionIndexs.Length - 1; i >= 0; --i)
-        //{
-        //    if (selectedPositionIndexs[i] != (int)Character_Position.None)
-        //    {
-        //        int currentPosIndex = selectedPositionIndexs[i];
-        //        selectedPositionIndexs[i] = (int)Character_Position.None;
-        //        positionToCharacter[currentPosIndex] = -1;
-        //        return true;
-        //    }
-        //}
-
         for (int i = selectedCharacters.Length - 1; i >= 0; --i)
         {
             if (selectedCharacters[i].position != Character_Position.None)
@@ -242,11 +218,6 @@ public class CharacterSelectManager : MonoBehaviour
     // ポジション選択情報の初期化
     public void ResetPositionData()
     {
-        //for (int i = 0; i < selectedPositionIndexs.Length; ++i)
-        //{
-        //    selectedPositionIndexs[i] = (int)Character_Position.None;
-        //}
-
         for (int i = 0; i < selectedCharacters.Length; ++i)
         {
             selectedCharacters[i].position = Character_Position.None;

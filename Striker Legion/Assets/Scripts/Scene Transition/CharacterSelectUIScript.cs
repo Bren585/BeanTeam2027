@@ -7,19 +7,22 @@ using UnityEngine.UI;
 
 public class CharacterSelectUIScript : MonoBehaviour
 {
+    // 現在のシーンの進捗
     enum SelectSceneState
     {
         None,
-        CharacterSelect,
-        PositionSelect,
+        CharacterSelect, // キャラクター選択中
+        PositionSelect, // ポジション選択中
     }
 
     // キャラクター選択UIグループ
     [SerializeField]
     private CanvasGroup characterSelectCanvasGroup;
+
     // キャラクター選択の表示物
     [SerializeField]
     private GameObject characterSelectDisplayObjects;
+
     // キャラクター選択画面で始めに選択状態にするボタン
     [SerializeField]
     GameObject firstCharacterSelectButton;
@@ -27,17 +30,20 @@ public class CharacterSelectUIScript : MonoBehaviour
     // ポジション選択の表示物
     [SerializeField]
     private GameObject positionSelectDisplayObjects;
-    // ポジション選択画面でボタンUIを制御する用
+
+    // ポジション選択画面でボタンUIを制御する用キャンバスグループ
     [SerializeField]
     private CanvasGroup positionButtonCanvasGroup;
     [SerializeField]
     private CanvasGroup characterButtonCanvasGroup;
-    // 始めに設定されるボタン
+
+    // 片方が選択されると設定されるボタン
     [SerializeField]
     private GameObject firstSelectPositionButton;
     [SerializeField]
     private GameObject firstSelectCharacterButton;
-    // 選択したボタンを分かりやすくする用
+
+    // 選択したボタンを分かりやすくする用のアウトライン
     [SerializeField]
     private GameObject selectedOutline;
     private bool isButtonSelected = false;
@@ -45,29 +51,39 @@ public class CharacterSelectUIScript : MonoBehaviour
     // 選択完了時に表示されるUI
     [SerializeField]
     GameObject completePanel;
-    // 始めに選択状態にするボタン
+
+    // 選択完了画面で始めに選択状態にするボタン
     [SerializeField]
     GameObject firstCompletePanelButton;
 
     // プロフィール画像表示用
     [SerializeField]
     Image profileImage;
+
     // キャラクター説明用
     [SerializeField]
     Text descriptionText;
+
     // 選択中のキャラクター情報
     private CharacterScriptableObject current;
+
     // キャラクター番号(ポジション選択時)
     private int characterIndex = -1;
+
     // キャラクターのポジション(ポジション選択時)
     private Character_Position posIndex = Character_Position.None;
 
     // ポジション選択ボタンのイメージコンポーネント
     [SerializeField]
     private Image[] positionButtonImages;
+
+    [SerializeField]
+    private Button[] characterButtons;
+
     // デフォルトのボタン用スプライト画像
     [SerializeField]
     private Sprite defaultButtonSprite;
+
     // 選択したボタンのイメージコンポーネント
     private Image selectedButtonImage;
 
@@ -75,7 +91,7 @@ public class CharacterSelectUIScript : MonoBehaviour
     void Start()
     {
         EventSystem.current.SetSelectedGameObject(firstCharacterSelectButton);
-        CharacterSelectManager.instance.Resize(4);
+        CharacterSelectManager.instance.Resize(characterButtons.Length);
     }
 
     // Update is called once per frame
@@ -83,9 +99,10 @@ public class CharacterSelectUIScript : MonoBehaviour
     {
         UpdateCompletePanel();
         UpdateSelectedImage();
-        UpdatePositionSetting();
+        UpdatePositionSelect();
     }
 
+    // キャラクター選択にて選択中ボタンに合うイメージ画像の更新
     void UpdateSelectedImage()
     {
         GameObject selected = EventSystem.current.currentSelectedGameObject;
@@ -93,16 +110,18 @@ public class CharacterSelectUIScript : MonoBehaviour
         {
             current = button.characterData;
         }
-        
+        // 現在選ばれているオブジェクトがキャラクターボタンなら画像を更新
         if (current == null) return;
         profileImage.sprite = current.profileImage;
         descriptionText.text = current.description;
     }
 
+    // 現在実行中の選択処理のチェック
     private void UpdateCompletePanel()
     {
         switch(CharacterSelectManager.instance.CurrentExecuteState())
         {
+            // キャラクター選択中
             case ExecuteState.CharacterSelect:
                 if(!characterSelectDisplayObjects.activeSelf)
                 {
@@ -118,6 +137,7 @@ public class CharacterSelectUIScript : MonoBehaviour
                 }
                 break;
 
+            // ポジション選択中
             case ExecuteState.PositionSelect:
                 if (!positionSelectDisplayObjects.activeSelf)
                 {
@@ -130,6 +150,8 @@ public class CharacterSelectUIScript : MonoBehaviour
                     characterSelectDisplayObjects.SetActive(false);
                     EventSystem.current.SetSelectedGameObject(null);
                     EventSystem.current.SetSelectedGameObject(firstSelectPositionButton);
+
+                    SetCharacterButtonsOfPositionSelect();
                 }
                 if(!isButtonSelected)
                 {
@@ -138,6 +160,7 @@ public class CharacterSelectUIScript : MonoBehaviour
 
                 break;
 
+            //すべて選択済み
             case ExecuteState.Complete:
                 if (!completePanel.activeSelf)
                 {
@@ -155,17 +178,38 @@ public class CharacterSelectUIScript : MonoBehaviour
         }
     }
 
+    // キャラクター選択の登録処理
     public void SelectCharacter()
     {
         if (current == null) return;
         CharacterSelectManager.instance.SetCharacter(current);
     }
 
+    // 選択時のボイス再生
+    private void PlaySelectedVoice()
+    {
+        //int lastIndex = CharacterSelectManager.instance.GetCharacterDataLength() - 1;
+        //CharacterScriptableObject characterObject = CharacterSelectManager.instance.GetSelectedCharacterData(lastIndex);
+        //AudioSource audioSource = null;
+        //audioSource.PlayOneShot(characterObject.selectVoices[0]);
+    }
+
+    // キャンバスグループの設定処理
     private void SetCanvasGroup(CanvasGroup group, bool enable, float maxAlpha = 1f, float minAlpha = 0.5f)
     {
         group.interactable = enable;
         group.blocksRaycasts = enable;
         group.alpha = enable ? maxAlpha : minAlpha;
+    }
+
+    private void SetCharacterButtonsOfPositionSelect()
+    {
+        for(int i = 0; i < characterButtons.Length; ++i)
+        {
+            CharacterSelectButtonScript characterScript = characterButtons[i].GetComponent<CharacterSelectButtonScript>();
+            if (characterScript)
+                characterScript.SetDataFromSelected(i);
+        }
     }
 
     // ポジション選択時にバインドするキャラクター番号
@@ -224,14 +268,15 @@ public class CharacterSelectUIScript : MonoBehaviour
     }
 
     // ポジション選択の更新
-    private void UpdatePositionSetting()
+    private void UpdatePositionSelect()
     {
-       for(int i = 0; i < (int)Character_Position.Other; ++i)
+        // ポジションにキャラクターが未割当の際、ポジションボタンの画像を初期化
+        for(int i = 0; i < (int)Character_Position.Other; ++i)
         {
-            if(CharacterSelectManager.instance.GetPositionToCharacterData(i) == -1)
-            {
-                positionButtonImages[i].sprite = defaultButtonSprite;
-            }
+        　   if(CharacterSelectManager.instance.GetPositionToCharacterData(i) == -1)
+          　 {
+            　   positionButtonImages[i].sprite = defaultButtonSprite;
+          　 }
         }
 
         // 未選択の状態でないかの確認
@@ -283,11 +328,13 @@ public class CharacterSelectUIScript : MonoBehaviour
 
     public void BackSelectItem()
     {
+        // ステートに合わせて切り替え
         switch (CharacterSelectManager.instance.CurrentExecuteState())
         {
             case ExecuteState.None:
                 break;
 
+            // キャラクター選択はキャラクター情報を戻す。出来なければ前のシーンに戻る
             case ExecuteState.CharacterSelect:
                 if (!CharacterSelectManager.instance.DeleteLastCharacterData())
                 {
@@ -295,13 +342,15 @@ public class CharacterSelectUIScript : MonoBehaviour
                 }
                 break;
 
+            // ポジション選択はポジション割り当てを戻す。出来なければキャラクター情報の最後尾を削除
             case ExecuteState.PositionSelect:
                 if (!CharacterSelectManager.instance.DeleteLastPositionData())
                 {
                     CharacterSelectManager.instance.DeleteLastCharacterData();
                 }
                 break;
-
+            
+            // 次シーンへの選択はポジション割り当ての最後尾を削除
             case ExecuteState.Complete:
                 CharacterSelectManager.instance.DeleteLastPositionData();
                 break;

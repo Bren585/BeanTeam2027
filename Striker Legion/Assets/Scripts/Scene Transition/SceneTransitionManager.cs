@@ -7,9 +7,10 @@ using UnityEngine.Rendering.Universal;
 using System.Runtime.CompilerServices;
 using System;
 
-// 遷移先シーン番号
+// 遷移先シーン番号(BuildProfileのSceneListと一致させる)
 public enum SceneID
 {
+    None = -1,
     Title = 0,
     CharacterSelect = 1,
     SoloGame = 2,
@@ -45,6 +46,9 @@ public class SceneTransitionManager : MonoBehaviour
     // 通ったシーン番号の履歴
     private Stack<int> sceneHistory = new();
 
+    // 現在実行中のシーン番号
+    private int currentSceneID = -1;
+
     private void Awake()
     {
         if(instance != null && instance != this)
@@ -61,6 +65,7 @@ public class SceneTransitionManager : MonoBehaviour
     {
     }
 
+    // シーン遷移の履歴をクリア
     public void ClearHistory()
     {
         sceneHistory.Clear();
@@ -104,6 +109,7 @@ public class SceneTransitionManager : MonoBehaviour
         int previousId = SceneManager.GetActiveScene().buildIndex;
         sceneHistory.Push(previousId);
         // 遷移開始
+        currentSceneID = sceneId;
         StartCoroutine(LoadSceneCoroutine(sceneId));
     }
 
@@ -125,11 +131,14 @@ public class SceneTransitionManager : MonoBehaviour
         if (sceneHistory.Count > 0)
         {
             int sceneId = sceneHistory.Pop();
+            currentSceneID = sceneId;
             StartCoroutine(LoadSceneCoroutine(sceneId));
         }
         else
         {
-            StartCoroutine(LoadSceneCoroutine((int)SceneID.Title));
+            int sceneId = (int)SceneID.Title;
+            currentSceneID = sceneId;
+            StartCoroutine(LoadSceneCoroutine(sceneId));
         }
     }
 
@@ -144,11 +153,13 @@ public class SceneTransitionManager : MonoBehaviour
             isPadDecision = Gamepad.current.aButton.wasPressedThisFrame;
         }
         RecordFinalyInputDeviceInfo(isPadDecision);
-        
+
         // 遷移開始
+        currentSceneID = sceneId;
         StartCoroutine(LoadSceneCoroutine(sceneId));
     }
 
+    // 入力があるまで遷移を待機する処理
     private IEnumerator LoadWhenReady(int sceneId)
     {
         //　シーンロード
@@ -171,6 +182,7 @@ public class SceneTransitionManager : MonoBehaviour
         operation.allowSceneActivation = true; // シーンを切り替える
     }
 
+    // 非同期ロード
     private IEnumerator LoadSceneCoroutine(int sceneId)
     {
         isTransitioning = true;
@@ -179,6 +191,7 @@ public class SceneTransitionManager : MonoBehaviour
         yield return Fade(0.0f, 1.0f);
 
         //　シーンロード
+        currentSceneID = sceneId;
         AsyncOperation operation =
             SceneManager.LoadSceneAsync(sceneId);
 
@@ -193,6 +206,7 @@ public class SceneTransitionManager : MonoBehaviour
         isTransitioning = false;
     }
 
+    // フェード処理
     private IEnumerator Fade(float start, float end)
     {
         float time = 0.0f;
@@ -208,5 +222,16 @@ public class SceneTransitionManager : MonoBehaviour
             yield return null;
         }
         fadeCanvas.alpha = end;
+    }
+
+    // 引数のシーン番号を実行中かチェックする関数
+    public bool InProgressScene(int sceneId)
+    {
+        if(currentSceneID != sceneId)
+        {
+            return false;
+        }
+        else
+            return true;
     }
 }
