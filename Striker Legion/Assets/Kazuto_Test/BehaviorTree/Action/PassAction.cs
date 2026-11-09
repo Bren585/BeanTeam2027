@@ -18,82 +18,33 @@ public partial class PassAction : ActionBase
 	protected override Status OnStart()
 	{
 		base.OnStart();
-#if false
-		// 基底クラスの初期化
-		base.OnStart();
 
-		// 行動をデバッグで表示
-		characterAIAgent.DebugText.SetText("パスをする");
-
-		// アクティブなキャラ
-		// Todo:MatchManagerコンポーネントを修正
-		ActiveCharacters = MatchManager.Instance.GetActiveCharacters(characterComponent.TeamType);
-#endif
 		characterAIAgent.DebugText.SetText("パスを実行");
+
+		// パスの回数が時間内に一定回数を超えていたら失敗
+		if (!characterAIAgent.PermissiblePassCount)
+		{
+			Debug.Log(GameObject.name + "パスカウントがオーバー");
+			return Status.Failure;
+		}
+
 		return Status.Running;
 	}
 
 	protected override Status OnUpdate()
 	{
 		if (!characterAIAgent.HasBall)
+		{
+
+			Debug.Log(GameObject.name + "パス前にボールロスト");
 			return Status.Failure;
+		}
 		characterAIAgent.Pass();
-#if false
-		// キャラがボールをロストしていたら、失敗で終了
-		if (!characterAIAgent.HasBall)
-		{
-			Debug.Log(characterAIAgent.name + ":パスの前にボールを奪われた");
-			return Status.Failure;
-		}
-		if(ActiveCharacters.Count <= 0)
-		{
-			Debug.Log(characterAIAgent.name + ":アクティブキャラがゼロ");
-			return Status.Failure;
-		}
 
-		Transform transform = GameObject.transform;
+		// パスカウント
+		characterAIAgent.IncrementPassCount();
 
-		// パスをするキャラのチーム
-		CharacterTeam team = characterComponent.TeamType;
-	
-		// 敵のレイヤー
-		LayerMask OpponentLayer = LayerMask.NameToLayer(team == CharacterTeam.Player ? "Enemy" : "Player");
 
-		SampleCharacter TargetCharacter = null;
-		float minDistance = float.MaxValue;
-		// パスを受けられるキャラクターを探す
-		foreach (SampleCharacter ActiveCharacter in ActiveCharacters)
-		{
-			// パスを出すキャラと同一にならないようにする
-			if (ActiveCharacter == characterComponent)
-				continue;
-			
-			// パスが通らないなら飛ばす
-			if (!PassUtility.IsPassSuccess(characterComponent.transform, ActiveCharacter.transform, OpponentLayer))
-				continue;
-			
-			// 条件をクリアした中で、最も近くにいるキャラを対象とする
-			float Distance = Vector3.Distance(characterComponent.transform.position, ActiveCharacter.transform.position);
-			if (Distance < minDistance)
-			{
-				TargetCharacter = ActiveCharacter;
-				minDistance = Distance;
-			}
-		}
-
-		if (TargetCharacter == null)
-		{
-			return Status.Failure;
-		}
-		else
-		{
-			TargetCharacter.isHoldingBall = true;
-			characterComponent.isHoldingBall = false;
-		}
-
-		// 何回もパスしないよう、パスをしたらスタンする
-		//characterComponent.StartStan();
-#endif
 
 		return Status.Success;
 	}

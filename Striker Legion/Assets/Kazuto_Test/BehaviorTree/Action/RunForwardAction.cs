@@ -12,6 +12,8 @@ public partial class RunForwardAction : ActionBase
 
     Vector3 goalPosition;
 
+    CharacterTeam opponentTeam;
+
     protected override Status OnStart()
     {
         // 基底クラスの初期化
@@ -24,26 +26,20 @@ public partial class RunForwardAction : ActionBase
 
 		characterAIAgent.DebugText.SetText("前に走る");
 
-        // 敵のゴール座標を取得
-        //CharacterTeam team = CharacterTeam.Player == (CharacterTeam)characterAIAgent.TeamNumber ? CharacterTeam.Enemy : CharacterTeam.Player;
-		goalPosition = MatchManager.Instance.GetGoalPosition(characterAIAgent.Team);
+		// 敵のゴール座標を取得
+		opponentTeam = CharacterTeam.Player == characterAIAgent.Team ? CharacterTeam.Enemy : CharacterTeam.Player;
+        goalPosition = MatchManager.Instance.GetGoalPosition(characterAIAgent.Team);
+
 
         // ゴールまでのベクトル
         Vector3 Direction = goalPosition - GameObject.transform.position;
-		characterAIAgent.SetTargetPosition(GameObject.transform.position + Direction.normalized * 10.5f);
-		//characterAIAgent.SteeringController.TargetPosition = GameObject.transform.position + Direction.normalized * 10.5f;
-
+		characterAIAgent.SetTargetPosition(characterAIAgent.BasePosition(PositioningName.Offense));
+	
 		return Status.Running;
     }
 
     protected override Status OnUpdate()
     {
-        //Vector3 Direction = goalPosition - GameObject.transform.position;
-
-		//characterAIAgent.SteeringController.TargetPosition = GameObject.transform.position + Direction.normalized * 1.5f;
-		//characterComponent.SteeringController.TargetPosition = pitchEvaluator.GetBestPosition(teamType); 
-		//characterComponent.SteeringController.TargetPosition = new Vector3(0, 0, 0);
-
 		timer += Time.deltaTime;
         // 時間経過で終了
         if(timer >= 3.0f)
@@ -54,6 +50,12 @@ public partial class RunForwardAction : ActionBase
         // 途中でボールを失うと失敗
         if (!characterAIAgent.HasBall)
             return Status.Failure;
+
+        if (characterAIAgent.CharacterSensor.IsNearbyOpponent(10.0f))
+        {
+            Debug.Log(GameObject.name + "近くに敵がいる場合、終了");
+            return Status.Failure;
+        }
 
 		return Status.Running;
     }
