@@ -26,12 +26,17 @@ public class TeamManager : MonoBehaviour
 	// 同じチームのオブジェクトを格納する
 	public List<CharacterBase> teamObjects { get; private set; }
 
+	private void Awake()
+	{
+		// マッチマネージャに登録する
+		MatchManager.Instance.RegisterTeam(this);
+
+		Debug.Log(teamType + "：チーム数=" + teamObjects.Count);
+	}
+
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
-    {
-		// LINQを使って GameObject の配列として1行で取得
-		teamObjects = transform.Cast<Transform>().Select(t => t.gameObject.GetComponent<CharacterBase>()).ToList();
-
+	{
 		if (teamObjects.Count <= 0)
 		{
 			Debug.Log("チームの取得に失敗");
@@ -66,12 +71,41 @@ public class TeamManager : MonoBehaviour
 
 		UpdateAllBehaviorGraph();
 
-		// マッチマネージャに登録する
-		MatchManager.Instance.RegisterTeam(this);
 	}
 
-    // Update is called once per frame
-    void Update()
+	public void CreateCharacter(GameObject characterPrefab, Dictionary<Character_Position, CharacterInfo> info)
+	{
+		// チームのキャラを作る
+		foreach (Character_Position role in Enum.GetValues(typeof(Character_Position)))
+		{
+			// Player Team
+			if (info.TryGetValue(role, out CharacterInfo playerInfo))
+			{
+				GameObject newCharacter = Instantiate(characterPrefab);
+				newCharacter.name = TeamType.ToString() + role.ToString();
+
+				newCharacter.transform.SetParent(transform);
+				newCharacter.GetComponent<CharacterBase>().setInfo(playerInfo);
+			}
+			else
+			{
+				switch (role)
+				{
+					case Character_Position.None:
+					case Character_Position.Other:
+						break;
+					default:
+						Debug.Log("Missing Team Member!!!");
+						throw new Exception("Team Creation Failed");
+				}
+			}
+		}
+		// LINQを使って GameObject の配列として1行で取得
+		teamObjects = transform.Cast<Transform>().Select(t => t.gameObject.GetComponent<CharacterBase>()).ToList();
+	}
+
+	// Update is called once per frame
+	void Update()
     {
 		UpdateAllBehaviorGraph();
 	}

@@ -28,7 +28,7 @@ public class CharacterAIAgent : MonoBehaviour
     private CharacterBase owner;
 
 	// ポジショニングの基準座標
-	Dictionary<PositioningName, Vector3> positioningBase = new Dictionary<PositioningName, Vector3>();
+	Dictionary<PositioningName, Vector3> positioningBase;
 	//private Vector3 positioningBase;
 
 	// ステアリング制御コントローラ
@@ -128,6 +128,8 @@ public class CharacterAIAgent : MonoBehaviour
 
         navMeshAgent.updatePosition = true;
 		navMeshAgent.isStopped = true;
+
+		positioningBase = new Dictionary<PositioningName, Vector3>();
 	}
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

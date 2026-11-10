@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 
@@ -289,6 +290,8 @@ public class MatchManager : MonoBehaviour
 		EnemyTeam.DebugGUI();
 	}
 
+	
+
 	public void RegisterTeam(TeamManager team)
 	{
 		if(team.TeamType == CharacterTeam.Player)
@@ -300,6 +303,11 @@ public class MatchManager : MonoBehaviour
 				return;
 			}
 			PlayerTeam = team;
+
+			team.CreateCharacter(characterPrefab, teamHandoff.playerTeam);
+
+			if (team.teamObjects.Count <= 0)
+				Debug.Log("プレイヤーチームオブジェクトが空");
 			PitchEvaluatorRegister(team.teamObjects);
 		}
 		else
@@ -311,6 +319,9 @@ public class MatchManager : MonoBehaviour
 				return;
 			}
 			EnemyTeam = team;
+			team.CreateCharacter(characterPrefab, teamHandoff.enemyTeam);
+			if (team.teamObjects.Count <= 0)
+				Debug.Log("エネミーチームオブジェクトが空");
 			PitchEvaluatorRegister(team.teamObjects);
 		}
 	}
