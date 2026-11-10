@@ -35,6 +35,12 @@ public class LoadAllCharacterIcons : MonoBehaviour
             
             newIcon.SetActive(true);
 
+            // 始めに選択しておくボタンを設定
+            if (count == 0)
+            {
+                selectScript.SetFirstSelectObjectToCharacterSelect(newIcon);
+
+            }
             count++;
         }
     }

@@ -24,8 +24,7 @@ public class CharacterSelectUIScript : MonoBehaviour
     private GameObject characterSelectDisplayObjects;
 
     // キャラクター選択画面で始めに選択状態にするボタン
-    [SerializeField]
-    GameObject firstCharacterSelectButton;
+    private GameObject firstCharacterSelectButton;
 
     // ポジション選択の表示物
     [SerializeField]
@@ -187,6 +186,12 @@ public class CharacterSelectUIScript : MonoBehaviour
         }
     }
 
+    // キャラクター選択画面の初めに選択されるオブジェクトの設定
+    public void SetFirstSelectObjectToCharacterSelect(GameObject setObject)
+    {
+        firstCharacterSelectButton = setObject;
+    }
+
     // キャラクター選択の登録処理
     public void SelectCharacter()
     {
@@ -213,7 +218,8 @@ public class CharacterSelectUIScript : MonoBehaviour
 
     private void SetCharacterButtonsOfPositionSelect()
     {
-        for(int i = 0; i < characterButtons.Length; ++i)
+        Debug.Log(characterButtons.Length.ToString());
+        for (int i = 0; i < characterButtons.Length; ++i)
         {
             CharacterSelectButtonScript characterScript = characterButtons[i].GetComponent<CharacterSelectButtonScript>();
             if (characterScript)
