@@ -462,6 +462,7 @@ public class CharacterBase : BallHolder
             LoseBall();
             isShooting = false;
             unlockMove();
+            GameResultManager.instance.AddScore(team == CharacterTeam.Player ? GameResultManager.ScoreSide.Player : GameResultManager.ScoreSide.Enemy, name);
             return;
         }
 

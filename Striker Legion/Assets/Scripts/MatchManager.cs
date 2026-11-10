@@ -54,6 +54,7 @@ public class MatchManager : MonoBehaviour
 		InitializeTeams();
         // 初期化処理
         Initialize();
+		ResetForKickoff(CharacterTeam.Player);
 	}
 
 	private void Start()
@@ -160,7 +161,9 @@ public class MatchManager : MonoBehaviour
 			return;
 
 
-		foreach (Character_Position role in Enum.GetValues(typeof(Character_Position)))
+        SpawnerLinkage[] player_respawners = GameObject.FindGameObjectWithTag("Respawn").transform.Find("Player").GetComponentsInChildren<SpawnerLinkage>();
+        SpawnerLinkage[] enemy_respawners = GameObject.FindGameObjectWithTag("Respawn").transform.Find("Enemy").GetComponentsInChildren<SpawnerLinkage>();
+        foreach (Character_Position role in Enum.GetValues(typeof(Character_Position)))
 		{
 			// Player Team
 			if (teamHandoff.playerTeam.TryGetValue(role, out CharacterInfo playerInfo))
@@ -168,6 +171,14 @@ public class MatchManager : MonoBehaviour
 				GameObject newCharacter = Instantiate(characterPrefab);
 				newCharacter.transform.SetParent(PlayerTeam.transform);
 				newCharacter.GetComponent<CharacterBase>().setInfo(playerInfo);
+				foreach (SpawnerLinkage spawner in player_respawners)
+				{
+					if ((int)(spawner.Role) == (int)(role))
+					{
+						spawner.character = newCharacter.GetComponent<CharacterBase>();
+						break;
+					}
+				}
 			}
 			else
 			{
@@ -182,12 +193,21 @@ public class MatchManager : MonoBehaviour
 				}
 			}
 
-			// Enemy Team
+            // Enemy Team
+            
             if (teamHandoff.enemyTeam.TryGetValue(role, out CharacterInfo enemyInfo))
             {
                 GameObject newCharacter = Instantiate(characterPrefab);
                 newCharacter.transform.SetParent(EnemyTeam.transform);
                 newCharacter.GetComponent<CharacterBase>().setInfo(enemyInfo);
+                foreach (SpawnerLinkage spawner in enemy_respawners)
+                {
+                    if ((int)(spawner.Role) == (int)(role))
+                    {
+                        spawner.character = newCharacter.GetComponent<CharacterBase>();
+                        break;
+                    }
+                }
             }
             else
             {
