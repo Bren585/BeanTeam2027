@@ -71,7 +71,8 @@ public class PlayerController : MonoBehaviour
         else
         {
             // No player? Follow the ball as a fallback.
-            cameraTarget = gameBall.transform;
+            Debug.Log("No player character, following the ball!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			cameraTarget = gameBall.transform;
         }
 
         // Move the Camera.
@@ -86,7 +87,9 @@ public class PlayerController : MonoBehaviour
     }
 
     public void PossessCharacter(CharacterBase character) 
-    { 
+    {
+        //if (character == playerCharacter) return;
+        Debug.Log("POSESSION");
         playerCharacter = character;
         if (playerCharacter == null)
         {
@@ -100,18 +103,19 @@ public class PlayerController : MonoBehaviour
 
     public void OnMove(InputValue input)
     {
-        moveInput = input.Get<Vector2>();
+		if (playerCharacter == null) { PossessCharacter(GetClosestPossessableCharacter()); }
+		moveInput = input.Get<Vector2>();
     }
 
     public void OnJump()
     {
-        if (playerCharacter == null) { return; }
-        playerCharacter.Jump();
+		if (playerCharacter == null) { PossessCharacter(GetClosestPossessableCharacter()); }
+		playerCharacter.Jump();
     }
 
     public void OnSkill()
     {
-        if (playerCharacter == null) { return; }
+		if (playerCharacter == null) { PossessCharacter(GetClosestPossessableCharacter()); }
         if (playerCharacter.CanSkill())
         {
             playerCharacter.Skill();

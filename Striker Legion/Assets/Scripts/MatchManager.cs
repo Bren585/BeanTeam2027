@@ -58,8 +58,10 @@ public class MatchManager : MonoBehaviour
 
 	private void Start()
 	{
-        //UpdateBallHolder();
-    }
+		//UpdateBallHolder();
+		SkillBar.instance.RegisterTeam(CharacterTeam.Player);
+		SkillBar.instance.RegisterTeam(CharacterTeam.Enemy);
+	}
 
 	void Initialize()
 	{
@@ -87,8 +89,7 @@ public class MatchManager : MonoBehaviour
 
 		//SkillBar.instance = new SkillBar();
 
-        SkillBar.instance.RegisterTeam(CharacterTeam.Player);
-        SkillBar.instance.RegisterTeam(CharacterTeam.Enemy);
+        
 
 		scores = new Dictionary<CharacterTeam, int>();
 		scores[CharacterTeam.Player] = 0;

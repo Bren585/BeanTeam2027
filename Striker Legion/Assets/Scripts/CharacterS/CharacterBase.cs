@@ -62,7 +62,7 @@ public class CharacterBase : BallHolder
     }
 
     float tackleTimer;
-    float downTimer;
+    [SerializeField] private float downTimer;
 
     public bool isDown { get { return downTimer > 0; } }
 
@@ -297,6 +297,7 @@ public class CharacterBase : BallHolder
 
     protected override void OnGetBall()
     {
+        if (team == CharacterTeam.Player) { FindAnyObjectByType<PlayerController>().PossessCharacter(this); }
         unlockMove();
     }
 

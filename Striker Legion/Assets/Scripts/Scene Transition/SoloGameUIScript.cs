@@ -9,12 +9,12 @@ public class SoloGameUIScript : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
-    }
+		GameResultManager.instance.GameStart();
+	}
 
     private void OnEnable()
     {
-        GameResultManager.instance.GameStart();
+        
     }
 
     private void OnDisable()
