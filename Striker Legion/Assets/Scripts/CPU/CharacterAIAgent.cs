@@ -130,12 +130,14 @@ public class CharacterAIAgent : MonoBehaviour
 		navMeshAgent.isStopped = true;
 
 		positioningBase = new Dictionary<PositioningName, Vector3>();
+
+		//Debug.Log(name + ":" + transform.position);
 	}
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-    }
+	}
 
     public void Initialize(Dictionary<PositioningName, Vector3> positioningBase, CharacterRole role)
     {

@@ -46,23 +46,30 @@ public class MatchManager : MonoBehaviour
 		// シングルトンのチェック
 		if (Instance != null && Instance != this)
 		{
+			Debug.Log("MatchManagerのインスタンスチェック");
 			Destroy(gameObject);
 			return;
 		}
 
-		Instance = this;
-
-		InitializeTeams();
-        // 初期化処理
-        Initialize();
-		ResetForKickoff(CharacterTeam.Player);
+		Instance = this;		
 	}
 
 	private void Start()
 	{
+
+		InitializeTeams();
+		// 初期化処理
+		Initialize();
+
+		ResetForKickoff(CharacterTeam.Player);
+
 		//UpdateBallHolder();
 		SkillBar.instance.RegisterTeam(CharacterTeam.Player);
 		SkillBar.instance.RegisterTeam(CharacterTeam.Enemy);
+
+
+		PitchEvaluatorRegister(PlayerTeam.teamObjects);
+		PitchEvaluatorRegister(EnemyTeam.teamObjects);
 	}
 
 	void Initialize()
@@ -91,7 +98,6 @@ public class MatchManager : MonoBehaviour
 
 		//SkillBar.instance = new SkillBar();
 
-        
 
 		scores = new Dictionary<CharacterTeam, int>();
 		scores[CharacterTeam.Player] = 0;
@@ -103,6 +109,8 @@ public class MatchManager : MonoBehaviour
 	{
 		// ボールが誰が持っているか検索する
 		// UpdateBallHolder();
+
+		//ResetForKickoff(CharacterTeam.Player);
 	}
 
 	// ゲームボールのGetOwnerに変更
@@ -173,8 +181,11 @@ public class MatchManager : MonoBehaviour
 				EnemyTeam = team;
 		}
 
+
         SpawnerLinkage[] player_respawners = GameObject.FindGameObjectWithTag("Respawn").transform.Find("Player").GetComponentsInChildren<SpawnerLinkage>();
         SpawnerLinkage[] enemy_respawners = GameObject.FindGameObjectWithTag("Respawn").transform.Find("Enemy").GetComponentsInChildren<SpawnerLinkage>();
+
+		bool hasBall = false;
         foreach (Character_Position role in Enum.GetValues(typeof(Character_Position)))
 		{
 			// Player Team
@@ -183,6 +194,7 @@ public class MatchManager : MonoBehaviour
 				GameObject newCharacter = Instantiate(characterPrefab);
 				newCharacter.transform.SetParent(PlayerTeam.transform);
 				newCharacter.GetComponent<CharacterBase>().setInfo(playerInfo);
+				newCharacter.name = "PlayerTeam" + role.ToString();
 				foreach (SpawnerLinkage spawner in player_respawners)
 				{
 					if ((int)(spawner.Role) == (int)(role))
@@ -190,6 +202,13 @@ public class MatchManager : MonoBehaviour
 						spawner.character = newCharacter.GetComponent<CharacterBase>();
 						break;
 					}
+				}
+
+				// 適当にボールを持たせる
+				if(!hasBall)
+				{
+					gameBall.SetOwner(newCharacter.GetComponent<CharacterBase>());
+					hasBall = true;
 				}
 			}
 			else
@@ -212,6 +231,7 @@ public class MatchManager : MonoBehaviour
                 GameObject newCharacter = Instantiate(characterPrefab);
                 newCharacter.transform.SetParent(EnemyTeam.transform);
                 newCharacter.GetComponent<CharacterBase>().setInfo(enemyInfo);
+				newCharacter.name = "PlayerTeam" + role.ToString();
                 foreach (SpawnerLinkage spawner in enemy_respawners)
                 {
                     if ((int)(spawner.Role) == (int)(role))
@@ -258,6 +278,7 @@ public class MatchManager : MonoBehaviour
 	{
 		PlayerTeam.ResetInit();
 		EnemyTeam.ResetInit();
+
 
 		// プレイヤー側のゴールに入った場合
 		if(team == CharacterTeam.Player)
@@ -338,8 +359,6 @@ public class MatchManager : MonoBehaviour
 			}
 			PlayerTeam = team;
 
-			team.CreateCharacter(characterPrefab, teamHandoff.playerTeam);
-
 			if (team.teamObjects.Count <= 0)
 				Debug.Log("プレイヤーチームオブジェクトが空");
 			PitchEvaluatorRegister(team.teamObjects);
@@ -353,7 +372,6 @@ public class MatchManager : MonoBehaviour
 				return;
 			}
 			EnemyTeam = team;
-			team.CreateCharacter(characterPrefab, teamHandoff.enemyTeam);
 			if (team.teamObjects.Count <= 0)
 				Debug.Log("エネミーチームオブジェクトが空");
 			PitchEvaluatorRegister(team.teamObjects);

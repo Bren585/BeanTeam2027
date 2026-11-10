@@ -72,6 +72,8 @@ public class TeamManager : MonoBehaviour
 
 		UpdateAllBehaviorGraph();
 #endif
+		foreach (CharacterBase c in teamObjects)
+			Debug.Log("TeamManager Start" + c.name + c.transform.position);
 	}
 
 	public void Init()
@@ -108,41 +110,10 @@ public class TeamManager : MonoBehaviour
 			//agent.Initialize(positioningBaseTransforms[role].position, role);
 
 			count++;
-			Debug.Log(gameObject.name + " Child Object: " + child.name + "ロール:" + role);
+			Debug.Log(gameObject.name + " Child Object: " + child.name + "ロール:" + role + "座標" + child.transform.position);
 		}
 
 		UpdateAllBehaviorGraph();
-	}
-
-	public void CreateCharacter(GameObject characterPrefab, Dictionary<Character_Position, CharacterInfo> info)
-	{
-		// チームのキャラを作る
-		foreach (Character_Position role in Enum.GetValues(typeof(Character_Position)))
-		{
-			// Player Team
-			if (info.TryGetValue(role, out CharacterInfo playerInfo))
-			{
-				GameObject newCharacter = Instantiate(characterPrefab);
-				newCharacter.name = TeamType.ToString() + role.ToString();
-
-				newCharacter.transform.SetParent(transform);
-				newCharacter.GetComponent<CharacterBase>().setInfo(playerInfo);
-			}
-			else
-			{
-				switch (role)
-				{
-					case Character_Position.None:
-					case Character_Position.Other:
-						break;
-					default:
-						Debug.Log("Missing Team Member!!!");
-						throw new Exception("Team Creation Failed");
-				}
-			}
-		}
-		// LINQを使って取得
-		teamObjects = transform.Cast<Transform>().Select(t => t.gameObject.GetComponent<CharacterBase>()).ToList();
 	}
 
 	// Update is called once per frame
@@ -167,12 +138,16 @@ public class TeamManager : MonoBehaviour
 	{
 		Debug.Log("リセット！！！！！！！！！！！１");
 
+
 		SpawnerLinkage[] respawners = GameObject.FindGameObjectWithTag("Respawn").GetComponentsInChildren<SpawnerLinkage>();
 		foreach (SpawnerLinkage respawner in respawners) {
-		Debug.Log(respawner.name);
 			respawner.respawn(); 
-		} 
-		 
+			Debug.Log(respawner.character.name+ ":"+respawner.character.transform.position);
+		}
+
+		// 座標の変更を同期
+		Physics.SyncTransforms();
+
 #if false
 		foreach (SampleCharacter child in teamObjects)
 		{

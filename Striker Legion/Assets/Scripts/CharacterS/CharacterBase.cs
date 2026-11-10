@@ -84,9 +84,11 @@ public class CharacterBase : BallHolder
     void Start()
     {
         tackleTimer = baseInfo.tackleCooldown;
-    }
 
-    void Update()
+       
+	}
+
+	void Update()
     {
         animator.Update(Time.deltaTime);
 
