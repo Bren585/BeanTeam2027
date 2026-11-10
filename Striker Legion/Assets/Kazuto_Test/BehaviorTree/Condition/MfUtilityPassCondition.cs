@@ -15,7 +15,7 @@ public partial class MfUtilityPassCondition : Condition
         CharacterTeam team = Midfielder.Value.Team;
 
 		// 動けるキャラクターを探す
-		IReadOnlyList <CharacterBase> ActiveCharacters = MatchManager.Instance.GetActiveCharacters(team);
+		//IReadOnlyList <CharacterBase> ActiveCharacters = MatchManager.Instance.GetActiveCharacters(team);
         //IReadOnlyList<CharacterAIAgent> ActiveCharacters = MatchManager.Instance.GetActiveCharacters((CharacterTeam)(Midfielder.Value.TeamNumber));
 
         // パス対象がいなければ、ドリブルをする
@@ -24,18 +24,10 @@ public partial class MfUtilityPassCondition : Condition
         else
             return true;
 
-        // 最も低かったスコア
-        float MinCost = PassUtility.CostPassToAnyAlly(ActiveCharacters, Midfielder, MatchManager.Instance.GetGoalPosition(team));
-
-        // 乱数の取得
-		float rand = UnityEngine.Random.Range(0.0f, 1.0f);
-
-		// 乱数よりコストのほうが高ければ、パスせずにドリブルをする
-		if (MinCost > rand)
-			return false;
+       
 #endif
 
-        return true;
+        //return true;
     }
 
     public override void OnStart()

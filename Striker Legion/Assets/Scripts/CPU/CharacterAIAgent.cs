@@ -13,6 +13,8 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class CharacterAIAgent : MonoBehaviour
 {
+	private PlayerController playerController;
+
     // ビヘイビアエージェント
     private BehaviorGraphAgent behaviorGraphAgent;
 
@@ -109,8 +111,11 @@ public class CharacterAIAgent : MonoBehaviour
 
     protected void Awake()
     {
-        // コンポーネントを取得
-        owner = GetComponent<CharacterBase>();
+		playerController = FindAnyObjectByType<PlayerController>();
+		if (playerController == null) throw new System.Exception("PlayerControllerが見つかりません");
+
+		// コンポーネントを取得
+		owner = GetComponent<CharacterBase>();
         steeringController = GetComponent<SteeringController>();
 		behaviorGraphAgent = GetComponent<BehaviorGraphAgent>();
 		navMeshAgent = GetComponent<NavMeshAgent>();
@@ -140,6 +145,8 @@ public class CharacterAIAgent : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
+		if (playerController.playerCharacter == owner) return;
+
 		// 操舵レイヤーの更新処理
 		//FindAndMoveToPosition();
 		UpdateSteering(owner.velocity);
@@ -186,8 +193,6 @@ public class CharacterAIAgent : MonoBehaviour
 		//owner.Move((navMeshAgent.steeringTarget - transform.position).normalized * 1.0f);
 		//owner.Move(navMeshAgent.desiredVelocity);
 		//owner.Move(navMeshAgent.desiredVelocity);
-
-        
 
 		owner.Move(steeringController.Velocity);
 		//owner.Move(steeringController.Velocity.normalized);
