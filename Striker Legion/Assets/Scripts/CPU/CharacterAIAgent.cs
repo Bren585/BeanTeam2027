@@ -89,9 +89,10 @@ public class CharacterAIAgent : MonoBehaviour
 
     // シュート関数（CharacterBaseから呼び出し）
     public void Shoot() => owner.KickBall();
+	public bool IsShootable => owner.isShooting;
 
-    // パスが可能か
-    public bool EnablePass() => owner.EnablePass();
+	// パスが可能か
+	public bool EnablePass() => owner.EnablePass();
     public CharacterBase PassTarget() => owner.PassTarget();
 
     public void Tackle() => owner.Tackle();
