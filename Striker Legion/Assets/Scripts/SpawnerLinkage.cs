@@ -16,11 +16,15 @@ public class SpawnerLinkage : MonoBehaviour
     {
         position = transform.position; 
         rotation = transform.rotation;
+
+        Debug.Log(name + ":" + position);
     }
 
     public void respawn()
     {
-        character.transform.position = position;
-        character.transform.rotation = rotation;
+        character.transform.position = transform.position;
+        //character.transform.position = position;
+        character.transform.rotation = transform.rotation;
+        //character.transform.rotation = rotation;
     }
 }
