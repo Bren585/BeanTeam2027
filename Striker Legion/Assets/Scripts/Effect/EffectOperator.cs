@@ -12,19 +12,37 @@ public class EffectOperator : MonoBehaviour
     [SerializeField] private float dustThreshold = 15f;
     private bool[] isDustPlaying;
 
+    [SerializeField] private ParticleSystem ballSpeedLine;
+    private bool isFlyng = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        DustParticleInit();
+        DustParticle_Init();
         ballEffect.Stop();
         playerController = player.GetComponent<PlayerController>();
+        ballSpeedLine.Stop();
     }
 
     // Update is called once per frame
     void Update()
     {
-        DustParticleUpdate();
+        DustParticle_Update();
+
+        //----ボール飛行時のスピードラインエフェクト-----いらなくなったら消す
+        GameBall gameBall = ballSpeedLine.GetComponentInParent<GameBall>();
+        if (gameBall.inFlight && !isFlyng)
+        {
+            ballSpeedLine.Play();
+            isFlyng = true;
+
+        }
+        else if (!gameBall.inFlight && isFlyng)
+        {
+            ballSpeedLine.Stop();
+            isFlyng = false;
+        }
+        //--------
 
         if (playerController.playerCharacter.isShooting)
         {
@@ -39,7 +57,7 @@ public class EffectOperator : MonoBehaviour
     }
 
     // DustParticleの初期化
-    void DustParticleInit()
+    void DustParticle_Init()
     {
         //砂埃パーティクルを取得し、初期化する
         dustParticle = GameObject.FindObjectsByType<ParticleSystem>();
@@ -49,7 +67,7 @@ public class EffectOperator : MonoBehaviour
     }
 
     // DustParticleの更新
-    void DustParticleUpdate()
+    void DustParticle_Update()
     {
         for (int i = 0; i < dustParticle.Length; i++)
         {
