@@ -1,15 +1,27 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Behavior;
 using Unity.VisualScripting;
 using UnityEngine;
+
+[BlackboardEnum]
+public enum PositioningName
+{
+	Offense,
+	OffensiveMiddle,
+	DefensiveMiddle,
+	Defense,
+}
 
 public class TeamManager : MonoBehaviour
 {
 	// ポジショニングの基準となるTransformを格納する
-	[SerializeField] public Dictionary<CharacterRole, Transform> positioningBaseTransforms = new Dictionary<CharacterRole, Transform>();
+	[SerializeField] public Dictionary<PositioningName, Transform> positioningBaseTransforms = new Dictionary<PositioningName, Transform>();
+	//[SerializeField] public Dictionary<CharacterRole, Transform> positioningBaseTransforms = new Dictionary<CharacterRole, Transform>();
 
-	[SerializeField] private CharacterTeam TeamType;
+	[SerializeField] private CharacterTeam teamType;
+	public CharacterTeam TeamType => teamType;
 
 	// 同じチームのオブジェクトを格納する
 	public List<CharacterBase> teamObjects { get; private set; }
@@ -25,8 +37,15 @@ public class TeamManager : MonoBehaviour
 			Debug.Log("チームの取得に失敗");
 			return;
 		}
-		int count = 0; 
-		foreach(CharacterBase child in teamObjects)
+		int count = 0;
+
+		Dictionary<PositioningName, Vector3> positioningBasePositions = new Dictionary<PositioningName, Vector3>();
+		foreach (PositioningName n in positioningBaseTransforms.Keys)
+		{
+			positioningBasePositions.Add(n, positioningBaseTransforms[n].position);
+		}
+
+		foreach (CharacterBase child in teamObjects)
 		{
 			// AIコンポーネントの取得
 			if (!child.TryGetComponent<CharacterAIAgent>(out CharacterAIAgent agent))
@@ -38,13 +57,17 @@ public class TeamManager : MonoBehaviour
 			CharacterRole role = Enum.IsDefined(typeof(CharacterRole), count) ? (CharacterRole)count : CharacterRole.Forward;
 
 			// ポジショニングの基準座標
-			agent.Initialize(positioningBaseTransforms[role].position, role);
+			agent.Initialize(positioningBasePositions, role);
+			//agent.Initialize(positioningBaseTransforms[role].position, role);
 
 			count++;
 			Debug.Log(gameObject.name + " Child Object: " + child.name + "ロール:" + role);
 		}
 
 		UpdateAllBehaviorGraph();
+
+		// マッチマネージャに登録する
+		MatchManager.Instance.RegisterTeam(this);
 	}
 
     // Update is called once per frame
@@ -90,11 +113,6 @@ public class TeamManager : MonoBehaviour
 	public void OrderGetBall()
 	{
 		//teamObjects[0].isHoldingBall = true;
-	}
-
-	public CharacterTeam GetTeamType()
-	{
-		return TeamType;
 	}
 
 	// スタン状態じゃないキャラを取得する（読み取り専用）

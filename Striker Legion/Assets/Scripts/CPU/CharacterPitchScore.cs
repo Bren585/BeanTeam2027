@@ -1,0 +1,268 @@
+using Unity.Mathematics;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.Splines;
+using UnityEngine.TextCore.Text;
+
+public class CharacterPitchScore : MonoBehaviour
+{
+	[SerializeField] public bool IsDebugGizmo = false;
+
+	// ピッチ上のスコア。PitchEvaluatorからもらう
+	float[,] gridScores;
+
+    // 現在いるグリッドのスコア
+    float currentGridScore;
+
+    // ピッチのグリッドを構成している情報
+    int gridCols;
+    int gridRows;
+	private Vector3 gridOrigin;
+	private Vector3 gridEnd;
+
+	private Vector2 gridSize = new Vector2(10f, 20f);
+	bool isUpdate = false;
+
+	private RingBuffer<int2> bestScoreLog;
+
+	// このコンポーネントを持っているキャラのポジション
+	CharacterRole ownerRole;
+
+    // このコンポーネントを持っているキャラの所属チーム
+    CharacterTeam ownerTeam;
+
+	public CharacterRole OwnerRole => ownerRole;
+	public CharacterTeam OwnerTeam => ownerTeam;
+
+	public Vector3 GridOrigin => gridOrigin;
+	public Vector3 GridEnd => gridEnd;
+
+	public bool IsUpdate => isUpdate;
+
+	// 初期化処理
+	public void Initialize(CharacterRole role, CharacterTeam team)
+	{
+        // このコンポーネントを持っているキャラの情報を受け取る
+        ownerRole = role;
+        ownerTeam = team;
+
+        // グリッドの情報を取得
+        //MatchManager.Instance.GetPitchInfo(out gridCols, out gridRows, out gridSize, out gridOrigin);
+        MatchManager.Instance.RegisterEvaluatorScore(this);
+
+		// 最高スコアのログを保持するリングバッファを初期化
+		bestScoreLog = new RingBuffer<int2>(5);
+
+		// 評価変数のメモリ確保
+		gridScores = new float[gridCols, gridRows];
+		//Debug.Log($"{gameObject.name}: cols{gridCols},rows{gridRows}");
+	}
+
+	// Update is called once per frame
+	void Update()
+    {
+		//RefreshEvaluation();
+		if(isUpdate)
+		{
+			// 最もスコアが高いグリッドの番号を計算
+			GetBestGridIndex(out int bestX, out int bestZ);
+			// リングバッファに登録
+			bestScoreLog.Add(new int2(bestX, bestZ));
+		}
+
+		isUpdate = false;
+
+	}
+
+    public void RefreshEvaluation(float score, int x, int z)
+    {
+		// メモリ確保前か確認
+		if (gridScores.Length <= 0)
+			return;
+
+		isUpdate = true;
+
+		// 計算中のグリッドの座標
+		Vector3 gridPosition = GetCellWorldPosition(x, z);
+
+		// 現在のスコア
+		float currentScore = score;
+		//float currentScore = gridScores[x, z];
+
+		// このキャラクターの座標のグリッド番号を取得
+		GetCellIndexByWorldPosition(transform.position, out int currentX, out int currentZ);
+
+		// 現在いるグリッドでとどまるのを防ぐため、現在いるグリッドのスコアは０にする
+		if(currentX == x && currentZ == z)
+		{
+			currentScore = 0.0f;
+		}
+		if(DuplicateBestGrid(new int2(x, z), 2))
+		{
+			currentScore = 0.0f;
+		}
+
+		// グリッドまでの距離で再度計算
+		//currentScore += ScoreDistanceToGrid(gridPosition, 0.1f);
+
+		// 計算結果で更新
+		gridScores[x, z] = currentScore;
+	}
+
+	// 指定された回数以上、最高スコアのグリッドが重複しているか確認する
+	bool DuplicateBestGrid(int2 bestGridIndex, int acceptValue)
+	{
+		int duplicateCount = 0;
+		foreach (int2 grid in bestScoreLog.GetAllItems())
+		{
+			// 重複チェックとカウント
+			if (grid.x == bestGridIndex.x && grid.y == bestGridIndex.y)
+				duplicateCount++;
+		}
+		// 引数の指定回数以上重複している場合はtrueを返す
+		if (duplicateCount >= acceptValue)
+			return true;
+		
+		return false;
+	}
+
+	float ScoreDistanceToGrid(Vector3 gridPosition, float weight)
+	{
+		// この値以上離れている場合は最高得点にする
+		float MaxLength = gridSize.y *gridRows;
+
+		// このグリッドまでの距離
+		float distance = (transform.position - gridPosition).magnitude;
+
+		// 結果のスコア（近いと高く、遠いと低くなるようにする）
+		float score = Mathf.Clamp01(1.0f- (distance / MaxLength));
+
+		return score * weight;
+	}
+
+	public void GetBestGridIndex(out int outX, out int outZ)
+	{
+		// 初期化
+		outX = 0;
+		outZ = 0;
+
+		// 最高点
+		float bestScore = 0.0f;
+		for (int z = 0; z < gridRows; z++)
+		{
+			//color.b = (float)z / (float)gridRows;
+			for (int x = 0; x < gridCols; x++)
+			{
+				// 今までの最高点より小さい場合、飛ばす
+				if (gridScores[x, z] < bestScore)
+					continue;
+
+				// 結果を更新
+				bestScore = gridScores[x, z];
+				outX = x;
+				outZ = z;
+			}
+		}
+	}
+
+	public Vector3 GetBestPosition()
+	{
+		// スコアの最大値を保持する変数
+		Vector3 bestPosition = Vector3.zero;
+		// 最高点
+		float bestScore = 0.0f;
+		for (int z = 0; z < gridRows; z++)
+		{
+			//color.b = (float)z / (float)gridRows;
+			for (int x = 0; x < gridCols; x++)
+			{
+				// 今までの最高点より小さい場合、飛ばす
+				if (gridScores[x, z] < bestScore)
+					continue;
+
+				// 結果を更新
+				bestScore = gridScores[x, z];
+				bestPosition = GetCellWorldPosition(x, z);
+			}
+		}
+
+		//Debug.Log($"{gameObject.name}:の最大スコア{bestScore}, 座標{bestPosition}");
+		return bestPosition;
+	}
+
+	public Vector3 GetClosestPointOnBestGrid(Vector3 ballHolderPos)
+	{
+		// 最も評価の高いグリッドの中心座標
+		Vector3 bestGridCenter = GetBestPosition();
+		float halfSizeX = gridSize.x * 0.5f;
+		float halfSizeZ = gridSize.y * 0.5f;
+
+		// 2. セルのワールド空間での四隅の境界（最小・最大）を計算する
+		// （※XZ平面を前提とした例）
+		float minX = bestGridCenter.x - halfSizeX;
+		float maxX = bestGridCenter.x + halfSizeX;
+		float minZ = bestGridCenter.z - halfSizeZ;
+		float maxZ = bestGridCenter.z + halfSizeZ;
+
+		// 3. ボールホルダーの位置を、そのセルの範囲内にクランプ（制限）する
+		// これにより、ボールホルダーからそのマスへ下ろした垂線上の「マス上の最も近い点」が求まる
+		float closestX = Mathf.Clamp(ballHolderPos.x, minX, maxX);
+		float closestZ = Mathf.Clamp(ballHolderPos.z, minZ, maxZ);
+
+		// 高さ（Y軸）はピッチの高さに合わせる
+		float currentY = bestGridCenter.y;
+
+		return new Vector3(closestX, currentY, closestZ);
+	}
+
+	Vector3 GetCellWorldPosition(int x, int z)
+	{
+		float worldX = gridOrigin.x + (x * gridSize.x) + (gridSize.x / 2.0f);
+		float worldZ = gridOrigin.z + (z * gridSize.y) + (gridSize.y / 2.0f);
+		return new Vector3(worldX, 0, worldZ);
+	}
+	void GetCellIndexByWorldPosition(Vector3 worldPosition, out int x, out int z)
+	{
+		Vector3 vec = worldPosition - gridOrigin;
+
+		x = Mathf.Clamp(Mathf.FloorToInt(vec.x / gridSize.x), 0, gridCols - 1);
+		z = Mathf.Clamp(Mathf.FloorToInt(vec.z / gridSize.y), 0, gridRows - 1);
+	}
+	public void SetPitchInfo(int cols, int rows, Vector2 size, Vector3 origin, Vector3 end)
+	{
+		gridCols   = cols;
+		gridRows   = rows;
+		gridSize   = size;
+		gridOrigin = origin;
+		gridEnd = end;
+	}
+	void OnDrawGizmosSelected()
+	{
+		if (!IsDebugGizmo)
+			return;
+		Vector3 offset = new Vector3(0.0f, 0.0f, 0.0f);
+		Vector3 size = new Vector3(gridSize.x, 1.0f, gridSize.y);
+		UnityEngine.Color color = UnityEngine.Color.white;
+		color.a = 1.0f;
+		for (int z = 0; z < gridRows; z++)
+		{
+			//color.b = (float)z / (float)gridRows;
+			for (int x = 0; x < gridCols; x++)
+			{
+				float score = gridScores[x, z];
+				color.r = score;
+				color.g = score;
+				color.b = score;
+				Gizmos.color = color;
+
+				Vector3 GridVec = new Vector3(x * gridSize.x, 0.0f, z * gridSize.y);
+				Gizmos.DrawCube(GetCellWorldPosition(x, z) + offset, size);
+				//Gizmos.DrawCube(gridOrigin + GridVec + offset, size);
+				//Gizmos.DrawSphere(GetCellWorldPosition(x, z), 1.0f);
+				//Gizmos.DrawSphere(gridOrigin + GridVec + offset, 1.0f);
+			}
+		}
+	}
+}

@@ -375,6 +375,7 @@ public class CharacterSelectUIScript : MonoBehaviour
     // Ÿ‚ÌƒV[ƒ“‚ÌŒÄ‚Ño‚µ
     public void ChangeNextScene()
     {
+        teamHandoff.playerTeam.Clear();
         for (int i = 0; i < CharacterSelectManager.instance.selectedCharacters.Length; i++)
         {
             CharacterSelectManager man = CharacterSelectManager.instance;

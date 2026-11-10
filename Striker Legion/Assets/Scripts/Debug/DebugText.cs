@@ -29,7 +29,7 @@ public class DebugText : MonoBehaviour
 		if(text == null)
 		{
 			Debug.Log("テキスト生成失敗");
-				return;
+			return;
 		}
 		
 		if (mainCamera == null)

@@ -12,7 +12,10 @@ public class SkillBar : MonoBehaviour
 
     float secondTimer = 1.0f;
 
-    public void RegisterTeam(CharacterTeam team) { energyBars[team] = barInfo.startingEnergy; }
+    public void RegisterTeam(CharacterTeam team) {
+        if(barInfo == null) { Debug.LogError("SkillBarInfo is not assigned!"); return; }
+		energyBars[team] = barInfo.startingEnergy; 
+    }
 
     public float GetEnergy(CharacterTeam team) { return energyBars[team]; }
 
@@ -20,6 +23,7 @@ public class SkillBar : MonoBehaviour
 
     private void Awake()
     {
+        //Debug.Log("Awake");
         if      (instance == null) instance = this;
         else if (instance != this) Destroy(gameObject); return;
     }
