@@ -68,7 +68,30 @@ public class CharacterSensor : MonoBehaviour
 		return BallerCharacter != null;
 	}
 
-	public bool IsEnemyInRange(string targetLayer, float radius)
+	public bool IsEnemyInFrontRange(string myLayer, Vector3 targetPosition,float radius, float distance)
+	{
+		// 指定対象の方向に Ray を発射
+		Ray ray = new Ray(transform.position, targetPosition - transform.position);
+
+		string opponentLayerStr = (myLayer == "Player") ? "Enemy" : "Player";
+		LayerMask opponentLayer = LayerMask.GetMask(opponentLayerStr);
+
+		// レイがヒットしたか
+		if (!Physics.SphereCast(ray, radius, out RaycastHit hit, distance, opponentLayer))
+		{
+			Debug.Log("敵が見つかりませんでした Layer :" + opponentLayer);
+
+			return false;
+		}
+		// ヒットしたオブジェクトがキャラクターかどうかを判定
+		if (!hit.collider.CompareTag("Character"))
+		{
+			Debug.Log("ヒット対象がCharacter以外:" + hit.collider.tag);
+			return false;
+		}
+		return true;
+	}
+	public bool IsEnemyInFrontRange(string targetLayer, float radius)
 	{
 		// プレイヤーの正面方向に Ray を発射
 		Ray ray = new Ray(transform.position, transform.forward);
@@ -93,6 +116,8 @@ public class CharacterSensor : MonoBehaviour
 	}
 
 
+
+
 	public bool IsNearbyOpponent(float radius)
 	{
 		int OpponentLayer = LayerMask.GetMask(LayerMask.LayerToName(gameObject.layer) == "Player" ? "Enemy" : "Player"); 
@@ -102,7 +127,28 @@ public class CharacterSensor : MonoBehaviour
 
 		// 近くにいるか判定する
 		numFound = Physics.OverlapSphereNonAlloc(transform.position, radius, hitColliders, OpponentLayer);
-		
+
+		bool isDown = true;
+		foreach(Collider collider in hitColliders)
+		{
+			if (collider == null)
+				continue;
+			if(collider.gameObject == gameObject)
+				continue;
+
+			CharacterBase character = collider.GetComponent<CharacterBase>();
+			if (character == null)
+				continue;
+
+			// ダウン中ではないキャラがいたらフラグを折る
+			if(!character.isDown)
+				isDown = false;
+		}
+
+		// ヒットしたキャラが全員ダウン中ならfalse
+		if (isDown)
+			return false;
+
 		// 検出された数が1以上ならtrue
 		return (numFound > 0) ? true : false;
 	}
