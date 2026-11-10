@@ -148,6 +148,7 @@ public class MatchManager : MonoBehaviour
 
 	void InitializeTeams()
 	{
+#if false
 		if (PlayerTeam == null)
 		{
 			Debug.Log("プレイヤーチームが未登録");
@@ -160,7 +161,17 @@ public class MatchManager : MonoBehaviour
 		}
 		if (PlayerTeam.teamObjects == null || EnemyTeam.teamObjects == null)
 			return;
+#endif
 
+		// チームマネージャの取得
+		TeamManager[] teamManagers = FindObjectsByType<TeamManager>();
+		foreach(TeamManager team in teamManagers)
+		{
+			if (team.TeamType == CharacterTeam.Player)
+				PlayerTeam = team;
+			else
+				EnemyTeam = team;
+		}
 
         SpawnerLinkage[] player_respawners = GameObject.FindGameObjectWithTag("Respawn").transform.Find("Player").GetComponentsInChildren<SpawnerLinkage>();
         SpawnerLinkage[] enemy_respawners = GameObject.FindGameObjectWithTag("Respawn").transform.Find("Enemy").GetComponentsInChildren<SpawnerLinkage>();
@@ -223,6 +234,9 @@ public class MatchManager : MonoBehaviour
                 }
             }
         }
+
+		PlayerTeam.Init();
+		EnemyTeam.Init();
 	}
 
 	// ゴールした際の処理

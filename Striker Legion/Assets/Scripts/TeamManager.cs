@@ -28,15 +28,16 @@ public class TeamManager : MonoBehaviour
 
 	private void Awake()
 	{
-		// マッチマネージャに登録する
-		MatchManager.Instance.RegisterTeam(this);
+		//// マッチマネージャに登録する
+		//MatchManager.Instance.RegisterTeam(this);
 
-		Debug.Log(teamType + "：チーム数=" + teamObjects.Count);
+		//Debug.Log(teamType + "：チーム数=" + teamObjects.Count);
 	}
 
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
 	{
+#if false
 		if (teamObjects.Count <= 0)
 		{
 			Debug.Log("チームの取得に失敗");
@@ -70,7 +71,47 @@ public class TeamManager : MonoBehaviour
 		}
 
 		UpdateAllBehaviorGraph();
+#endif
+	}
 
+	public void Init()
+	{
+		// LINQを使って取得
+		teamObjects = transform.Cast<Transform>().Select(t => t.gameObject.GetComponent<CharacterBase>()).ToList();
+
+		if (teamObjects.Count <= 0)
+		{
+			Debug.Log("チームの取得に失敗");
+			return;
+		}
+		int count = 0;
+
+		Dictionary<PositioningName, Vector3> positioningBasePositions = new Dictionary<PositioningName, Vector3>();
+		foreach (PositioningName n in positioningBaseTransforms.Keys)
+		{
+			positioningBasePositions.Add(n, positioningBaseTransforms[n].position);
+		}
+
+		foreach (CharacterBase child in teamObjects)
+		{
+			// AIコンポーネントの取得
+			if (!child.TryGetComponent<CharacterAIAgent>(out CharacterAIAgent agent))
+			{
+				count++;
+				continue;
+			}
+			// キャラクターに設定するロール
+			CharacterRole role = Enum.IsDefined(typeof(CharacterRole), count) ? (CharacterRole)count : CharacterRole.Forward;
+
+			// ポジショニングの基準座標
+			agent.Initialize(positioningBasePositions, role);
+			//agent.Initialize(positioningBaseTransforms[role].position, role);
+
+			count++;
+			Debug.Log(gameObject.name + " Child Object: " + child.name + "ロール:" + role);
+		}
+
+		UpdateAllBehaviorGraph();
 	}
 
 	public void CreateCharacter(GameObject characterPrefab, Dictionary<Character_Position, CharacterInfo> info)
@@ -100,7 +141,7 @@ public class TeamManager : MonoBehaviour
 				}
 			}
 		}
-		// LINQを使って GameObject の配列として1行で取得
+		// LINQを使って取得
 		teamObjects = transform.Cast<Transform>().Select(t => t.gameObject.GetComponent<CharacterBase>()).ToList();
 	}
 
