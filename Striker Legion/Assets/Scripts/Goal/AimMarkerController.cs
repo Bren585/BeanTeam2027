@@ -28,7 +28,7 @@ public class AimMarkerController : BallHolder
     void Update()
     {
         if (playerController == null || playerController.playerCharacter == null) { return; }
-        if(playerController.playerCharacter.isShooting)
+        if (playerController.playerCharacter.isShooting)
         {
             // AimMarker ‚ð•\Ž¦‚·‚é
             aimMarkerRenderer.enabled = true;
@@ -55,6 +55,6 @@ public class AimMarkerController : BallHolder
     protected override void OnGetBall()
     {
         onGoalEvent.SendEventMessage();
-        MatchManager.Instance.GoalEvent(team);
+        MatchManager.Instance.GoalEvent(team == CharacterTeam.Player ? CharacterTeam.Enemy : CharacterTeam.Player);
     }
 }

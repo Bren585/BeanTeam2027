@@ -2,24 +2,20 @@ using UnityEngine;
 
 public class SpawnerLinkage : MonoBehaviour
 {
-    [SerializeField] CharacterTeam team;
-    [SerializeField] CharacterRole role;
+    [SerializeField] private CharacterTeam team;
+    [SerializeField] private CharacterRole role;
+
+    public CharacterTeam Team => team;
+    public CharacterRole Role => role;
 
     [SerializeField] public CharacterBase character;
     Vector3 position;
     Quaternion rotation;
    
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
         position = transform.position; 
         rotation = transform.rotation;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void respawn()
