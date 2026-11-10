@@ -166,8 +166,8 @@ public class TeamManager : MonoBehaviour
 	public void ResetInit()
 	{
 		SpawnerLinkage[] respawners = GameObject.FindGameObjectWithTag("Respawn").GetComponentsInChildren<SpawnerLinkage>();
-		foreach (SpawnerLinkage respawner in respawners) { respawner.respawn(); }
-
+		foreach (SpawnerLinkage respawner in respawners) { respawner.respawn(); } 
+		 
 #if false
 		foreach (SampleCharacter child in teamObjects)
 		{
