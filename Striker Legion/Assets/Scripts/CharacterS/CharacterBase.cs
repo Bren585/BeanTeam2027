@@ -489,7 +489,6 @@ public class CharacterBase : BallHolder
             foreach (AimMarkerController goalCandidate in targets)
             {
                 if (goalCandidate.teamNo == teamNo) continue;
-                Debug.Log("Shooting to Goal");
                 // Kick the ball to Goal
                 gameBall.Kick(new GameBall.flight(this, goalCandidate, 0, 20));
                 gameBall.SetOwner(goalCandidate);
