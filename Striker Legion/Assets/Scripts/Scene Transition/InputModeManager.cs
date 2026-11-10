@@ -6,7 +6,9 @@ public class InputModeManager : MonoBehaviour
     public static InputModeManager instance { get; private set; }
 
     // パッド操作フラグ
-    private bool usedGamePad = false;
+    public bool usedGamePad = false;
+
+    private Gamepad pad;
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -22,8 +24,24 @@ public class InputModeManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Gamepad.current != null &&
-            Gamepad.current.wasUpdatedThisFrame)
+        pad = Gamepad.current;
+        bool padInput =
+            pad.buttonSouth.wasPressedThisFrame ||
+            pad.buttonNorth.wasPressedThisFrame ||
+            pad.buttonEast.wasPressedThisFrame ||
+            pad.buttonWest.wasPressedThisFrame ||
+            pad.startButton.wasPressedThisFrame ||
+            pad.selectButton.wasPressedThisFrame ||
+            pad.leftShoulder.wasPressedThisFrame ||
+            pad.rightShoulder.wasPressedThisFrame ||
+            pad.dpad.up.wasPressedThisFrame ||
+            pad.dpad.down.wasPressedThisFrame ||
+            pad.dpad.left.wasPressedThisFrame ||
+            pad.dpad.right.wasPressedThisFrame ||
+            pad.leftStick.ReadValue().sqrMagnitude > 0.01f ||
+            pad.rightStick.ReadValue().sqrMagnitude > 0.01f;
+
+        if (pad != null && padInput)
         {
             SetGamePadMode();
         }
