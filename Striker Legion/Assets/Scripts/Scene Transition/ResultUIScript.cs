@@ -36,13 +36,14 @@ public class ResultUIScript : MonoBehaviour
 
     private void OnEnable()
     {
+        // リザルト有効化
         resultCanvasGroup.interactable = true;
         resultCanvasGroup.blocksRaycasts = true;
-
+        // 次への選択を非有効化
         selectCanvasGroup.interactable = false;
         selectCanvasGroup.blocksRaycasts = false;
         selectCanvasObject.SetActive(false);
-
+        // 初期選択ボタン設定x
         EventSystem.current.SetSelectedGameObject(firstSelectResultButton);
 
         // 総得点数を代入

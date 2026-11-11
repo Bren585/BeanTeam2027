@@ -1,15 +1,20 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class MatchManager : MonoBehaviour
 {
 	public static MatchManager Instance { get; private set; }
 
 	// プレイヤー陣営のチーム
-	[SerializeField] private TeamManager PlayerTeam;
+	private TeamManager PlayerTeam;
 	// 敵陣営のチーム
-	[SerializeField] private TeamManager EnemyTeam;
+	private TeamManager EnemyTeam;
+
+	[SerializeField] private TeamHandoff teamHandoff;
+	[SerializeField] private GameObject characterPrefab;
 
 	// プレイヤー側のゴール
 	public Transform PlayerGoal { get; private set; }
@@ -17,30 +22,54 @@ public class MatchManager : MonoBehaviour
 	// 敵側のゴール
 	public Transform EnemyGoal { get; private set; }
 
-	public Transform BallTransform { get; private set; }
+	//　ゲームバール
+	[SerializeField] GameBall gameBall;
 
-	// ボールを持っているキャラをマネージャーで集約して保持すると超軽量化できる
-	private CharacterBase currentBallHolder;
-	public CharacterBase CurrentBallHolder => currentBallHolder;
+	// ゲームクロック
+    float gametimer;
+
+	//　スコアボード
+    private Dictionary<CharacterTeam, int> scores;
+
+	public Dictionary<CharacterTeam, int> Score => scores;
+
+    // ボールを持っているキャラをマネージャーで集約して保持すると超軽量化できる
+    //private CharacterBase currentBallHolder;
+    public CharacterBase CurrentBallHolder => gameBall.GetOwner() as CharacterBase;
+
+	private PitchEvaluator pitchEvaluator;
+
+	public Transform BallTransform => gameBall.transform;
 
 	private void Awake()
 	{
 		// シングルトンのチェック
 		if (Instance != null && Instance != this)
 		{
+			Debug.Log("MatchManagerのインスタンスチェック");
 			Destroy(gameObject);
 			return;
 		}
 
-		Instance = this;
-
-		// 初期化処理
-		Initialize();
+		Instance = this;		
 	}
 
 	private void Start()
 	{
-		UpdateBallHolder();
+
+		InitializeTeams();
+		// 初期化処理
+		Initialize();
+
+		ResetForKickoff(CharacterTeam.Player);
+
+		//UpdateBallHolder();
+		SkillBar.instance.RegisterTeam(CharacterTeam.Player);
+		SkillBar.instance.RegisterTeam(CharacterTeam.Enemy);
+
+
+		PitchEvaluatorRegister(PlayerTeam.teamObjects);
+		PitchEvaluatorRegister(EnemyTeam.teamObjects);
 	}
 
 	void Initialize()
@@ -55,64 +84,200 @@ public class MatchManager : MonoBehaviour
 		// ゴールの姿勢情報を保存する
 		foreach(GameObject goalObject in goalObjects)
 		{
-			if (LayerMask.LayerToName(goalObject.layer) == "Player")
+			if (goalObject.name.StartsWith("Player"))
+			//if (LayerMask.LayerToName(goalObject.layer) == "Player")
 				PlayerGoal = goalObject.transform;
 			else
 				EnemyGoal = goalObject.transform;
 		}
 
-		BallTransform = GameObject.FindGameObjectWithTag("Ball").transform;
-	}
+		//BallTransform = GameObject.FindGameObjectWithTag("Ball").transform;
+
+		// このオブジェクトについているコンポーネントを保存
+		pitchEvaluator = gameObject.GetComponentInChildren<PitchEvaluator>();
+
+		//SkillBar.instance = new SkillBar();
+
+
+		scores = new Dictionary<CharacterTeam, int>();
+		scores[CharacterTeam.Player] = 0;
+		scores[CharacterTeam.Enemy]	= 0;
+    }
+
 
 	void Update()
 	{
 		// ボールが誰が持っているか検索する
-		UpdateBallHolder();
+		// UpdateBallHolder();
+
+		//ResetForKickoff(CharacterTeam.Player);
 	}
 
-	// ボールを持っているキャラクターを検索する
-	void UpdateBallHolder()
-	{
-		if (PlayerTeam == null || EnemyTeam == null)
-			return;
+	// ゲームボールのGetOwnerに変更
+	//
+	//// ボールを持っているキャラクターを検索する
+	//void UpdateBallHolder()
+	//{
+	//	if (PlayerTeam == null || EnemyTeam == null)
+	//		return;
 
+	//	if (PlayerTeam.teamObjects == null || EnemyTeam.teamObjects == null)
+	//		return;
+
+	//	//if(currentBallHolder)
+	//	//Debug.Log("今ボールを持っているキャラのチーム番号:"+currentBallHolder.team);
+
+	//	foreach (CharacterBase c in PlayerTeam.teamObjects)
+	//	{
+	//		if (!c.hasBall)
+	//			continue;
+
+	//		if (currentBallHolder == c)
+	//			return;
+
+	//		Debug.Log("Playerチームがボールを持った");
+
+	//		currentBallHolder = c;
+	//		return;
+	//	}
+	//	foreach (CharacterBase c in EnemyTeam.teamObjects)
+	//	{
+	//		if (!c.hasBall)
+	//			continue;
+
+	//		if (currentBallHolder == c)
+	//			return;
+	//		Debug.Log("Enemyチームがボールを持った");
+	//		currentBallHolder = c;
+	//		return;
+	//	}
+	//	//Debug.Log("だれもボールを持っていない");
+	//}
+
+	void InitializeTeams()
+	{
+#if false
+		if (PlayerTeam == null)
+		{
+			Debug.Log("プレイヤーチームが未登録");
+			return;
+		}
+		if(EnemyTeam == null)
+		{
+			Debug.Log("エネミーチームが未登録");
+			return;
+		}
 		if (PlayerTeam.teamObjects == null || EnemyTeam.teamObjects == null)
 			return;
+#endif
 
-		//if(currentBallHolder)
-		//Debug.Log("今ボールを持っているキャラのチーム番号:"+currentBallHolder.teamNo);
-
-		foreach (CharacterBase c in PlayerTeam.teamObjects)
+		// チームマネージャの取得
+		TeamManager[] teamManagers = FindObjectsByType<TeamManager>();
+		foreach(TeamManager team in teamManagers)
 		{
-			if (!c.hasBall)
-				continue;
-
-			if (currentBallHolder == c)
-				return;
-
-			Debug.Log("Playerチームがボールを持った");
-
-			currentBallHolder = c;
-			return;
+			if (team.TeamType == CharacterTeam.Player)
+				PlayerTeam = team;
+			else
+				EnemyTeam = team;
 		}
-		foreach (CharacterBase c in EnemyTeam.teamObjects)
+
+
+        SpawnerLinkage[] player_respawners = GameObject.FindGameObjectWithTag("Respawn").transform.Find("Player").GetComponentsInChildren<SpawnerLinkage>();
+        SpawnerLinkage[] enemy_respawners = GameObject.FindGameObjectWithTag("Respawn").transform.Find("Enemy").GetComponentsInChildren<SpawnerLinkage>();
+
+		//bool hasBall = false;
+        foreach (Character_Position role in Enum.GetValues(typeof(Character_Position)))
 		{
-			if (!c.hasBall)
-				continue;
+			// Player Team
+			if (teamHandoff.playerTeam.TryGetValue(role, out CharacterInfo playerInfo))
+			{
+				if (role == Character_Position.Keeper) { continue; }
 
-			if (currentBallHolder == c)
-				return;
-			Debug.Log("Enemyチームがボールを持った");
-			currentBallHolder = c;
-			return;
-		}
-		//Debug.Log("だれもボールを持っていない");
+				GameObject newCharacter = Instantiate(characterPrefab);
+				newCharacter.transform.SetParent(PlayerTeam.transform);
+				newCharacter.GetComponent<CharacterBase>().setInfo(playerInfo);
+				newCharacter.name = "PlayerTeam" + role.ToString();
+				newCharacter.GetComponent<CharacterBase>().SetTeam(CharacterTeam.Player);
+				foreach (SpawnerLinkage spawner in player_respawners)
+				{
+					if ((int)(spawner.Role) == (int)(role))
+					{
+						spawner.character = newCharacter.GetComponent<CharacterBase>();
+						break;
+					}
+				}
+
+				if (role == Character_Position.Forward)
+				{
+					gameBall.SetOwner(newCharacter.GetComponent<CharacterBase>());
+				}
+
+				// 適当にボールを持たせる
+				//if(!hasBall)
+				//{
+				//	gameBall.SetOwner(newCharacter.GetComponent<CharacterBase>());
+				//	hasBall = true;
+				//}
+			}
+			else
+			{
+				switch (role)
+				{
+					case Character_Position.None:
+					case Character_Position.Other:
+						break;
+					default:
+						Debug.Log("Missing Team Member!!!");
+						throw new Exception("Team Creation Failed");
+				}
+			}
+
+            // Enemy Team
+            
+            if (teamHandoff.enemyTeam.TryGetValue(role, out CharacterInfo enemyInfo))
+            {
+                GameObject newCharacter = Instantiate(characterPrefab);
+                newCharacter.transform.SetParent(EnemyTeam.transform);
+                newCharacter.GetComponent<CharacterBase>().setInfo(enemyInfo);
+				newCharacter.name = "EnemyTeam" + role.ToString();
+				newCharacter.GetComponent<CharacterBase>().SetTeam(CharacterTeam.Enemy);
+
+				foreach (SpawnerLinkage spawner in enemy_respawners)
+                {
+                    if ((int)(spawner.Role) == (int)(role))
+                    {
+                        spawner.character = newCharacter.GetComponent<CharacterBase>();
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                switch (role)
+                {
+                    case Character_Position.None:
+                    case Character_Position.Other:
+                        break;
+                    default:
+                        Debug.Log("Missing Team Member!!!");
+                        throw new Exception("Team Creation Failed");
+                }
+            }
+        }
+
+		PlayerTeam.Init();
+		EnemyTeam.Init();
 	}
 
 	// ゴールした際の処理
 	public void GoalEvent(CharacterTeam team)
 	{
 		Debug.Log(team + "側のゴールにボールが入りました。");
+
+		scores[team] += 1;
+
+		// エネルギーを与える
+		SkillBar.instance.GainForShoot(team);
 
 		// キャラクターの座標などをリセットする
 		ResetForKickoff(team);
@@ -123,6 +288,7 @@ public class MatchManager : MonoBehaviour
 	{
 		PlayerTeam.ResetInit();
 		EnemyTeam.ResetInit();
+
 
 		// プレイヤー側のゴールに入った場合
 		if(team == CharacterTeam.Player)
@@ -176,7 +342,7 @@ public class MatchManager : MonoBehaviour
 
 	private TeamManager GetTeamManager(CharacterTeam team)
 	{
-		if (team == PlayerTeam.GetTeamType())
+		if (team == PlayerTeam.TeamType)
 			return PlayerTeam;
 		else
 			return EnemyTeam;
@@ -187,5 +353,57 @@ public class MatchManager : MonoBehaviour
 	{
 		PlayerTeam.DebugGUI();
 		EnemyTeam.DebugGUI();
+	}
+
+	
+
+	public void RegisterTeam(TeamManager team)
+	{
+		if(team.TeamType == CharacterTeam.Player)
+		{
+			// チームが登録済みなら終了
+			if (PlayerTeam != null)
+			{
+				Debug.Log("プレイヤーチームは登録済み");
+				return;
+			}
+			PlayerTeam = team;
+
+			if (team.teamObjects.Count <= 0)
+				Debug.Log("プレイヤーチームオブジェクトが空");
+			PitchEvaluatorRegister(team.teamObjects);
+		}
+		else
+		{
+			// チームが登録済みなら終了
+			if (EnemyTeam != null)
+			{
+				Debug.Log("エネミーチームは登録済み");
+				return;
+			}
+			EnemyTeam = team;
+			if (team.teamObjects.Count <= 0)
+				Debug.Log("エネミーチームオブジェクトが空");
+			PitchEvaluatorRegister(team.teamObjects);
+		}
+	}
+
+	// ------------------------ ピッチグリッド計算クラスの呼び出し関数 --------------------------
+	void PitchEvaluatorRegister(List<CharacterBase> characters)
+	{
+		if (pitchEvaluator != null)
+		{
+			pitchEvaluator.RegisterCharacter(characters);
+		}
+		else
+			Debug.Log("評価用コンポーネントがNull");
+	}
+
+	public void RegisterEvaluatorScore(CharacterPitchScore score)
+	{
+		if (pitchEvaluator != null)
+		{
+			pitchEvaluator.RegisterPitchScore(score);
+		}
 	}
 }

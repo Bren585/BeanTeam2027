@@ -6,24 +6,21 @@ using UnityEngine.UI;
 
 public class SharedUIScript : MonoBehaviour
 {
-    //[SerializeField]
-    //private GameObject keyboardBackButtonGuide;
+    // マウス操作時の入力ガイド
+    [SerializeField]
+    private GameObject[] mousemodeInputGuides;
 
-    //[SerializeField]
-    //private GameObject gamepadBackButtonGuide;
+    // パッド操作時の入力ガイド
+    [SerializeField]
+    private GameObject[] padmodeInputGuides;
 
-    private void Start()
-    {
-        //bool connectedGamepad = SceneTransitionManager.instance.GetFinallyDeviceInfo();
-
-        //keyboardBackButtonGuide.SetActive(!connectedGamepad);
-        //gamepadBackButtonGuide.SetActive(connectedGamepad);
-    }
+    // 現在の入力媒体がPadであるかのチェックフラグ
+    private bool isInputPad = false;
 
     // Update is called once per frame
     void Update()
     {
-        
+        ChangeGuideUI();
     }
 
     // 前のシーンに戻る
@@ -33,12 +30,41 @@ public class SharedUIScript : MonoBehaviour
     }
 
     // 操作方法表示の切り替え
-    public void ChangeGuideUI(PlayerInput playerInput)
+    public void ChangeGuideUI()
     {
-        //if (playerInput == null) return;
-        //bool connectedGamepad = (playerInput.currentControlScheme == "Gamepad");
+        if (InputModeManager.instance.GetUsedGamePadFlag())
+        {
+            if(!isInputPad)
+            {
+                for(int mIndex = 0; mIndex < mousemodeInputGuides.Length; ++mIndex)
+                {
+                    mousemodeInputGuides[mIndex].SetActive(false);
+                }
 
-        //keyboardBackButtonGuide.SetActive(!connectedGamepad);
-        //gamepadBackButtonGuide.SetActive(connectedGamepad);
+                for(int pIndex = 0; pIndex < padmodeInputGuides.Length; ++pIndex)
+                {
+                    padmodeInputGuides[pIndex].SetActive(true);
+                }
+
+                isInputPad = true;
+            }
+        }
+        else
+        {
+            if(isInputPad)
+            {
+                for (int mIndex = 0; mIndex < mousemodeInputGuides.Length; ++mIndex)
+                {
+                    mousemodeInputGuides[mIndex].SetActive(true);
+                }
+
+                for (int pIndex = 0; pIndex < padmodeInputGuides.Length; ++pIndex)
+                {
+                    padmodeInputGuides[pIndex].SetActive(false);
+                }
+
+                isInputPad = false;
+            }
+        }
     }
 }

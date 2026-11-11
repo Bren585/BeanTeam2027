@@ -60,7 +60,7 @@ public static class PassUtility
 	public static float CostPassToAnyAlly(IReadOnlyList<CharacterBase> activeCharacters, CharacterAIAgent passCharacter, Vector3 goalPosition)
 	{
 		// キャラクターのチーム
-		CharacterTeam team = (CharacterTeam)passCharacter.TeamNumber;
+		CharacterTeam team = passCharacter.Team;
 
 		// 敵のレイヤー
 		LayerMask opponentLayer = LayerMask.NameToLayer(team == CharacterTeam.Player ? "Enemy" : "Player");

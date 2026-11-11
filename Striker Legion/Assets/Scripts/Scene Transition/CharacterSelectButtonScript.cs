@@ -6,22 +6,19 @@ public class CharacterSelectButtonScript : MonoBehaviour
 {
     public enum DisplayType
     {
-        SelectedIndex,
-        CharacterName,
+        SelectedIndex, // 選択順表示
+        CharacterName, // キャラクター名表示
     }
 
+    // 選択時に代入されるキャラクター情報オブジェクト
     [SerializeField]
     public CharacterScriptableObject characterData;
-
-    [SerializeField]
-    int characterDataIndex = -1;
-
-    [SerializeField]
+    // キャラクターアイコン画像
     private Image iconImage;
-
+    // 情報の表示タイプ
     [SerializeField]
     private DisplayType displayType;
-
+    // 更新可能かのフラグ
     private bool can_update = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -29,33 +26,39 @@ public class CharacterSelectButtonScript : MonoBehaviour
     {
     }
 
+    // キャラクターアイコンのイメージ画像設定
     private void OnEnable()
     {
+        iconImage = GetComponent<Image>();
+
+        if(characterData)
+            iconImage.sprite = characterData.icon;
+        
+        // 画像設定できてなければ更新しない
+        if (iconImage.sprite != null) can_update = true;
+    }
+
+    // 選出済みキャラクターをポジション選択の際に表示するために使う
+    public void SetDataFromSelected(int index)
+    {
+        // 範囲チェック
         int length = CharacterSelectManager.instance.GetCharacterDataLength() - 1;
-        if (characterDataIndex < 0 || characterDataIndex > length)
+        if (index < 0 || index > length) return;
+        // データチェック
+        CharacterScriptableObject characterObject = CharacterSelectManager.instance.GetSelectedCharacterData(index);
+        if (characterObject != null)
         {
+            characterData = characterObject;
             iconImage.sprite = characterData.icon;
         }
-        else
-        {
-            if (CharacterSelectManager.instance.GetSelectedCharacterData(characterDataIndex) == null)
-            {
-                iconImage.sprite = characterData.icon;
-                Debug.Log("select manager is null");
-            }
-            else
-            {
-                characterData = CharacterSelectManager.instance.GetSelectedCharacterData(characterDataIndex);
-                iconImage.sprite = characterData.icon;
-            }
-        }
-
+        // 画像設定できてなければ更新しない
         if (iconImage.sprite != null) can_update = true;
     }
 
     private void Update()
     {
         if (!can_update) return;
+        // 表示の切り替え
         switch (displayType)
         {
             case DisplayType.SelectedIndex:
@@ -68,6 +71,7 @@ public class CharacterSelectButtonScript : MonoBehaviour
         }
     }
 
+    // 選択順の表示
     private void DisplaySelectedIndex()
     {
         Text selectIndex = iconImage.GetComponentInChildren<Text>();
@@ -88,6 +92,7 @@ public class CharacterSelectButtonScript : MonoBehaviour
         }
     }
 
+    // キャラクター名の表示
     private void DisplayCharacterName()
     {
         Text characterName = iconImage.GetComponentInChildren<Text>();

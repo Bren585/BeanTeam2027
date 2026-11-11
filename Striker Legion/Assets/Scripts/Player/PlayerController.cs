@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     // 繧ｭ繝｣繝ｩ繧ｯ繧ｿ繝ｼ縺ｮ蛻�ｊ譖ｿ縺医ｒ陦後≧縺九�繝輔Λ繧ｰ
     [SerializeField] bool               changePlayerCharacter;
-    [SerializeField] int                teamNo;
+    [SerializeField] CharacterTeam      team;
     [SerializeField] GameBall           gameBall;
 
 
@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
         {
             CharacterBase ballOwner = gameBall.GetOwner() as CharacterBase;
             if (ballOwner == null) { target = gameBall.transform.position; }
-            else if (ballOwner.teamNo == teamNo) { return ballOwner; }
+            else if (ballOwner.team == team) { return ballOwner; }
             else { target = ballOwner.transform.position; }
         }
 
@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
 
         foreach (CharacterBase character in allCharacters)
         {
-            if (character.teamNo != teamNo) { continue; }
+            if (character.team != team) { continue; }
             float distance = (character.transform.position - target).magnitude;
             if (distance < closest)
             {
@@ -71,7 +71,8 @@ public class PlayerController : MonoBehaviour
         else
         {
             // No player? Follow the ball as a fallback.
-            cameraTarget = gameBall.transform;
+            Debug.Log("No player character, following the ball!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			cameraTarget = gameBall.transform;
         }
 
         // Move the Camera.
@@ -86,7 +87,9 @@ public class PlayerController : MonoBehaviour
     }
 
     public void PossessCharacter(CharacterBase character) 
-    { 
+    {
+        //if (character == playerCharacter) return;
+        Debug.Log("POSESSION");
         playerCharacter = character;
         if (playerCharacter == null)
         {
@@ -100,18 +103,19 @@ public class PlayerController : MonoBehaviour
 
     public void OnMove(InputValue input)
     {
-        moveInput = input.Get<Vector2>();
+		if (playerCharacter == null) { PossessCharacter(GetClosestPossessableCharacter()); }
+		moveInput = input.Get<Vector2>();
     }
 
     public void OnJump()
     {
-        if (playerCharacter == null) { return; }
-        playerCharacter.Jump();
+		if (playerCharacter == null) { PossessCharacter(GetClosestPossessableCharacter()); }
+		playerCharacter.Jump();
     }
 
     public void OnSkill()
     {
-        if (playerCharacter == null) { return; }
+		if (playerCharacter == null) { PossessCharacter(GetClosestPossessableCharacter()); }
         if (playerCharacter.CanSkill())
         {
             playerCharacter.Skill();
@@ -128,9 +132,9 @@ public class PlayerController : MonoBehaviour
 
             //ボールを持っているキャラクターがシュートした場合は、ボールの所有者を確認して、同じチームのキャラクターがいればそのキャラクターに操作を移す
             CharacterBase ballOwner = gameBall.GetOwner() as CharacterBase;
-            if (ballOwner != playerCharacter && ballOwner != null)
+            if (ballOwner != playerCharacter && ballOwner != null && changePlayerCharacter)
             {
-                if (ballOwner.teamNo == teamNo)
+                if (ballOwner.team == team)
                 {
                     PossessCharacter(ballOwner);
                 }
