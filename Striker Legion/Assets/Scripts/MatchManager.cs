@@ -41,6 +41,8 @@ public class MatchManager : MonoBehaviour
 
 	public Transform BallTransform => gameBall.transform;
 
+	public Transform GetGoal(CharacterTeam team) { return (team == CharacterTeam.Player) ? PlayerGoal : EnemyGoal; }
+
 	private void Awake()
 	{
 		// シングルトンのチェック
@@ -280,7 +282,8 @@ public class MatchManager : MonoBehaviour
 		SkillBar.instance.GainForShoot(team);
 
 		// キャラクターの座標などをリセットする
-		ResetForKickoff(team);
+		ResetForKickoff(team == CharacterTeam.Player ? CharacterTeam.Enemy : CharacterTeam.Player);
+		//ResetForKickoff(team);
 	}
 
 	// キックオフのために状況をリセットする
@@ -293,13 +296,13 @@ public class MatchManager : MonoBehaviour
 		// プレイヤー側のゴールに入った場合
 		if(team == CharacterTeam.Player)
 		{
-			EnemyTeam.OrderLoseBall();	// 点をいれた側からボールを没収する
-			PlayerTeam.OrderGetBall();	// 点をいれられた側にボールを渡す。
+			//EnemyTeam.OrderLoseBall();	// 点をいれた側からボールを没収する
+			PlayerTeam.OrderGetBall(gameBall);	// 点をいれられた側にボールを渡す。
 		}
 		else
 		{
-			PlayerTeam.OrderLoseBall();
-			EnemyTeam.OrderGetBall();
+			//PlayerTeam.OrderLoseBall();
+			EnemyTeam.OrderGetBall(gameBall);
 		}
 	}
 	public CharacterBase GetAllyByRole(int teamNumber, CharacterRole role)

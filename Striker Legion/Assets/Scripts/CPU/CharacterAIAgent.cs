@@ -82,10 +82,12 @@ public class CharacterAIAgent : MonoBehaviour
     // キャラのチーム番号
     public CharacterTeam Team => owner.team;
 
+	public CharacterTeam OpponentTeam => (Team == CharacterTeam.Player) ? CharacterTeam.Enemy : CharacterTeam.Player;
+
 	//public CharacterTeam Team => (owner.teamNo == (int)CharacterTeam.Player) ? CharacterTeam.Player : CharacterTeam.Enemy;
 
-    // パス関数（CharacterBaseから呼び出し）
-    public void Pass() => owner.KickBall();
+	// パス関数（CharacterBaseから呼び出し）
+	public void Pass() => owner.KickBall();
 
     // シュート関数（CharacterBaseから呼び出し）
     public void Shoot() => owner.KickBall();
