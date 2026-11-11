@@ -71,7 +71,7 @@ public class GameBall : MonoBehaviour
             }
             float p = t / duration; // パーセント
             float h = 1 - Mathf.Pow(2 * p - 1, 2);
-
+            
             position.x = Mathf.Lerp(start.x, end.x, p);
             position.y = Mathf.Lerp(start.y, end.y, p) + h * maxHeight;
             position.z = Mathf.Lerp(start.z, end.z, p);
@@ -79,7 +79,7 @@ public class GameBall : MonoBehaviour
         }
     }
 
-    bool inFlight = false;
+    public bool inFlight { get; private set; } = false; //getter for FliyngEffect
     flight currentPath;
 
     [SerializeField] float maxCatchupSpeed = 40;
@@ -95,6 +95,7 @@ public class GameBall : MonoBehaviour
     {
         if (inFlight)
         {
+            transform.forward = (owner.transform.position - transform.position).normalized;
             Vector3 position = new Vector3();
             inFlight = currentPath.update(out position);
             transform.position = position;
