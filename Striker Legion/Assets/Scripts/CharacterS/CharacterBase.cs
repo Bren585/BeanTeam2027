@@ -109,6 +109,20 @@ public class CharacterBase : BallHolder
         UpdateMovement();
     }
 
+    private void OnEnable()
+    {
+        CharacterEventChannel.ShootBegan += OnShootEventEnter;
+        CharacterEventChannel.ShootEnded += OnShootEventExit;
+    }
+
+    private void OnDisable()
+    {
+        CharacterEventChannel.ShootBegan -= OnShootEventEnter;
+        CharacterEventChannel.ShootEnded -= OnShootEventExit;
+    }
+
+    public void OnShootEventEnter() { Debug.Log("ShootEnter");  moveLocked = true; }
+    public void OnShootEventExit()  { Debug.Log("ShootExit");   moveLocked = false; }
 
     void UpdatePassTarget()
     {
@@ -281,7 +295,7 @@ public class CharacterBase : BallHolder
 
     public void Tackle()
     {
-        if (hasBall) return;
+        if (hasBall || moveLocked) return;
         if (tackleTimer < baseInfo.tackleCooldown) return;
         tackleTimer = 0;
         tackleHitbox.SetActive(true);
@@ -351,8 +365,7 @@ public class CharacterBase : BallHolder
             // プレイヤーがディフェンダーの場合、狙いが正確であればスピードとブロックにボーナスが加算される
             // 
 
-            //Debuging
-            lockMove();
+            CharacterEventChannel.RaiseShootBegin();
             isShooting = true;
             _velocity = Vector3.zero;
         }
