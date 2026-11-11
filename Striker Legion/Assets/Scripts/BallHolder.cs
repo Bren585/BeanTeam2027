@@ -18,5 +18,8 @@ public class BallHolder : MonoBehaviour
     public void LoseBall() { 
         hasBall = false;
     }
+
+    public void SetTeam(CharacterTeam team) { this.team = team; }
+
     virtual protected void OnGetBall() { }
 }

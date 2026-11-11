@@ -67,10 +67,11 @@ public class CharacterBase : BallHolder
     public bool isDown { get { return downTimer > 0; } }
 
     CharacterBase passTarget = null;
+	
 
-    // ä÷êî *******************************************************************************************
+	// ä÷êî *******************************************************************************************
 
-    protected virtual void Awake()
+	protected virtual void Awake()
     {
         body = GetComponent<CharacterController>();
         ball = transform.Find("Ball").gameObject;

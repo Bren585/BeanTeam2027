@@ -195,6 +195,7 @@ public class MatchManager : MonoBehaviour
 				newCharacter.transform.SetParent(PlayerTeam.transform);
 				newCharacter.GetComponent<CharacterBase>().setInfo(playerInfo);
 				newCharacter.name = "PlayerTeam" + role.ToString();
+				newCharacter.GetComponent<CharacterBase>().SetTeam(CharacterTeam.Player);
 				foreach (SpawnerLinkage spawner in player_respawners)
 				{
 					if ((int)(spawner.Role) == (int)(role))
@@ -231,8 +232,10 @@ public class MatchManager : MonoBehaviour
                 GameObject newCharacter = Instantiate(characterPrefab);
                 newCharacter.transform.SetParent(EnemyTeam.transform);
                 newCharacter.GetComponent<CharacterBase>().setInfo(enemyInfo);
-				newCharacter.name = "PlayerTeam" + role.ToString();
-                foreach (SpawnerLinkage spawner in enemy_respawners)
+				newCharacter.name = "EnemyTeam" + role.ToString();
+				newCharacter.GetComponent<CharacterBase>().SetTeam(CharacterTeam.Enemy);
+
+				foreach (SpawnerLinkage spawner in enemy_respawners)
                 {
                     if ((int)(spawner.Role) == (int)(role))
                     {
