@@ -9,6 +9,9 @@ public class InputModeManager : MonoBehaviour
     public bool usedGamePad = false;
 
     private Gamepad pad;
+
+    // Padモード変更時のマウスカーソル最終位置
+    private Vector2 lastCursorPosition;
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -21,9 +24,11 @@ public class InputModeManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    // 現在のゲームパッドの情報を取得し、フラグの切り替えとカーソルの更新を行う
     // Update is called once per frame
     void Update()
     {
+        if (Gamepad.current == null) return;
         pad = Gamepad.current;
         bool padInput = false;
         if (pad != null)
@@ -57,17 +62,28 @@ public class InputModeManager : MonoBehaviour
         }
     }
 
+    // ゲームパッド操作
     private void SetGamePadMode()
     {
         if (usedGamePad) return;
+        lastCursorPosition = Mouse.current.position.ReadValue();
         Cursor.visible = false;
+        Mouse.current.WarpCursorPosition(new Vector2(1000, -1000));
         usedGamePad = true;
     }
 
+    // マウス操作
     private void SetMouseMode()
     {
         if (!usedGamePad) return;
         Cursor.visible = true;
+        Mouse.current.WarpCursorPosition(lastCursorPosition);
         usedGamePad = false;
+    }
+
+    // フラグの取得
+    public bool GetUsedGamePadFlag()
+    {
+        return usedGamePad;
     }
 }
