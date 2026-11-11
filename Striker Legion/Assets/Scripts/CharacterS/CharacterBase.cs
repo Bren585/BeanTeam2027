@@ -314,8 +314,6 @@ public class CharacterBase : BallHolder
             {
                 //if (opponent.teamNo == teamNo) { return; } // テストしやすいためオッフ
 
-                GameBall gameBall = FindAnyObjectByType<GameBall>();
-
                 gameBall.Kick(new GameBall.flight(this, opponent, 0, 20));
                 gameBall.SetOwner(opponent);
                 opponent.lockMove();

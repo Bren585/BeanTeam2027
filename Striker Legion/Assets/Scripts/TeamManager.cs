@@ -136,13 +136,11 @@ public class TeamManager : MonoBehaviour
 
 	public void ResetInit()
 	{
-		Debug.Log("リセット！！！！！！！！！！！１");
-
-
+		//Debug.Log("リセット！！！！！！！！！！！１");
 		SpawnerLinkage[] respawners = GameObject.FindGameObjectWithTag("Respawn").GetComponentsInChildren<SpawnerLinkage>();
 		foreach (SpawnerLinkage respawner in respawners) {
 			respawner.respawn(); 
-			Debug.Log(respawner.character.name+ ":"+respawner.character.transform.position);
+			//Debug.Log(respawner.character.name+ ":"+respawner.character.transform.position);
 		}
 
 		// 座標の変更を同期

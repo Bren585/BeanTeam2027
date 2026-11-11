@@ -22,10 +22,9 @@ public class SpawnerLinkage : MonoBehaviour
 
     public void respawn()
     {
-        Debug.Log(name + ":Respawn" + transform.position);
+        if (character == null) { return; }
+
         character.transform.position = transform.position;
-        //character.transform.position = position;
         character.transform.rotation = transform.rotation;
-        //character.transform.rotation = rotation;
     }
 }

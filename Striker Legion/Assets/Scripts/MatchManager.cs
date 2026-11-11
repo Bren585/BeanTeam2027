@@ -185,12 +185,14 @@ public class MatchManager : MonoBehaviour
         SpawnerLinkage[] player_respawners = GameObject.FindGameObjectWithTag("Respawn").transform.Find("Player").GetComponentsInChildren<SpawnerLinkage>();
         SpawnerLinkage[] enemy_respawners = GameObject.FindGameObjectWithTag("Respawn").transform.Find("Enemy").GetComponentsInChildren<SpawnerLinkage>();
 
-		bool hasBall = false;
+		//bool hasBall = false;
         foreach (Character_Position role in Enum.GetValues(typeof(Character_Position)))
 		{
 			// Player Team
 			if (teamHandoff.playerTeam.TryGetValue(role, out CharacterInfo playerInfo))
 			{
+				if (role == Character_Position.Keeper) { continue; }
+
 				GameObject newCharacter = Instantiate(characterPrefab);
 				newCharacter.transform.SetParent(PlayerTeam.transform);
 				newCharacter.GetComponent<CharacterBase>().setInfo(playerInfo);
@@ -203,6 +205,11 @@ public class MatchManager : MonoBehaviour
 						spawner.character = newCharacter.GetComponent<CharacterBase>();
 						break;
 					}
+				}
+
+				if (role == Character_Position.Forward)
+				{
+					gameBall.SetOwner(newCharacter.GetComponent<CharacterBase>());
 				}
 
 				// 適当にボールを持たせる
