@@ -104,11 +104,11 @@ public class CharacterAIAgent : MonoBehaviour
 	{
 		Vector3 p = position;
 		// 引数の座標をピッチ内に収める
-		//p.x = Mathf.Clamp(p.x, pitchScore.GridOrigin.x, pitchScore.GridEnd.x);
-		//p.z = Mathf.Clamp(p.z, pitchScore.GridOrigin.z, pitchScore.GridEnd.z);
+		p.x = Mathf.Clamp(p.x, pitchScore.GridOrigin.x, pitchScore.GridEnd.x);
+		p.z = Mathf.Clamp(p.z, pitchScore.GridOrigin.z, pitchScore.GridEnd.z);
 
 		// ナビメッシュに座標を設定する
-		//navMeshAgent.SetDestination(p);
+		navMeshAgent.SetDestination(p);
 		endTargetPosition = p;
 	}
 
@@ -183,8 +183,8 @@ public class CharacterAIAgent : MonoBehaviour
         steeringController.SetParentVelocity(ParentVelocity);
 
 		// 操舵コントローラの目標座標をナビメッシュから取得
-		steeringController.TargetPosition = endTargetPosition;
-		//steeringController.TargetPosition = navMeshAgent.steeringTarget;
+		//steeringController.TargetPosition = endTargetPosition;
+		steeringController.TargetPosition = navMeshAgent.steeringTarget;
 
 		// 速力計算
 		steeringController.UpdateVelocity();

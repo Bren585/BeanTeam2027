@@ -59,9 +59,9 @@ public class MatchManager : MonoBehaviour
 	private void Start()
 	{
 
-		InitializeTeams();
 		// 初期化処理
 		Initialize();
+		InitializeTeams();
 
 		ResetForKickoff(CharacterTeam.Player);
 
@@ -115,47 +115,7 @@ public class MatchManager : MonoBehaviour
 		//ResetForKickoff(CharacterTeam.Player);
 	}
 
-	// ゲームボールのGetOwnerに変更
-	//
-	//// ボールを持っているキャラクターを検索する
-	//void UpdateBallHolder()
-	//{
-	//	if (PlayerTeam == null || EnemyTeam == null)
-	//		return;
-
-	//	if (PlayerTeam.teamObjects == null || EnemyTeam.teamObjects == null)
-	//		return;
-
-	//	//if(currentBallHolder)
-	//	//Debug.Log("今ボールを持っているキャラのチーム番号:"+currentBallHolder.team);
-
-	//	foreach (CharacterBase c in PlayerTeam.teamObjects)
-	//	{
-	//		if (!c.hasBall)
-	//			continue;
-
-	//		if (currentBallHolder == c)
-	//			return;
-
-	//		Debug.Log("Playerチームがボールを持った");
-
-	//		currentBallHolder = c;
-	//		return;
-	//	}
-	//	foreach (CharacterBase c in EnemyTeam.teamObjects)
-	//	{
-	//		if (!c.hasBall)
-	//			continue;
-
-	//		if (currentBallHolder == c)
-	//			return;
-	//		Debug.Log("Enemyチームがボールを持った");
-	//		currentBallHolder = c;
-	//		return;
-	//	}
-	//	//Debug.Log("だれもボールを持っていない");
-	//}
-
+	
 	void InitializeTeams()
 	{
 #if false

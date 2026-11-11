@@ -105,7 +105,7 @@ public partial class PressAction : ActionBase
         Vector3 targetForward = TargetCharacter.transform.forward;
 
         // 前方方向を移動予想としてベクトルの補正を入れる
-        Vector3 result = targetCharacterPosition + targetForward * 5.0f;
+        Vector3 result = targetCharacterPosition + targetForward * 2.5f;
 
 		return result;
 	}
