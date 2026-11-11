@@ -206,11 +206,11 @@ public class MatchManager : MonoBehaviour
 				}
 
 				// 適当にボールを持たせる
-				if(!hasBall)
-				{
-					gameBall.SetOwner(newCharacter.GetComponent<CharacterBase>());
-					hasBall = true;
-				}
+				//if(!hasBall)
+				//{
+				//	gameBall.SetOwner(newCharacter.GetComponent<CharacterBase>());
+				//	hasBall = true;
+				//}
 			}
 			else
 			{
