@@ -55,8 +55,8 @@ public class InputModeManager : MonoBehaviour
             SetGamePadMode();
         }
 
-        if(Mouse.current != null &&
-            Mouse.current.delta.ReadValue() != Vector2.zero)
+        if((Mouse.current != null && Mouse.current.delta.ReadValue() != Vector2.zero) ||
+            (Keyboard.current != null && Keyboard.current.anyKey.wasPressedThisFrame))
         {
             SetMouseMode();
         }

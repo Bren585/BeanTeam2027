@@ -41,6 +41,8 @@ public class MatchManager : MonoBehaviour
 
 	public Transform BallTransform => gameBall.transform;
 
+	public Transform GetGoal(CharacterTeam team) { return (team == CharacterTeam.Player) ? PlayerGoal : EnemyGoal; }
+
 	private void Awake()
 	{
 		// シングルトンのチェック
@@ -185,12 +187,14 @@ public class MatchManager : MonoBehaviour
         SpawnerLinkage[] player_respawners = GameObject.FindGameObjectWithTag("Respawn").transform.Find("Player").GetComponentsInChildren<SpawnerLinkage>();
         SpawnerLinkage[] enemy_respawners = GameObject.FindGameObjectWithTag("Respawn").transform.Find("Enemy").GetComponentsInChildren<SpawnerLinkage>();
 
-		bool hasBall = false;
+		//bool hasBall = false;
         foreach (Character_Position role in Enum.GetValues(typeof(Character_Position)))
 		{
 			// Player Team
 			if (teamHandoff.playerTeam.TryGetValue(role, out CharacterInfo playerInfo))
 			{
+				if (role == Character_Position.Keeper) { continue; }
+
 				GameObject newCharacter = Instantiate(characterPrefab);
 				newCharacter.transform.SetParent(PlayerTeam.transform);
 				newCharacter.GetComponent<CharacterBase>().setInfo(playerInfo);
@@ -203,6 +207,11 @@ public class MatchManager : MonoBehaviour
 						spawner.character = newCharacter.GetComponent<CharacterBase>();
 						break;
 					}
+				}
+
+				if (role == Character_Position.Forward)
+				{
+					gameBall.SetOwner(newCharacter.GetComponent<CharacterBase>());
 				}
 
 				// 適当にボールを持たせる
@@ -273,7 +282,8 @@ public class MatchManager : MonoBehaviour
 		SkillBar.instance.GainForShoot(team);
 
 		// キャラクターの座標などをリセットする
-		ResetForKickoff(team);
+		ResetForKickoff(team == CharacterTeam.Player ? CharacterTeam.Enemy : CharacterTeam.Player);
+		//ResetForKickoff(team);
 	}
 
 	// キックオフのために状況をリセットする
@@ -286,13 +296,13 @@ public class MatchManager : MonoBehaviour
 		// プレイヤー側のゴールに入った場合
 		if(team == CharacterTeam.Player)
 		{
-			EnemyTeam.OrderLoseBall();	// 点をいれた側からボールを没収する
-			PlayerTeam.OrderGetBall();	// 点をいれられた側にボールを渡す。
+			//EnemyTeam.OrderLoseBall();	// 点をいれた側からボールを没収する
+			PlayerTeam.OrderGetBall(gameBall);	// 点をいれられた側にボールを渡す。
 		}
 		else
 		{
-			PlayerTeam.OrderLoseBall();
-			EnemyTeam.OrderGetBall();
+			//PlayerTeam.OrderLoseBall();
+			EnemyTeam.OrderGetBall(gameBall);
 		}
 	}
 	public CharacterBase GetAllyByRole(int teamNumber, CharacterRole role)
