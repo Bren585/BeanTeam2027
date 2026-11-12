@@ -102,7 +102,13 @@ public class CharacterBase : BallHolder
             _velocity.x = 0;
             _velocity.z = 0;
             downTimer -= Time.deltaTime;
-            if (downTimer <= 0) { animator.SetTrigger("Recover"); }
+
+            // ダウン解除処理
+            if (downTimer <= 0) 
+            {
+                animator.SetTrigger("Recover");
+                unlockMove();   // 移動ができるようにする
+            }
             return;
         }
 
@@ -124,6 +130,12 @@ public class CharacterBase : BallHolder
     public void OnShootEventEnter() { Debug.Log("ShootEnter");  moveLocked = true; }
     public void OnShootEventExit()  { Debug.Log("ShootExit");   moveLocked = false; }
 
+    // リスポーンの処理
+    public void Respawn()
+    {
+        // 速度をリセット
+        _velocity = Vector3.zero;
+    }
     void UpdatePassTarget()
     {
         if (hasBall)
@@ -340,6 +352,7 @@ public class CharacterBase : BallHolder
                 animator.SetTrigger("Down");
             }
         }
+#if false // 判定内に入ったときの処理だと、判定内にいるときにパスを受けたときにシュートできない
         //HACK: if文が長すぎる
         else if (other.gameObject.tag == "Goal" && other.transform.Find("ShootCamOrigin").Find("AimMarker").GetComponent<AimMarkerController>().team != this.team && hasBall == true)
         {
@@ -369,9 +382,21 @@ public class CharacterBase : BallHolder
             isShooting = true;
             _velocity = Vector3.zero;
         }
+#endif
     }
 
-    public CharacterBase PassTarget(out List<RaycastHit> outBlockers)
+	public void OnTriggerStay(Collider other)
+	{
+        // シュートエリア内でボールを持っていたら、シュートできる
+		 if (other.gameObject.tag == "Goal" && other.transform.Find("ShootCamOrigin").Find("AimMarker").GetComponent<AimMarkerController>().team != this.team && hasBall == true)
+		{
+			CharacterEventChannel.RaiseShootBegin();
+			isShooting = true;
+			_velocity = Vector3.zero;
+		}
+	}
+
+	public CharacterBase PassTarget(out List<RaycastHit> outBlockers)
     {
         CharacterBase bestCandidate = null;
         float bestDistance = float.MaxValue;

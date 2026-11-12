@@ -26,5 +26,8 @@ public class SpawnerLinkage : MonoBehaviour
 
         character.transform.position = transform.position;
         character.transform.rotation = transform.rotation;
+
+        // CharacterBaseのリスポーン処理
+        character.Respawn();
     }
 }

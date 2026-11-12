@@ -72,8 +72,7 @@ public class TeamManager : MonoBehaviour
 
 		UpdateAllBehaviorGraph();
 #endif
-		foreach (CharacterBase c in teamObjects)
-			Debug.Log("TeamManager Start" + c.name + c.transform.position);
+		
 	}
 
 	public void Init()
