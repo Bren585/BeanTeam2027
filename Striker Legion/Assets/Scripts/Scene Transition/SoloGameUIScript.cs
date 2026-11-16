@@ -1,11 +1,14 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class SoloGameUIScript : MonoBehaviour
 {
-    
+    [SerializeField]
+    PauseMenuScript pause;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -14,7 +17,6 @@ public class SoloGameUIScript : MonoBehaviour
 
     private void OnEnable()
     {
-        
     }
 
     private void OnDisable()
