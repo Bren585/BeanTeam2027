@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using TMPro;
-using Unity.AppUI.UI;
+//using System.Runtime.CompilerServices;
+//using TMPro;
+//using Unity.AppUI.UI;
 using Unity.Behavior;
-using UnityEditor.EditorTools;
+//using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -133,12 +133,16 @@ public class CharacterAIAgent : MonoBehaviour
 
 		positioningBase = new Dictionary<PositioningName, Vector3>();
 
+		//behaviorGraphAgent.enabled = false;
+		//Debug.LogError("BlackboardReferenceがNull");
+
 		//Debug.Log(name + ":" + transform.position);
 	}
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+
 	}
 
     public void Initialize(Dictionary<PositioningName, Vector3> positioningBase, CharacterRole role)
@@ -147,6 +151,14 @@ public class CharacterAIAgent : MonoBehaviour
         Role = role;
 		DebugText.SetDefaultText(owner.name +" " + Role);
 		pitchScore.Initialize(role, Team);
+
+		//behaviorGraphAgent.SetVariableValue("CharacterAIAgent", this);
+		//behaviorGraphAgent.SetVariableValue("Self", gameObject);
+		//behaviorGraphAgent.SetVariableValue("Debug Stop", false);
+		
+		
+		//behaviorGraphAgent.enabled = true;
+		//behaviorGraphAgent.Start();
 	}
 
 	// Update is called once per frame
@@ -248,8 +260,10 @@ public class CharacterAIAgent : MonoBehaviour
 			behaviorGraphAgent.SetVariableValue("Is Down", owner.isDown);
 			behaviorGraphAgent.SetVariableValue("CharacterRole", Role);
 			behaviorGraphAgent.SetVariableValue("DistanceFromOpponentGoal", GetDistanceToGoal());
+
+
 		}
-        if (!behaviorGraphAgent)
+		if (!behaviorGraphAgent)
             Debug.Log(name + ":BehaviorGraphAgentを持っていない");
 	}
 

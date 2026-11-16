@@ -240,7 +240,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
   <team>k__BackingField: 0
-  <hasBall>k__BackingField: 1
   baseInfo: {fileID: 11400000, guid: e0dd2aaaa08e4934eb84578a61a3da46, type: 2}
   info: {fileID: 0}
   skillEffect: {fileID: 0}
@@ -275,7 +274,8 @@ MonoBehaviour:
   m_Graph: {fileID: 2725612632926343315, guid: bca3794c38669c64dbb512375420bcc7, type: 2}
   m_BlackboardVariableOverridesList:
   - rid: 8581380622379647048
-  - rid: 8581380622379647049
+  - rid: 8581380760800591904
+  - rid: 8581380760800591905
   m_OriginalGraph: {fileID: 0}
   m_IsInitialised: 0
   m_IsStarted: 0
@@ -290,13 +290,21 @@ MonoBehaviour:
           m_Value1: 0
         Name: Self
         m_Value: {fileID: 5108517601710094532}
-    - rid: 8581380622379647049
+    - rid: 8581380760800591904
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 2189107667068063195
+          m_Value1: 608500936222541205
+        Name: Debug Stop
+        m_Value: 0
+    - rid: 8581380760800591905
       type: {class: 'BlackboardVariable`1[[CharacterAIAgent, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 8776830516669221227
           m_Value1: 1140002570760352099
-        Name: Character AI Agent
+        Name: CharacterAIAgent
         m_Value: {fileID: 8147813808293779259}
 --- !u!195 &-3177535616105631264
 NavMeshAgent:

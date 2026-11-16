@@ -1,7 +1,7 @@
-using Unity.AppUI.UI;
+//using Unity.AppUI.UI;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
-using static UnityEditor.Experimental.GraphView.GraphView;
+//using UnityEngine.TextCore.Text;
+//using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class CharacterSensor : MonoBehaviour
 {
