@@ -1,7 +1,9 @@
 using Unity.AppUI.UI;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
+#if UNITY_EDITOR
 using static UnityEditor.Experimental.GraphView.GraphView;
+#endif
 
 public class CharacterSensor : MonoBehaviour
 {

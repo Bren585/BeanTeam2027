@@ -3,7 +3,9 @@ using System.Runtime.CompilerServices;
 using TMPro;
 using Unity.AppUI.UI;
 using Unity.Behavior;
+#if UNITY_EDITOR
 using UnityEditor.EditorTools;
+# endif
 using UnityEngine;
 using UnityEngine.AI;
 
