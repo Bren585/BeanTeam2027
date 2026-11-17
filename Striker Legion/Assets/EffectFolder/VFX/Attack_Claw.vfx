@@ -122,12 +122,6 @@ MonoBehaviour:
     - model: {fileID: 8926484042661614796}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661614593}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614615}
-      id: 0
-      isStickyNote: 0
   - title: Dark Claw
     position:
       serializedVersion: 2
@@ -152,21 +146,6 @@ MonoBehaviour:
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614719}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614713}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614720}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614749}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614752}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614755}
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614800}
@@ -926,7 +905,7 @@ MonoBehaviour:
   m_OutputFlowSlot:
   - link: []
   blendMode: 1
-  cullMode: 0
+  cullMode: 3
   zWriteMode: 0
   zTestMode: 0
   useAlphaClipping: 0
@@ -942,7 +921,7 @@ MonoBehaviour:
   flipbookBlendFrames: 0
   flipbookMotionVectors: 0
   useSoftParticle: 0
-  vfxSystemSortPriority: 0
+  vfxSystemSortPriority: 1
   sort: 0
   sortMode: 0
   revertSorting: 0
@@ -2425,7 +2404,7 @@ MonoBehaviour:
   m_OutputFlowSlot:
   - link: []
   blendMode: 1
-  cullMode: 0
+  cullMode: 3
   zWriteMode: 0
   zTestMode: 0
   useAlphaClipping: 0
@@ -2441,7 +2420,7 @@ MonoBehaviour:
   flipbookBlendFrames: 0
   flipbookMotionVectors: 0
   useSoftParticle: 0
-  vfxSystemSortPriority: 1
+  vfxSystemSortPriority: 0
   sort: 0
   sortMode: 0
   revertSorting: 0
@@ -2516,7 +2495,7 @@ MonoBehaviour:
     m_Value:
       m_Type:
         m_SerializableType: UnityEngine.Gradient, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"colorKeys":[{"color":{"r":0.21698111295700073,"g":0.007164475042372942,"b":0.007164475042372942,"a":1.0},"time":0.0},{"color":{"r":0.21698111295700073,"g":0.007164475042372942,"b":0.007164475042372942,"a":1.0},"time":1.0}],"alphaKeys":[{"alpha":1.0,"time":0.0},{"alpha":0.0,"time":1.0}],"gradientMode":0}'
+      m_SerializableObject: '{"colorKeys":[{"color":{"r":0.21698111295700073,"g":0.007164475042372942,"b":0.007164475042372942,"a":1.0},"time":0.0},{"color":{"r":0.21698111295700073,"g":0.007164475042372942,"b":0.007164475042372942,"a":1.0},"time":1.0}],"alphaKeys":[{"alpha":1.0,"time":0.3794155716896057},{"alpha":0.0,"time":1.0}],"gradientMode":0}'
     m_Space: -1
   m_Property:
     name: Color
