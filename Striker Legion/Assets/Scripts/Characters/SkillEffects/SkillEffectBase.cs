@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.WSA;
+//using UnityEngine.WSA;
 
 [CreateAssetMenu(fileName = "SkillEffectBase", menuName = "Scriptable Objects/SkillEffectBase")]
 public class SkillEffectBase : ScriptableObject

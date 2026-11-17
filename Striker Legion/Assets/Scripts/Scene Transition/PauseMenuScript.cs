@@ -12,11 +12,30 @@ public class PauseMenuScript : MonoBehaviour
     [SerializeField]
     GameObject firstSelectButton;
 
+    // ポーズ中フラグ
+    public bool isPause = false;
+
+    // アクションマップを持つPlayerInput
     [SerializeField]
     PlayerInput playerInput;
 
-    // ポーズ中フラグ
-    private bool isPause = false;
+    // メニューの入力アクション
+    private InputAction menuAction;
+
+    private void Awake()
+    {
+        menuAction = playerInput.actions["Menu"];
+    }
+
+    private void OnEnable()
+    {
+        menuAction.performed += TogglePause;
+    }
+
+    private void OnDisable()
+    {
+        menuAction.performed -= TogglePause;
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -31,7 +50,7 @@ public class PauseMenuScript : MonoBehaviour
     }
 
     // ポーズ切り替え処理
-    public void TogglePause()
+    public void TogglePause(InputAction.CallbackContext context)
     {
         if (!isPause)
         {
@@ -56,6 +75,7 @@ public class PauseMenuScript : MonoBehaviour
     //ポーズ有効化
     private void Activation()
     {
+        playerInput.SwitchCurrentActionMap("UI");
         isPause = true;
         Time.timeScale = 0f; // ゲーム内タイマーストップ
         pausePanel.SetActive(true); // ポーズパネルを有効化
@@ -65,6 +85,7 @@ public class PauseMenuScript : MonoBehaviour
     // ポーズ非有効化
     private void DeActivation()
     {
+        playerInput.SwitchCurrentActionMap("Player");
         isPause = false;
         Time.timeScale = 1f; // タイマー再開
         pausePanel.SetActive(false); // ポーズパネルを非有効化
@@ -83,5 +104,10 @@ public class PauseMenuScript : MonoBehaviour
     {
         DeActivation();
         SceneTransitionManager.instance.LoadScene((int)SceneID.Option);
+    }
+
+    public bool GetIsPause()
+    {
+        return isPause;
     }
 }

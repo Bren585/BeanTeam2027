@@ -54,6 +54,7 @@ public class AimMarkerController : BallHolder
 
     protected override void OnGetBall()
     {
+        CharacterEventChannel.RaiseShootEnd();
         onGoalEvent.SendEventMessage();
         MatchManager.Instance.GoalEvent(team == CharacterTeam.Player ? CharacterTeam.Enemy : CharacterTeam.Player);
     }

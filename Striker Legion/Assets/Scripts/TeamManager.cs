@@ -155,20 +155,22 @@ public class TeamManager : MonoBehaviour
 	}
 
 	// チームからボールを奪う命令
-	public void OrderLoseBall()
+	public void OrderLoseBall(GameBall ball)
 	{
 #if false
-		foreach (SampleCharacter child in teamObjects)
+		foreach (CharacterBase child in teamObjects)
 		{
-			child.isHoldingBall = false;
+			child.hasBall = false;
 		}
 #endif
+		
 	}
 
 	// チームにボールを与える命令
-	public void OrderGetBall()
+	public void OrderGetBall(GameBall ball)
 	{
-		//teamObjects[0].isHoldingBall = true;
+		ball.SetOwner(teamObjects[0]);
+		teamObjects[0].GetBall();
 	}
 
 	// スタン状態じゃないキャラを取得する（読み取り専用）
