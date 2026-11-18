@@ -10,7 +10,7 @@ public class PauseMenuScript : MonoBehaviour
 
     // ポーズ移行後に初めに選択されるボタン
     [SerializeField]
-    GameObject firstSelectButton;
+    GameObject substituteButton;
 
     // ポーズ中フラグ
     public bool isPause = false;
@@ -79,7 +79,7 @@ public class PauseMenuScript : MonoBehaviour
         isPause = true;
         Time.timeScale = 0f; // ゲーム内タイマーストップ
         pausePanel.SetActive(true); // ポーズパネルを有効化
-        EventSystem.current.SetSelectedGameObject(firstSelectButton); // ボタンを選択オブジェクトに設定
+        SelectObjectArchive.instance.SetSubstituteObject(substituteButton);
     }
 
     // ポーズ非有効化

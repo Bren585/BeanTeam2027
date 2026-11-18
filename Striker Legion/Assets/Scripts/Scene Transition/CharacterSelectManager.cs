@@ -13,6 +13,7 @@ public enum Character_Position
     Other = 4,
 }
 
+// 現在の選択状況
 public enum ExecuteState
 {
     None,
@@ -25,7 +26,6 @@ public enum ExecuteState
 public class CharacterSelectManager : MonoBehaviour
 { 
     public static CharacterSelectManager instance {  get; private set; }
-    // public int nextSceneId;
     // 選択されたキャラクターの配列
     public CharacterScriptableObject[] selectedCharacters;
     // ポジションから見たキャラクターの割り当て
@@ -64,7 +64,6 @@ public class CharacterSelectManager : MonoBehaviour
     {
         if(selectedCharacters.Contains(set))
         {
-            Debug.Log("selected");
             return;
         }
 
@@ -147,8 +146,6 @@ public class CharacterSelectManager : MonoBehaviour
     // 実行中のステート
     public ExecuteState CurrentExecuteState()
     {
-        //if(SceneTransitionManager.instance)
-
         // キャラクター選択
         for (int i = selectedCharacters.Length - 1; i >= 0; --i)
         {

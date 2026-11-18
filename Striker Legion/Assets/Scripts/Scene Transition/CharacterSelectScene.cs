@@ -1,11 +1,15 @@
+using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
-public class CharacterSelectUIScript : MonoBehaviour
+public class CharacterSelectScene : MonoBehaviour
 {
     // 現在のシーンの進捗
     enum SelectSceneState
@@ -23,9 +27,6 @@ public class CharacterSelectUIScript : MonoBehaviour
     [SerializeField]
     private GameObject characterSelectDisplayObjects;
 
-    // キャラクター選択画面で始めに選択状態にするボタン
-    private GameObject firstCharacterSelectButton;
-
     // ポジション選択の表示物
     [SerializeField]
     private GameObject positionSelectDisplayObjects;
@@ -36,12 +37,6 @@ public class CharacterSelectUIScript : MonoBehaviour
     [SerializeField]
     private CanvasGroup characterButtonCanvasGroup;
 
-    // 片方が選択されると設定されるボタン
-    [SerializeField]
-    private GameObject firstSelectPositionButton;
-    [SerializeField]
-    private GameObject firstSelectCharacterButton;
-
     // 選択したボタンを分かりやすくする用のアウトライン
     [SerializeField]
     private GameObject selectedOutline;
@@ -50,10 +45,6 @@ public class CharacterSelectUIScript : MonoBehaviour
     // 選択完了時に表示されるUI
     [SerializeField]
     GameObject completePanel;
-
-    // 選択完了画面で始めに選択状態にするボタン
-    [SerializeField]
-    GameObject firstCompletePanelButton;
 
     // プロフィール画像表示用
     [SerializeField]
@@ -88,10 +79,15 @@ public class CharacterSelectUIScript : MonoBehaviour
 
     [SerializeField] TeamHandoff teamHandoff;
 
+    // 各種ボタンをまとめるリスト配列
+    public List<GameObject> characterButtonList; // キャラクター
+    public List<GameObject> positionButtonList; // ポジション選択
+    public List<GameObject> memberButtonList; // ポジション選択時の選出メンバー
+    public List<GameObject> completeButtonList; // 最終決定
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        EventSystem.current.SetSelectedGameObject(firstCharacterSelectButton);
         CharacterSelectManager.instance.Resize(characterButtons.Length);
     }
 
@@ -106,11 +102,12 @@ public class CharacterSelectUIScript : MonoBehaviour
     // キャラクター選択にて選択中ボタンに合うイメージ画像の更新
     void UpdateSelectedImage()
     {
-        GameObject selected = EventSystem.current.currentSelectedGameObject;
+        GameObject selected = SelectObjectArchive.instance.GetObjectArchive();
         if (selected != null && selected.TryGetComponent<CharacterSelectButtonScript>(out var button))
         {
             current = button.characterData;
         }
+
         // 現在選ばれているオブジェクトがキャラクターボタンなら画像を更新
         if (current == null) return;
         profileImage.sprite = current.profileImage;
@@ -133,8 +130,9 @@ public class CharacterSelectUIScript : MonoBehaviour
                     SetCanvasGroup(characterButtonCanvasGroup, false);
                     completePanel.SetActive(false);
                     positionSelectDisplayObjects.SetActive(false);
+                    SelectObjectArchive.instance.SetSubstituteObject(characterButtonList[0]);
+                    SelectObjectArchive.instance.ClearObjectArchive();
                     EventSystem.current.SetSelectedGameObject(null);
-                    EventSystem.current.SetSelectedGameObject(firstCharacterSelectButton);
                 }
                 break;
 
@@ -156,8 +154,9 @@ public class CharacterSelectUIScript : MonoBehaviour
                     SetCanvasGroup(characterButtonCanvasGroup, true);
                     completePanel.SetActive(false);
                     characterSelectDisplayObjects.SetActive(false);
+                    SelectObjectArchive.instance.SetSubstituteObject(positionButtonList[0]);
+                    SelectObjectArchive.instance.ClearObjectArchive();
                     EventSystem.current.SetSelectedGameObject(null);
-                    EventSystem.current.SetSelectedGameObject(firstSelectPositionButton);
 
                     SetCharacterButtonsOfPositionSelect();
                 }
@@ -165,7 +164,6 @@ public class CharacterSelectUIScript : MonoBehaviour
                 {
                     selectedOutline.SetActive(false);
                 }
-
                 break;
 
             //すべて選択済み
@@ -179,17 +177,12 @@ public class CharacterSelectUIScript : MonoBehaviour
                     SetCanvasGroup(characterButtonCanvasGroup, false);
                     characterSelectDisplayObjects.SetActive(false);
                     positionSelectDisplayObjects.SetActive(false);
+                    SelectObjectArchive.instance.SetSubstituteObject(completeButtonList[0]);
+                    SelectObjectArchive.instance.ClearObjectArchive();
                     EventSystem.current.SetSelectedGameObject(null);
-                    EventSystem.current.SetSelectedGameObject(firstCompletePanelButton);
                 }
                 break;
         }
-    }
-
-    // キャラクター選択画面の初めに選択されるオブジェクトの設定
-    public void SetFirstSelectObjectToCharacterSelect(GameObject setObject)
-    {
-        firstCharacterSelectButton = setObject;
     }
 
     // キャラクター選択の登録処理
@@ -218,7 +211,6 @@ public class CharacterSelectUIScript : MonoBehaviour
 
     private void SetCharacterButtonsOfPositionSelect()
     {
-        Debug.Log(characterButtons.Length.ToString());
         for (int i = 0; i < characterButtons.Length; ++i)
         {
             CharacterSelectButtonScript characterScript = characterButtons[i].GetComponent<CharacterSelectButtonScript>();
@@ -230,6 +222,7 @@ public class CharacterSelectUIScript : MonoBehaviour
     // ポジション選択時にバインドするキャラクター番号
     public void BindingCharacterIndex(int index)
     {
+        GameObject currentObject = SelectObjectArchive.instance.GetObjectArchive();
         if (index >= CharacterSelectManager.instance.GetCharacterDataLength())
         {
             return;
@@ -247,39 +240,38 @@ public class CharacterSelectUIScript : MonoBehaviour
         {
             isButtonSelected = true;
             selectedOutline.SetActive(true);
-            GameObject currentObject = EventSystem.current.currentSelectedGameObject.gameObject;
             selectedOutline.GetComponent<RectTransform>().position = currentObject.GetComponent<RectTransform>().position;
             selectedOutline.GetComponent<RectTransform>().localScale = currentObject.GetComponent<RectTransform>().localScale;
         }
         // ボタンをロック
         SetCanvasGroup(characterButtonCanvasGroup, false, 1f, 0.5f);
         SetCanvasGroup(positionButtonCanvasGroup, true, 1f, 0.5f);
-        EventSystem.current.SetSelectedGameObject(firstSelectPositionButton);
+        EventSystem.current.SetSelectedGameObject(positionButtonList[0]);
     }
 
     // ポジション選択時にバインドする担当ポジションの番号
     public void BindingPositionIndex(int positionIndex)
     {
+        GameObject currentObject = SelectObjectArchive.instance.GetObjectArchive();
         if (positionIndex > (int)Character_Position.Keeper) return;
-        else if (positionIndex < (int)Character_Position.None) return;
+        else if (positionIndex <= (int)Character_Position.None) return;
         else
         {
             posIndex = (Character_Position)positionIndex;
-            selectedButtonImage = EventSystem.current.currentSelectedGameObject.GetComponent<Image>();
+            selectedButtonImage = currentObject.GetComponent<Image>();
         }
         // ボタンを選択済みにしてアウトラインの位置を固定
         if (!isButtonSelected)
         {
             isButtonSelected = true;
             selectedOutline.SetActive(true);
-            GameObject currentObject = EventSystem.current.currentSelectedGameObject.gameObject;
             selectedOutline.GetComponent<RectTransform>().position = currentObject.GetComponent<RectTransform>().position;
             selectedOutline.GetComponent<RectTransform>().localScale = currentObject.GetComponent<RectTransform>().localScale;
         }
         // ボタンをロック
         SetCanvasGroup(characterButtonCanvasGroup, true, 1f, 0.5f);
         SetCanvasGroup(positionButtonCanvasGroup, false, 1f, 0.5f);
-        EventSystem.current.SetSelectedGameObject(firstSelectCharacterButton);
+        EventSystem.current.SetSelectedGameObject(memberButtonList[0]);
     }
 
     // ポジション選択の更新

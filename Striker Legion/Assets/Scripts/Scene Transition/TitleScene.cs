@@ -3,11 +3,11 @@ using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 using Unity.Mathematics;
 
-public class TitleUIScript : MonoBehaviour
+public class TitleScene : MonoBehaviour
 {
     // タイトル画面で最初に選択されるボタン」
     [SerializeField]
-    GameObject firstSelectButton;
+    GameObject substituteButton;
 
     // 選択中を示すカーソル
     [SerializeField]
@@ -16,10 +16,11 @@ public class TitleUIScript : MonoBehaviour
     // カーソルのオフセット位置
     [SerializeField]
     private float cursorOffset;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        EventSystem.current.SetSelectedGameObject(firstSelectButton);
+        SelectObjectArchive.instance.SetSubstituteObject(substituteButton);
     }
 
     // Update is called once per frame
@@ -31,7 +32,7 @@ public class TitleUIScript : MonoBehaviour
     // モード選択カーソルの移動
     public void UpdateCursorPosition()
     {
-        GameObject selectedObject = EventSystem.current.currentSelectedGameObject;
+        GameObject selectedObject = SelectObjectArchive.instance.GetObjectArchive();
 
         if (selectedObject == null) return;
         RectTransform selectedTransform = selectedObject.GetComponent<RectTransform>();

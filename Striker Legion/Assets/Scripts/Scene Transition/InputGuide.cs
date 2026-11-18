@@ -25,8 +25,9 @@ public class InputGuide : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        bool currentUsedPad = InputModeManager.instance.GetUsedGamePadFlag();
+        bool currentUsedPad = InputModeManager.instance.CurrentUsingGamePad();
 
+        // ポーズ中の切り替え
         if (pause != null)
         {
             bool currentPause = pause.GetIsPause();
@@ -46,7 +47,7 @@ public class InputGuide : MonoBehaviour
                 return;
             }
         }
-
+        // 非ポーズ時の切り替え
         if ((showPadMode && currentUsedPad) || (!showPadMode && !currentUsedPad))
         {
             guideText.enabled = true;

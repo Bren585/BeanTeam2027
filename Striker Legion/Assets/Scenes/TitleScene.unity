@@ -300,6 +300,52 @@ RectTransform:
   m_AnchoredPosition: {x: 150, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &159671380
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 159671382}
+  - component: {fileID: 159671381}
+  m_Layer: 0
+  m_Name: SelectObjectArchive
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &159671381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159671380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8dbb1768007799d4ab85b45a304d958b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SelectObjectArchive
+  objectArchive: {fileID: 0}
+  substituteObject: {fileID: 0}
+--- !u!4 &159671382
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159671380}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1077.081, y: -0.00003, z: 1641.4528}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &216874245
 GameObject:
   m_ObjectHideFlags: 0
@@ -360,6 +406,7 @@ GameObject:
   - component: {fileID: 316257617}
   - component: {fileID: 316257616}
   - component: {fileID: 316257615}
+  - component: {fileID: 316257618}
   m_Layer: 5
   m_Name: OptionButton
   m_TagString: Untagged
@@ -481,6 +528,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 316257613}
   m_CullTransparentMesh: 1
+--- !u!114 &316257618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 316257613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03cc033e87508c44b27566aa4ad4428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MousePointerSelect
 --- !u!1 &408055120
 GameObject:
   m_ObjectHideFlags: 0
@@ -510,6 +569,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c744e018ff442144290b27a84be1c4d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SharedUIScript
+  uiInputModule: {fileID: 2093151819}
 --- !u!4 &408055122
 Transform:
   m_ObjectHideFlags: 0
@@ -554,7 +614,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ccc29b3a814d0341a4da366f4054117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputModeManager
-  usedGamePad: 0
+  currentDevice: 0
 --- !u!4 &539001274
 Transform:
   m_ObjectHideFlags: 0
@@ -1147,6 +1207,7 @@ GameObject:
   - component: {fileID: 889110956}
   - component: {fileID: 889110955}
   - component: {fileID: 889110954}
+  - component: {fileID: 889110957}
   m_Layer: 5
   m_Name: SoloGameButton
   m_TagString: Untagged
@@ -1268,6 +1329,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 889110952}
   m_CullTransparentMesh: 1
+--- !u!114 &889110957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 889110952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03cc033e87508c44b27566aa4ad4428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MousePointerSelect
 --- !u!1 &991512627
 GameObject:
   m_ObjectHideFlags: 0
@@ -1679,7 +1752,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f14467ccf130e8548b745dad7d91ef13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TitleSceneScript
-  firstSelectButton: {fileID: 889110952}
+  substituteButton: {fileID: 889110952}
   cursor: {fileID: 863513764}
   cursorOffset: -300
 --- !u!4 &1477712859
@@ -2206,6 +2279,7 @@ GameObject:
   - component: {fileID: 1950199993}
   - component: {fileID: 1950199992}
   - component: {fileID: 1950199991}
+  - component: {fileID: 1950199994}
   m_Layer: 5
   m_Name: TrainingButton
   m_TagString: Untagged
@@ -2327,6 +2401,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1950199989}
   m_CullTransparentMesh: 1
+--- !u!114 &1950199994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1950199989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03cc033e87508c44b27566aa4ad4428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MousePointerSelect
 --- !u!1 &1954648948
 GameObject:
   m_ObjectHideFlags: 0
@@ -2790,3 +2876,4 @@ SceneRoots:
   - {fileID: 1962308346}
   - {fileID: 539001274}
   - {fileID: 408055122}
+  - {fileID: 159671382}
