@@ -11,10 +11,10 @@ public partial class ShootAction : ActionBase
 
     protected override Status OnStart()
     {
-        base.OnStart();
-
+		if (base.OnStart() == Status.Failure)
+			return Status.Failure;
 		// 行動をデバッグで表示
-        if(characterAIAgent.IsShootable)
+		if (characterAIAgent.IsShootable)
 		    characterAIAgent.DebugText.SetText("シュートする");
         else
             characterAIAgent.DebugText.SetText("シュート不可");

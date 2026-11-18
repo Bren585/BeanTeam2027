@@ -17,8 +17,8 @@ public partial class PassAction : ActionBase
 
 	protected override Status OnStart()
 	{
-		base.OnStart();
-
+		if (base.OnStart() == Status.Failure)
+			return Status.Failure;
 		characterAIAgent.DebugText.SetText("パスを実行");
 
 		// パスの回数が時間内に一定回数を超えていたら失敗

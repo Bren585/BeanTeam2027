@@ -26,6 +26,12 @@ public partial class ActionBase : Action
 	{
 	}
 
+	protected override void ResetStatus()
+	{
+		base.ResetStatus();
+		//Debug.Log("ActionBaseのリセットステータス");
+	}
+
 	private Status Initialize()
 	{
 		if(Initialized)
@@ -42,16 +48,36 @@ public partial class ActionBase : Action
 
 		// SampleCharacterコンポーネントを取得
 		if (GameObject.TryGetComponent<CharacterAIAgent>(out var character))
-		//if (agent.GetVariable<SampleCharacter>("CharacterComponent", out var character))
 		{
 			characterAIAgent = character;
 		}
 		else
 		{
 			Debug.LogError(GameObject.name + ": Action開始時にcharacterComponentの取得に失敗");
+
+			Initialized = false;
 			return Status.Failure;
 		}
 
 		return Status.Success;
+	}
+
+	protected override void OnSetup()
+	{
+		base.OnSetup();
+	}
+
+	protected override void OnTeardown()
+	{
+		base.OnTeardown();
+	}
+	protected override void OnSerialize()
+	{
+		base.OnSerialize();
+	}
+
+	protected override void OnDeserialize()
+	{
+		base.OnDeserialize();
 	}
 }

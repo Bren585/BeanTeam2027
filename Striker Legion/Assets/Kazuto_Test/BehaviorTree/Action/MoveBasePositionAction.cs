@@ -18,9 +18,9 @@ public partial class MoveBasePositionAction : ActionBase
 	protected override Status OnStart()
     {
 #if true
-        // 基底クラスの初期化
-        base.OnStart();
-
+		// 基底クラスの初期化
+		if (base.OnStart() == Status.Failure)
+			return Status.Failure;
 		// 決められた座標への移動開始
 		characterAIAgent.StartMoveBasePos(RandomLimit, Role);
 

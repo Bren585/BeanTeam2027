@@ -3,6 +3,8 @@ using System.Runtime.CompilerServices;
 using TMPro;
 using Unity.AppUI.UI;
 using Unity.Behavior;
+using Unity.Behavior.GraphFramework;
+
 #if UNITY_EDITOR
 using UnityEditor.EditorTools;
 # endif
@@ -17,6 +19,7 @@ public class CharacterAIAgent : MonoBehaviour
 {
 	private PlayerController playerController;
 
+	//[SerializeField] public BehaviorGraph behaviorGraph;
     // ビヘイビアエージェント
     private BehaviorGraphAgent behaviorGraphAgent;
 
@@ -69,7 +72,7 @@ public class CharacterAIAgent : MonoBehaviour
 	public void IncrementPassCount()
 	{
 		passCount++;
-		Debug.Log(gameObject.name + "：パス回数" + passCount);
+		//Debug.Log(gameObject.name + "：パス回数" + passCount);
 	}
 
 	public Vector3 BasePosition(PositioningName name) => positioningBase[name];
@@ -116,6 +119,7 @@ public class CharacterAIAgent : MonoBehaviour
 
     protected void Awake()
     {
+#if false
 		playerController = FindAnyObjectByType<PlayerController>();
 		if (playerController == null) throw new System.Exception("PlayerControllerが見つかりません");
 
@@ -135,25 +139,153 @@ public class CharacterAIAgent : MonoBehaviour
 
 		positioningBase = new Dictionary<PositioningName, Vector3>();
 
-		//Debug.Log(name + ":" + transform.position);
+		behaviorGraphAgent.Init();
+#endif
+
+#if false
+		behaviorGraphAgent = GetComponent<BehaviorGraphAgent>();
+		if (behaviorGraphAgent == null) return;
+
+		// 1. 意図しないタイミングでの自動初期化を防ぐため、一時的に無効化
+		behaviorGraphAgent.enabled = false;
+
+		// 2. コードからグラフを代入
+		behaviorGraphAgent.Graph = behaviorGraph;
+
+		Debug.Log("behaviorGraphAgentにグラフを割り振った");
+#endif
 	}
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+		//behaviorGraphAgent.Graph = behaviorGraph;
+
+#if false
+		// 3. グラフ設定後にエージェントを有効化して初期化を走らせる
+		InitBlackBoard();
+		behaviorGraphAgent.Init();
+		DebugBlackBoard();
+		behaviorGraphAgent.enabled = true;
+
+		Debug.Log("BehaviorGraphAgentの初期化");
+#endif
+	}
+
+	void CreateComponent()
+	{
+		playerController = FindAnyObjectByType<PlayerController>();
+		if (playerController == null) throw new System.Exception("PlayerControllerが見つかりません");
+
+		// コンポーネントを取得
+		owner = GetComponent<CharacterBase>();
+		steeringController = GetComponent<SteeringController>();
+		behaviorGraphAgent = GetComponent<BehaviorGraphAgent>();
+		navMeshAgent = GetComponent<NavMeshAgent>();
+
+		// デバッグテキストコンポーネントを追加
+		DebugText = gameObject.AddComponent<DebugText>();
+		characterSensor = gameObject.AddComponent<CharacterSensor>();
+		pitchScore = gameObject.AddComponent<CharacterPitchScore>();
+
+		navMeshAgent.updatePosition = true;
+		navMeshAgent.isStopped = true;
+
+		positioningBase = new Dictionary<PositioningName, Vector3>();
+
+		//behaviorGraphAgent.Graph = behaviorGraph;
+		//behaviorGraphAgent.Init();
+		
 	}
 
     public void Initialize(Dictionary<PositioningName, Vector3> positioningBase, CharacterRole role)
     {
-        this.positioningBase = positioningBase;
+		CreateComponent();
+
         Role = role;
+		this.positioningBase = positioningBase;
+#if true
 		DebugText.SetDefaultText(owner.name +" " + Role);
 		pitchScore.Initialize(role, Team);
+
+		//behaviorGraphAgent.enabled= false;
+		
+
+		//behaviorGraphAgent.Init();
+#endif
 	}
 
+	void DebugBlackBoard()
+	{
+		string[] itemsName =
+		{
+			"Self"                    ,
+			"TeamHavingBall"          ,
+			"HavingBall"              ,
+			"DistanceFromBall"        ,
+			"CharacterRole"           ,
+			"DistanceFromOpponentGoal",
+			"Debug Stop"              ,
+			"Is Down"                 ,
+			"Character AI Agent"      ,
+		};
+
+		Debug.Log("DebugBlackBoard");
+		bool isTrue = false;
+
+		if (behaviorGraphAgent == null)
+		{
+			DebugText.SetText("behaviorGraphAgentがない");
+
+			Debug.Log("behaviorGraphAgentがない");
+		}
+		if (behaviorGraphAgent.Graph == null)
+		{
+			DebugText.SetText("behaviorGraphAgentGraphがない");
+
+			Debug.Log("behaviorGraphAgentGraphがない");
+		}
+
+		if (behaviorGraphAgent.BlackboardReference.Blackboard == null)
+		{
+			DebugText.SetText("BlackboardReferenceがない");
+
+			Debug.Log("BlackboardReferenceがない");
+		}
+
+		if (behaviorGraphAgent.Graph.BlackboardReference.Blackboard == null)
+		{
+			DebugText.SetText("BlackboardReferenceがない");
+
+			Debug.Log("BlackboardReferenceがない");
+		}
+
+		foreach (string item in itemsName)
+		{
+			if (!behaviorGraphAgent.GetVariable(item, out BlackboardVariable v))
+				Debug.Log(item + "がない");
+			
+			else if (v == null)
+				Debug.Log(item + "がNull");
+			
+			isTrue = true;
+		}
+		if(isTrue)
+			Debug.Log("すべてそろっている");
+
+	}
+
+	//bool debug = false;
 	// Update is called once per frame
 	void Update()
     {
+		//if (behaviorGraphAgent.enabled == false)
+		//	behaviorGraphAgent.enabled = true;
+		//if (!debug)
+		//{
+		//	Debug.Log("CharacterAiAgentの初回Update");
+		//	debug = true;
+		//}
 		if (playerController.playerCharacter == owner) return;
 
 		// 操舵レイヤーの更新処理
@@ -230,6 +362,20 @@ public class CharacterAIAgent : MonoBehaviour
         //navMeshAgent.velocity
 
 		owner.Move((navMeshAgent.nextPosition - transform.position).normalized * 5.0f);
+	}
+
+	void InitBlackBoard()
+	{
+		// BehaviorGraphAgentの変数を更新
+		behaviorGraphAgent.SetVariableValue("HavingBall", false);
+		behaviorGraphAgent.SetVariableValue("TeamHavingBall", false);
+		behaviorGraphAgent.SetVariableValue("DistanceFromBall", 0.0f);
+		behaviorGraphAgent.SetVariableValue("Is Down", true);
+		behaviorGraphAgent.SetVariableValue("CharacterRole", CharacterRole.Forward);
+		behaviorGraphAgent.SetVariableValue("DistanceFromOpponentGoal", 100.0f);
+		behaviorGraphAgent.SetVariableValue("Debug Stop", false);
+		behaviorGraphAgent.SetVariableValue("Self", gameObject);
+		behaviorGraphAgent.SetVariableValue("Character AI Agent", this);
 	}
 
 	// UnityBehaviorのBlackBoardを更新する

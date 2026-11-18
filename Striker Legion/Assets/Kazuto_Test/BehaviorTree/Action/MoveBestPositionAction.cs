@@ -14,11 +14,11 @@ public partial class MoveBestPositionAction : ActionBase
 
     protected override Status OnStart()
     {
-        // 基底クラスの初期化
-        base.OnStart();
-
-        // 目標地点として、最も評価が高い場所を取得
-        bestPosition = characterAIAgent.GetClosestPointOnBestGrid(GameObject.transform.position);
+		// 基底クラスの初期化
+		if (base.OnStart() == Status.Failure)
+			return Status.Failure;
+		// 目標地点として、最も評価が高い場所を取得
+		bestPosition = characterAIAgent.GetClosestPointOnBestGrid(GameObject.transform.position);
         //bestPosition = characterAIAgent.BestPosition;
 
         // ステアリングの対象指定

@@ -12,8 +12,9 @@ public partial class BackDefenseAction : ActionBase
 
     protected override Status OnStart()
     {
-        // 基底クラスの初期化
-        base.OnStart();
+		// 基底クラスの初期化
+		if (base.OnStart() == Status.Failure)
+			return Status.Failure;
 
 		// 移動処理を開始
 		characterAIAgent.SteeringController.StartMove(SteeringMode.Avoid);

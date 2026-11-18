@@ -11,8 +11,8 @@ public partial class RestoreColorAction : ActionBase
 
     protected override Status OnStart()
     {
-        base.OnStart();
-
+		if (base.OnStart() == Status.Failure)
+			return Status.Failure;
 		// オブジェクトの Renderer と Material を取得
 		Renderer targetRenderer = GameObject.GetComponent<Renderer>();
 

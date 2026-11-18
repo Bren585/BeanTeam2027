@@ -18,8 +18,8 @@ public partial class MoveNearAllyAction : ActionBase
 	protected override Status OnStart()
     {
 		// 基底クラスの初期化
-		base.OnStart();
-
+		if (base.OnStart() == Status.Failure)
+			return Status.Failure;
 		float minDistance = float.MaxValue;
 		bool isSuccess = false;
 		foreach (CharacterBase c in MatchManager.Instance.GetActiveCharacters(characterAIAgent.Team))

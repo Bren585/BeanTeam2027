@@ -13,8 +13,8 @@ public partial class StealAction : ActionBase
 {
 	protected override Status OnStart()
 	{
-		base.OnStart();
-
+		if (base.OnStart() == Status.Failure)
+			return Status.Failure;
 		// 行動をデバッグで表示
 		characterAIAgent.DebugText.SetText("ボールを奪う");
 

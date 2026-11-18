@@ -20,7 +20,7 @@ public partial class LogCondition : Condition
 
     public override void OnStart()
     {
-    }
+	}
 
     public override void OnEnd()
     {

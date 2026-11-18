@@ -17,10 +17,10 @@ public partial class PressAction : ActionBase
 
 	protected override Status OnStart()
     {
-        base.OnStart();
-
-        // 移動開始
-        characterAIAgent.SteeringController.StartMove(SteeringMode.Seek);
+		if (base.OnStart() == Status.Failure)
+			return Status.Failure;
+		// 移動開始
+		characterAIAgent.SteeringController.StartMove(SteeringMode.Seek);
 
         //Debug.Log(GameObject.name + " : Start Press");
 

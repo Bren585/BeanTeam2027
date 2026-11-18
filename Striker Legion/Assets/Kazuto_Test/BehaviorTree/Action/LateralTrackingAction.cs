@@ -18,9 +18,9 @@ public partial class LateralTrackingAction : ActionBase
 
     protected override Status OnStart()
     {
-        // 基底クラスの初期化
-        base.OnStart();
-
+		// 基底クラスの初期化
+		if (base.OnStart() == Status.Failure)
+			return Status.Failure;
 		timer = 0.0f;
 
 		// 今のボール保持者をターゲットとして保存

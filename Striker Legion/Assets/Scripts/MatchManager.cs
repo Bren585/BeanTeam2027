@@ -72,6 +72,8 @@ public class MatchManager : MonoBehaviour
 
 		PitchEvaluatorRegister(PlayerTeam.teamObjects);
 		PitchEvaluatorRegister(EnemyTeam.teamObjects);
+
+		Debug.Log("マッチマネージャ初期化終了");
 	}
 
 	void Initialize()
@@ -158,21 +160,6 @@ public class MatchManager : MonoBehaviour
 
 	void InitializeTeams()
 	{
-#if false
-		if (PlayerTeam == null)
-		{
-			Debug.Log("プレイヤーチームが未登録");
-			return;
-		}
-		if(EnemyTeam == null)
-		{
-			Debug.Log("エネミーチームが未登録");
-			return;
-		}
-		if (PlayerTeam.teamObjects == null || EnemyTeam.teamObjects == null)
-			return;
-#endif
-
 		// チームマネージャの取得
 		TeamManager[] teamManagers = FindObjectsByType<TeamManager>();
 		foreach(TeamManager team in teamManagers)

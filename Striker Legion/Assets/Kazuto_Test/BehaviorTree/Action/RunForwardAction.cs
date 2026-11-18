@@ -16,11 +16,11 @@ public partial class RunForwardAction : ActionBase
 
     protected override Status OnStart()
     {
-        // 基底クラスの初期化
-        base.OnStart();
-
-        // 移動処理を開始
-        characterAIAgent.SteeringController.StartMove(SteeringMode.Avoid);
+		// 基底クラスの初期化
+		if (base.OnStart() == Status.Failure)
+			return Status.Failure;
+		// 移動処理を開始
+		characterAIAgent.SteeringController.StartMove(SteeringMode.Avoid);
 
         timer = 0.0f;
 

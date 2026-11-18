@@ -20,20 +20,9 @@ public partial class IsInFrontOpponentModifier : Modifier
     protected override Status OnUpdate()
     {
 		// 正面に敵がいないかどうかチェックする
-		//bool isHit = CharacterComponent.Value.CharacterSensor.IsEnemyInRange(LayerMask.LayerToName(CharacterComponent.Value.gameObject.layer), 1.0f);
-		if (Child != null)
-		{
-			//return Child.Execute();
-		}
-
+		
 		// 子ノードが接続されていない場合は Failure
 		return Status.Failure;
-
-		Debug.Log("Is In Front OpponentModifier Update");
-
-        return Status.Success;
-        //return status;
-		//return (isHit) ? Status.Failure : Status.Success;
 	}
 
     protected override void OnEnd()

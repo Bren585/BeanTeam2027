@@ -14,10 +14,10 @@ public partial class TurnToGoalAction : ActionBase
 
     protected override Status OnStart()
     {
-        base.OnStart();
-
-        // 対象のゴールの座標
-        targetGoalPos = MatchManager.Instance.GetGoal(characterAIAgent.OpponentTeam).position;
+		if (base.OnStart() == Status.Failure)
+			return Status.Failure;
+		// 対象のゴールの座標
+		targetGoalPos = MatchManager.Instance.GetGoal(characterAIAgent.OpponentTeam).position;
 
         return Status.Running;
     }

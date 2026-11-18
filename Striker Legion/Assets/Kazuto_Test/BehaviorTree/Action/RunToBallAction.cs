@@ -12,8 +12,8 @@ public partial class RunToBallAction : ActionBase
     protected override Status OnStart()
     {
 		// 基底クラスの初期化
-		base.OnStart();
-
+		if (base.OnStart() == Status.Failure)
+			return Status.Failure;
 		// ボールのTransformを取得
 		ballTransform = MatchManager.Instance.BallTransform;
 
