@@ -48,7 +48,7 @@ public class CharacterBase : BallHolder
     bool strafing = false;
     bool moving = false;
     bool flying = false;
-    bool moveLocked = false;
+	[SerializeField] private bool moveLocked = false;
     public bool isShooting { get; private set; } = false;
 
     private float maxSpeed 
@@ -102,7 +102,10 @@ public class CharacterBase : BallHolder
             _velocity.x = 0;
             _velocity.z = 0;
             downTimer -= Time.deltaTime;
-            if (downTimer <= 0) { animator.SetTrigger("Recover"); }
+            if (downTimer <= 0) { 
+                animator.SetTrigger("Recover");
+                unlockMove();
+            }
             return;
         }
 
@@ -456,6 +459,7 @@ public class CharacterBase : BallHolder
     public void KickBall()
     {
         if (!hasBall) return;
+
         GameBall gameBall = FindAnyObjectByType<GameBall>();
 
         // Check Pass Or Goal

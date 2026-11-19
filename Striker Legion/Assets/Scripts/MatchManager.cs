@@ -58,10 +58,9 @@ public class MatchManager : MonoBehaviour
 
 	private void Start()
 	{
-
-		InitializeTeams();
 		// 初期化処理
 		Initialize();
+		InitializeTeams();
 
 		ResetForKickoff(CharacterTeam.Player);
 

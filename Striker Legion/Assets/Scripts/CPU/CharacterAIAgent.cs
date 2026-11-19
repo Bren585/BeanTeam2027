@@ -109,12 +109,12 @@ public class CharacterAIAgent : MonoBehaviour
 	{
 		Vector3 p = position;
 		// 引数の座標をピッチ内に収める
-		//p.x = Mathf.Clamp(p.x, pitchScore.GridOrigin.x, pitchScore.GridEnd.x);
-		//p.z = Mathf.Clamp(p.z, pitchScore.GridOrigin.z, pitchScore.GridEnd.z);
+		p.x = Mathf.Clamp(p.x, pitchScore.GridOrigin.x, pitchScore.GridEnd.x);
+		p.z = Mathf.Clamp(p.z, pitchScore.GridOrigin.z, pitchScore.GridEnd.z);
 
 		// ナビメッシュに座標を設定する
-		//navMeshAgent.SetDestination(p);
-		endTargetPosition = p;
+		navMeshAgent.SetDestination(p);
+		//endTargetPosition = p;
 	}
 
     protected void Awake()
@@ -279,14 +279,13 @@ public class CharacterAIAgent : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
-		//if (behaviorGraphAgent.enabled == false)
-		//	behaviorGraphAgent.enabled = true;
-		//if (!debug)
-		//{
-		//	Debug.Log("CharacterAiAgentの初回Update");
-		//	debug = true;
-		//}
-		if (playerController.playerCharacter == owner) return;
+		if (playerController.playerCharacter == owner)
+		{
+			behaviorGraphAgent.enabled = false;
+			return;
+		}
+		else if (!behaviorGraphAgent.enabled)
+			behaviorGraphAgent.enabled = true;
 
 		// 操舵レイヤーの更新処理
 		//FindAndMoveToPosition();
@@ -317,8 +316,8 @@ public class CharacterAIAgent : MonoBehaviour
         steeringController.SetParentVelocity(ParentVelocity);
 
 		// 操舵コントローラの目標座標をナビメッシュから取得
-		steeringController.TargetPosition = endTargetPosition;
-		//steeringController.TargetPosition = navMeshAgent.steeringTarget;
+		//steeringController.TargetPosition = endTargetPosition;
+		steeringController.TargetPosition = navMeshAgent.steeringTarget;
 
 		// 速力計算
 		steeringController.UpdateVelocity();
@@ -505,8 +504,8 @@ public class CharacterAIAgent : MonoBehaviour
 		Gizmos.DrawLine(from, from + leftBoundary);
 		Gizmos.DrawLine(from, from + rightBoundary);
 
-		Gizmos.color = Color.floralWhite;
-		Gizmos.DrawSphere(endTargetPosition, 5.0f);
+		//Gizmos.color = Color.floralWhite;
+		//Gizmos.DrawSphere(endTargetPosition, 5.0f);
 
 		//for(int i = 0; i < positioningBase.Count; i++)
 		//{
@@ -515,8 +514,8 @@ public class CharacterAIAgent : MonoBehaviour
 		//	Gizmos.DrawSphere(p, 5.0f);
 
 		//}
-		Gizmos.color = Color.red;
-		Gizmos.DrawSphere(BasePosition(PositioningName.Offense), 5.0f);
+		//Gizmos.color = Color.red;
+		//Gizmos.DrawSphere(BasePosition(PositioningName.Offense), 5.0f);
 
 		//Gizmos.color = Color.red;
 		//Gizmos.DrawSphere(endTargetPosition, 1f);

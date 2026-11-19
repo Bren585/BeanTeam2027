@@ -204,11 +204,11 @@ public class SteeringController : MonoBehaviour
 		//Gizmos.color = new Color(1.0f, 0.92f, 0.015f, 0.5f);
 
 		//// 3. 目的地の位置に小さな球を描画
-		//if (targetPosition != Vector3.zero)
-		//{
-		//	Gizmos.color = Color.green;
-		//	Gizmos.DrawSphere(targetPosition, 1f);
-		//}
+		if (targetPosition != Vector3.zero)
+		{
+			Gizmos.color = Color.green;
+			Gizmos.DrawSphere(targetPosition, 1f);
+		}
 
 		// キャラクターの位置から移動ベクトルを線で描画
 		//Gizmos.color = Color.yellow;
