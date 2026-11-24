@@ -8,6 +8,9 @@ public class GameBall : MonoBehaviour
     {
         Vector3 start;
         Vector3 end;
+
+        public Vector3 End => end;
+
         public float maxHeight;
         public float duration;
         public float t; // タイム

@@ -4,6 +4,8 @@ using Unity.Collections;
 using Unity.Collections.Tests.CoreCLR.TestJobs;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 using static UnityEngine.Mathf;
 
 [RequireComponent(typeof(CharacterController))]
@@ -438,6 +440,9 @@ public class CharacterBase : BallHolder
         if ((target.transform.position - transform.position).magnitude > baseInfo.maxPassDistance)
             return false;
 
+        if (MatchManager.Instance.IsBallinFlight)
+            return false;
+
         return true;
 	}
 
@@ -467,21 +472,44 @@ public class CharacterBase : BallHolder
         {
             //--Shoot to Goal--
             AimMarkerController[] targets = FindObjectsByType<AimMarkerController>();
+
+
             foreach (AimMarkerController goalCandidate in targets)
             {
                 if (goalCandidate.team == team) continue;
                 Debug.Log("Shooting to Goal");
                 // Kick the ball to Goal
-                gameBall.Kick(new GameBall.flight(this, goalCandidate, 0, 20));
-                gameBall.SetOwner(goalCandidate);
+
+                GameBall.flight shootFlight = new GameBall.flight(this, goalCandidate, 0, 20);
+				// シュートがブロックされないかどうか
+				if (IsSuccessShoot(shootFlight.End, out CharacterBase blockCharacter))
+                {
+                    // シュート成功
+                    gameBall.Kick(shootFlight);
+                    gameBall.SetOwner(goalCandidate);
+                }
+                else
+                {
+                    // ブロックされた
+					gameBall.Kick(new GameBall.flight(this, blockCharacter, 0, 20));
+					gameBall.SetOwner(blockCharacter);
+
+                    CharacterEventChannel.RaiseShootEnd();
+				}
+
+                //gameBall.Kick(new GameBall.flight(this, goalCandidate, 0, 20));
+                //gameBall.SetOwner(goalCandidate);
                 break;
             }
+
             ClearPassTarget();
             LoseBall();
             isShooting = false;
             unlockMove();
-            GameResultManager.instance.AddScore(team == CharacterTeam.Player ? GameResultManager.ScoreSide.Player : GameResultManager.ScoreSide.Enemy, name);
-            return;
+            //GameResultManager.instance.AddScore(team == CharacterTeam.Player ? GameResultManager.ScoreSide.Player : GameResultManager.ScoreSide.Enemy, name);
+            GameResultManager.instance.SetShooterName(name);
+
+			return;
         }
 
         //--Pass to Target--
@@ -489,6 +517,8 @@ public class CharacterBase : BallHolder
         CharacterBase target = PassTarget(out blockers);
 
         if (target == null) return;
+
+        if (MatchManager.Instance.IsBallinFlight) return;
 
         if ((target.transform.position - transform.position).magnitude > baseInfo.maxPassDistance) { return; }
 
@@ -517,7 +547,43 @@ public class CharacterBase : BallHolder
         animator.SetTrigger("Shoot");
     }
 
-    public bool CanSkill()
+
+    bool IsSuccessShoot(Vector3 to ,out CharacterBase blockCharacter)
+    {
+        // シュートのベクトル
+        blockCharacter = null;
+
+		// レイキャスト
+		List<RaycastHit> hits = new(Physics.SphereCastAll(new Ray(GetHoldPosition(), to), 1.0f));
+
+		// ヒット対象からキャラクター以外とチームメンバーを除外
+		hits.RemoveAll(hit =>
+		{
+			CharacterBase hitCharacter = hit.transform.GetComponent<CharacterBase>();
+			return hitCharacter == null || hitCharacter.team == team;
+		});
+
+		// See if blocked or not
+		if (hits != null)
+		{
+			hits.Sort((a, b) => a.distance.CompareTo(b.distance));
+			foreach (RaycastHit blocker in hits)
+			{
+				CharacterBase character = blocker.collider.GetComponent<CharacterBase>();
+				if (character == null) continue;
+				//if (character.BallHandlingSuccess())
+				{
+                    Debug.Log("ブロッカー:" + blocker.collider.name);
+					blockCharacter = character;
+                    return false;
+				}
+			}
+		}
+
+        return true;
+	}
+
+	public bool CanSkill()
     {
         return SkillBar.instance.Ready(team);
     }

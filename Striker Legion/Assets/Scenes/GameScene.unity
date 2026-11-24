@@ -183,6 +183,10 @@ PrefabInstance:
       propertyPath: <teamNo>k__BackingField
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7320582781137996805, guid: 2aae1ef12e81e0849ad8725e100b4629, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8647751591104153149, guid: 2aae1ef12e81e0849ad8725e100b4629, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -1866,6 +1870,10 @@ PrefabInstance:
       propertyPath: <team>k__BackingField
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7320582781137996805, guid: 2aae1ef12e81e0849ad8725e100b4629, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8647751591104153149, guid: 2aae1ef12e81e0849ad8725e100b4629, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -2289,7 +2297,7 @@ Transform:
   m_GameObject: {fileID: 224463677}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1000, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: -45}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -16488,7 +16496,7 @@ Transform:
   m_GameObject: {fileID: 1679350039}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1000, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: -45}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

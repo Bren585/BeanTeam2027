@@ -10,6 +10,7 @@ public enum SteeringMode
 	Seek,
 	Arrive,
 	Avoid,
+	Wander,
 }
 
 // キャラクターのステアリング制御を行うクラス
@@ -19,6 +20,20 @@ public class SteeringController : MonoBehaviour
 	private const float AvoidWeight = 0.4f;
 	private const float RayLength = 10.0f;
 	private const float SphereRadius = 3.0f;
+
+	// ワンダリング（徘徊）用
+	private float wanderDistance = 6.0f; // 前方円の中心までの距離
+	private float wanderRadius = 3.0f;   // 円の半径
+	private float wanderJitter = 1.5f;   // 目標点の揺らぎ強さ
+	private bool wanderWithAvoid = true;  // 徘徊中に回避を有効にするか
+	private Vector3 wanderOrigin;               // 徘徊の基準点
+	private bool setOriginOnWanderStart = true; // 徘徊開始時に現在地を基準点にするか
+	private float wanderMaxRadius = 15.0f;      // 基準点から離れられる最大半径
+	private float returnToOriginWeight = 1.5f;  // 範囲外に出たときの引き戻し強さ
+
+
+	private Vector3 wanderTargetOffset = Vector3.forward * 3.0f;
+	private bool hasWanderInitialized = false;
 
 	private SteeringMode steeringMode = SteeringMode.Avoid;
 
@@ -48,12 +63,27 @@ public class SteeringController : MonoBehaviour
     bool isMove = false;
     public bool IsMove => isMove;
 
-    // 移動開始用
-    public void StartMove(SteeringMode mode) {
+	// 外部（AIなど）から基準点を明示的に指定したい場合
+	public void SetWanderOrigin(Vector3 origin, bool autoUpdateOrigin = false)
+	{
+		wanderOrigin = origin;
+		setOriginOnWanderStart = autoUpdateOrigin;
+	}
+	// 移動開始用
+	public void StartMove(SteeringMode mode) {
 		//Debug.Log(name+":ステアリング開始");
 		isMove = true;
 		steeringMode = mode;
-    }
+
+		if (mode == SteeringMode.Wander)
+		{
+			if (setOriginOnWanderStart)
+			{
+				wanderOrigin = transform.position;
+			}
+			InitWanderOffset();
+		}
+	}
 	public void CancelMove()	{
 		//Debug.Log(name + ":ステアリング終了");
 		isMove = false;
@@ -73,7 +103,15 @@ public class SteeringController : MonoBehaviour
         if (!isMove)
             return;
 
-        // ターゲットまでの移動ベクトル
+		// ワンダリング時は毎フレーム徘徊方向を計算して更新
+		if (steeringMode == SteeringMode.Wander)
+		{
+			Vector3 wanderDirection = CalculateWanderDirection();
+			UpdateVelocity(wanderDirection);
+			return;
+		}
+
+		// ターゲットまでの移動ベクトル
 		Vector3 moveDirection = targetPosition - transform.position;
 		//Vector3 MoveDirection = Vector3.Normalize(TargetPosition - transform.position);
 		moveDirection.y = 0.0f;
@@ -111,6 +149,18 @@ public class SteeringController : MonoBehaviour
 				Vector3 avoidVelocity = AvoidOpponentVector(direction.normalized);
 				velocity = SeekVector(avoidVelocity);
 			break;
+
+			case SteeringMode.Wander:
+				if (wanderWithAvoid)
+				{
+					Vector3 wanderAvoidVel = AvoidOpponentVector(direction.normalized);
+					velocity = SeekVector(wanderAvoidVel);
+				}
+				else
+				{
+					velocity = SeekVector(direction);
+				}
+				break;
 		}
 	}
 
@@ -192,6 +242,65 @@ public class SteeringController : MonoBehaviour
 		return hitInfo.normal;
 	}
 
+	private void InitWanderOffset()
+	{
+		float angle = Random.Range(0f, Mathf.PI * 2f);
+		wanderTargetOffset = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * wanderRadius;
+		hasWanderInitialized = true;
+	}
+	private Vector3 CalculateWanderDirection()
+	{
+		if (!hasWanderInitialized)
+		{
+			InitWanderOffset();
+		}
+
+		// 現在の進行方向（止まっている場合は transform.forward）
+		Vector3 forward = velocity.sqrMagnitude > 0.01f
+			? new Vector3(velocity.x, 0f, velocity.z).normalized
+			: new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
+
+		if (forward.sqrMagnitude < 0.001f)
+		{
+			forward = Vector3.forward;
+		}
+
+		// ランダムな微小ベクトルを加えて円周上に拘束（ジッター）
+		Vector3 jitter = new Vector3(
+			Random.Range(-1f, 1f),
+			0f,
+			Random.Range(-1f, 1f)
+		) * (wanderJitter * Time.deltaTime * 10f);
+
+		wanderTargetOffset += jitter;
+		wanderTargetOffset.y = 0f;
+		wanderTargetOffset = wanderTargetOffset.normalized * wanderRadius;
+
+		// 前方円の中心 + 円周上のオフセット
+		Vector3 circleCenter = forward * wanderDistance;
+		Vector3 wanderDirection = (circleCenter + wanderTargetOffset).normalized;
+		wanderDirection.y = 0f;
+
+		// 基準点からの距離を確認し、許容半径を超えていたら基準点方向へ引き戻す
+		if (wanderMaxRadius > 0f)
+		{
+			Vector3 toOrigin = wanderOrigin - transform.position;
+			toOrigin.y = 0f;
+			float distFromOrigin = toOrigin.magnitude;
+
+			if (distFromOrigin > wanderMaxRadius && distFromOrigin > 0.001f)
+			{
+				// 超過割合に応じて引き戻しを強める（0〜1以上にクランプ）
+				float excessRatio = Mathf.Clamp01((distFromOrigin - wanderMaxRadius) / wanderMaxRadius);
+				Vector3 pullDirection = toOrigin / distFromOrigin;
+
+				wanderDirection = (wanderDirection + pullDirection * (returnToOriginWeight * (0.5f + excessRatio))).normalized;
+			}
+		}
+
+		targetPosition = transform.position + wanderDirection * wanderDistance;
+		return wanderDirection;
+	}
 	// インスペクターでこのオブジェクト（キャラクター）が選択されている時だけ呼ばれる
 	private void OnDrawGizmosSelected()
 	{

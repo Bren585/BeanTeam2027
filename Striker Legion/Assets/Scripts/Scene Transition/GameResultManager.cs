@@ -35,6 +35,8 @@ public class GameResultManager : MonoBehaviour
     // タイマーのフラグ
     private bool isStart = false;
 
+    private string shooterName = "";
+
     // 得点側判別用
     public enum ScoreSide
     {
@@ -90,6 +92,11 @@ public class GameResultManager : MonoBehaviour
         timer = 0;
     }
 
+    public void SetShooterName(string name)
+    {
+        shooterName = name;
+    }
+
     // 得点の加算 : ScoreSide(加算される側), scorerName(得点者名)
     public void AddScore(ScoreSide side, string scorerName)
     {
@@ -98,12 +105,14 @@ public class GameResultManager : MonoBehaviour
         {
             case ScoreSide.Player:
                 playerSideTotalScore++;
-                playerSideScorerList.Add(new Scorer(scorerName, matchTime));
+                playerSideScorerList.Add(new Scorer(shooterName, matchTime));
+                //playerSideScorerList.Add(new Scorer(scorerName, matchTime));
                 break;
 
             case ScoreSide.Enemy:
                 enemySideTotalScore++;
-                enemySideScorerList.Add(new Scorer(scorerName, matchTime));
+                enemySideScorerList.Add(new Scorer(shooterName, matchTime));
+                //enemySideScorerList.Add(new Scorer(scorerName, matchTime));
                 break;
         }
     }

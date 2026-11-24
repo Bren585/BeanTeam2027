@@ -17,13 +17,15 @@ public class GoalCollisionEvent : MonoBehaviour
     }
 
 	// 衝突が始まった瞬間
-	private void OnCollisionEnter(Collision collision)
+	public void OnTriggerEnter(Collider collider)
 	{
-		Debug.Log("ゴール衝突報告 衝突タグ:"+collision.gameObject.tag);
+		Debug.Log("ゴール衝突報告 衝突タグ:"+ collider.gameObject.tag);
 		// 相手のタグで判定する場合
-		if (collision.gameObject.CompareTag("Ball"))
+		if (collider.gameObject.CompareTag("Ball"))
 		{
-            MatchManager.Instance.GoalEvent(team);
+            //MatchManager.Instance.GoalEvent(team);
+
+			GameResultManager.instance.AddScore(team == CharacterTeam.Player ? GameResultManager.ScoreSide.Enemy : GameResultManager.ScoreSide.Player, name);
 		}
 	}
 }

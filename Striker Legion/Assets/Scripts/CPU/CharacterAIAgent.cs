@@ -417,6 +417,14 @@ public class CharacterAIAgent : MonoBehaviour
 		//steeringController.TargetPosition = positioningBase + offset;
 	}
 
+	public void StartWanderingBasePos(PositioningName name)
+	{
+		// ロールで決定された場所を目指す
+		steeringController.SetWanderOrigin(positioningBase[name]);
+		SteeringController.StartMove(SteeringMode.Wander);
+		//steeringController.TargetPosition = positioningBase + offset;
+	}
+
 	// ゴールまでの距離
 	public float GetDistanceToGoal()
 	{

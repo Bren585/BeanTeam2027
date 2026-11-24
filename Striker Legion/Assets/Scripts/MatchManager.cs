@@ -41,6 +41,8 @@ public class MatchManager : MonoBehaviour
 
 	public Transform BallTransform => gameBall.transform;
 
+	public bool IsBallinFlight => gameBall != null && gameBall.inFlight;
+
 	public Transform GetGoal(CharacterTeam team) { return (team == CharacterTeam.Player) ? PlayerGoal : EnemyGoal; }
 
 	private void Awake()
@@ -179,7 +181,7 @@ public class MatchManager : MonoBehaviour
 			// Player Team
 			if (teamHandoff.playerTeam.TryGetValue(role, out CharacterInfo playerInfo))
 			{
-				if (role == Character_Position.Keeper) { continue; }
+				//if (role == Character_Position.Keeper) { continue; }
 
 				GameObject newCharacter = Instantiate(characterPrefab);
 				newCharacter.transform.SetParent(PlayerTeam.transform);
