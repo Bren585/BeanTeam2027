@@ -1,25 +1,42 @@
 using System.Linq;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class EffectOperator : MonoBehaviour
 {
+    CharacterController characterController = null;
+    CharacterBase characterBase = null;
+
+    //---DustParticle関連の変数--------------
     private ParticleSystem dustParticle;
     [SerializeField] private float dustThreshold = 15f;
     private bool isDustPlaying = false;
+    //---------------------------------------
+
+    //---Attack_Claw関連の変数--------------
+    [SerializeField] private VisualEffect attackClawParticle;
+    private bool isAttackClawPlaying = false;
+    //---------------------------------------
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        characterController = GetComponentInParent<CharacterController>();
+        characterBase = GetComponentInParent<CharacterBase>();
         DustParticle_Init();
+        Attack_Claw_Init();
     }
 
     // Update is called once per frame
     void Update()
     {
         DustParticle_Update();
+        Attack_Claw_Update();
     }
 
 
+
+    //↓DustParticle////////////////////////////////////////////////////////////////////////////////////////
     // DustParticleの初期化
     void DustParticle_Init()
     {
@@ -32,7 +49,6 @@ public class EffectOperator : MonoBehaviour
     // DustParticleの更新
     void DustParticle_Update()
     {
-        CharacterController characterController = dustParticle.GetComponentInParent<CharacterController>();
         if (characterController == null) return; //nullチェック
         if (characterController.velocity.magnitude >= dustThreshold)
         {
@@ -51,6 +67,36 @@ public class EffectOperator : MonoBehaviour
             {
                 dustParticle.Stop();
                 isDustPlaying = false;
+            }
+        }
+    }
+    //↑DustParticle///////////////////////////////////////////////////////////////////////////////////
+
+    //↓Attack_Claw//////////////////////////////////////////////////////////////////////////////////
+    void Attack_Claw_Init()
+    {
+        //攻撃用のパーティクルを取得し、初期化する
+        attackClawParticle = transform.parent.Find("Attack_Claw").GetComponent<VisualEffect>();
+        attackClawParticle.Stop();
+        isAttackClawPlaying = false;
+    }
+
+    void Attack_Claw_Update()
+    {
+        if (characterBase.isTacking)
+        {
+            if (!isAttackClawPlaying)
+            {
+                attackClawParticle.Play();
+                isAttackClawPlaying = true;
+            }
+        }
+        else
+        {
+            if (isAttackClawPlaying)
+            {
+                attackClawParticle.Stop();
+                isAttackClawPlaying = false;
             }
         }
     }

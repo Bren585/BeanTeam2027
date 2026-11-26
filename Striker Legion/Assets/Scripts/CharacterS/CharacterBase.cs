@@ -50,6 +50,7 @@ public class CharacterBase : BallHolder
     bool flying = false;
     bool moveLocked = false;
     public bool isShooting { get; private set; } = false;
+    public bool isTacking { get; private set; } = false;
 
     private float maxSpeed 
     { 
@@ -145,7 +146,10 @@ public class CharacterBase : BallHolder
             tackleTimer += Time.deltaTime;
             if (tackleHitbox.activeSelf)
             {
-                if (tackleTimer > baseInfo.tackleHitboxDuration) { tackleHitbox.SetActive(false); }
+                if (tackleTimer > baseInfo.tackleHitboxDuration) { 
+                    tackleHitbox.SetActive(false); 
+                    isTacking = false;
+                }
             }
         }
     }
@@ -298,6 +302,7 @@ public class CharacterBase : BallHolder
         if (hasBall || moveLocked) return;
         if (tackleTimer < baseInfo.tackleCooldown) return;
         tackleTimer = 0;
+        isTacking = true;
         tackleHitbox.SetActive(true);
         animator.SetTrigger("Tackle");
     }
