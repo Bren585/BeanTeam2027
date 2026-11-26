@@ -3,25 +3,14 @@ using UnityEngine;
 
 public class EffectOperator : MonoBehaviour
 {
-    [SerializeField] private ParticleSystem ballEffect;
-    [SerializeField] private TrailRenderer trailRenderer;
-    [SerializeField] private GameObject player;
-    private PlayerController playerController;
-
     private ParticleSystem[] dustParticle;
     [SerializeField] private float dustThreshold = 15f;
     private bool[] isDustPlaying;
-
-    [SerializeField] private ParticleSystem ballSpeedLine;
-    private bool isFlyng = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         DustParticle_Init();
-        ballEffect.Stop();
-        playerController = player.GetComponent<PlayerController>();
-        ballSpeedLine.Stop();
     }
 
     // Update is called once per frame
@@ -29,31 +18,6 @@ public class EffectOperator : MonoBehaviour
     {
         DustParticle_Update();
 
-        //----ボール飛行時のスピードラインエフェクト-----いらなくなったら消す
-        GameBall gameBall = ballSpeedLine.GetComponentInParent<GameBall>();
-        if (gameBall.inFlight && !isFlyng)
-        {
-            ballSpeedLine.Play();
-            isFlyng = true;
-
-        }
-        else if (!gameBall.inFlight && isFlyng)
-        {
-            ballSpeedLine.Stop();
-            isFlyng = false;
-        }
-        //--------
-
-        if (playerController.playerCharacter.isShooting)
-        {
-            ballEffect.Play();
-            trailRenderer.enabled = true;
-        }
-        else
-        {
-            ballEffect.Stop();
-            trailRenderer.enabled = false;
-        }
     }
 
     // DustParticleの初期化
@@ -66,7 +30,7 @@ public class EffectOperator : MonoBehaviour
         isDustPlaying = new bool[dustParticle.Length];
     }
 
-    // DustParticleの更新
+    // Sceneにある全てのDustParticleの更新
     void DustParticle_Update()
     {
         for (int i = 0; i < dustParticle.Length; i++)
