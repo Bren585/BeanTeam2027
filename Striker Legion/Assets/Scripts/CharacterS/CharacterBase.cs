@@ -1,11 +1,12 @@
 using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
-using Unity.Collections;
-using Unity.Collections.Tests.CoreCLR.TestJobs;
-using Unity.VisualScripting;
+//using System.Reflection.Metadata.Ecma335;
+//using Unity.Collections;
+//using Unity.Collections.Tests.CoreCLR.TestJobs;
+//using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
-using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
+//using UnityEngine.AI;
+//using UnityEngine.TextCore.Text;
+//using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 using static UnityEngine.Mathf;
 
 [RequireComponent(typeof(CharacterController))]
@@ -346,37 +347,69 @@ public class CharacterBase : BallHolder
             }
         }
         //HACK: if文が長すぎる
-        else if (other.gameObject.tag == "Goal" && other.transform.Find("ShootCamOrigin").Find("AimMarker").GetComponent<AimMarkerController>().team != this.team && hasBall == true)
-        {
-            // Enter Shooting Mode
-            //
-            // Shooting Mode is a separate script
-            // Camera moves close into the shooter, and time slows down
-            // Shooter moves a cursor (speed based on speed) to aim
-            // If the defender is a player, they also have a cursor to aim their defense
-            // Shooter shoots
-            // Defender uses speed stat to attempt to close the distance (time limit emposed by shooter power)
-            // If defender reaches, they use they're constitution (and maybe ballhandle) to try to block
-            // Player defender gets a bonus in speed and block if they aimed correctly 
-            //
-            // 日本語 (機械翻訳)
-            // シュートモードは別スクリプトで処理
-            // カメラがシューターに接近し、時間の流れが遅くなる
-            // シューターはカーソルを動かして狙いを定める（カーソルの移動速度はステータスの「スピード」に依存）
-            // ディフェンダーがプレイヤーの場合、同様にカーソルを使って守備位置を狙う
-            // シューターがシュートを放つ
-            // ディフェンダーは「スピード」のステータスを活かして距離を詰めようとする（制限時間はシューターのパワーに依存）
-            // ディフェンダーが到達した場合、「スタミナ（Constitution）」（および場合によっては「ボールハンドリング」）を使ってブロックを試みる
-            // プレイヤーがディフェンダーの場合、狙いが正確であればスピードとブロックにボーナスが加算される
-            // 
+        //else if (other.gameObject.tag == "Goal" && other.transform.Find("ShootCamOrigin").Find("AimMarker").GetComponent<AimMarkerController>().team != this.team && hasBall == true)
+        //{
+        //    // Enter Shooting Mode
+        //    //
+        //    // Shooting Mode is a separate script
+        //    // Camera moves close into the shooter, and time slows down
+        //    // Shooter moves a cursor (speed based on speed) to aim
+        //    // If the defender is a player, they also have a cursor to aim their defense
+        //    // Shooter shoots
+        //    // Defender uses speed stat to attempt to close the distance (time limit emposed by shooter power)
+        //    // If defender reaches, they use they're constitution (and maybe ballhandle) to try to block
+        //    // Player defender gets a bonus in speed and block if they aimed correctly 
+        //    //
+        //    // 日本語 (機械翻訳)
+        //    // シュートモードは別スクリプトで処理
+        //    // カメラがシューターに接近し、時間の流れが遅くなる
+        //    // シューターはカーソルを動かして狙いを定める（カーソルの移動速度はステータスの「スピード」に依存）
+        //    // ディフェンダーがプレイヤーの場合、同様にカーソルを使って守備位置を狙う
+        //    // シューターがシュートを放つ
+        //    // ディフェンダーは「スピード」のステータスを活かして距離を詰めようとする（制限時間はシューターのパワーに依存）
+        //    // ディフェンダーが到達した場合、「スタミナ（Constitution）」（および場合によっては「ボールハンドリング」）を使ってブロックを試みる
+        //    // プレイヤーがディフェンダーの場合、狙いが正確であればスピードとブロックにボーナスが加算される
+        //    // 
 
-            CharacterEventChannel.RaiseShootBegin();
-            isShooting = true;
-            _velocity = Vector3.zero;
-        }
+        //    CharacterEventChannel.RaiseShootBegin();
+        //    isShooting = true;
+        //    _velocity = Vector3.zero;
+        //}
     }
 
-    public CharacterBase PassTarget(out List<RaycastHit> outBlockers)
+	private void OnTriggerStay(Collider other)
+	{
+		if (other.gameObject.tag == "Goal" && other.transform.Find("ShootCamOrigin").Find("AimMarker").GetComponent<AimMarkerController>().team != this.team && hasBall == true)
+		{
+			// Enter Shooting Mode
+			//
+			// Shooting Mode is a separate script
+			// Camera moves close into the shooter, and time slows down
+			// Shooter moves a cursor (speed based on speed) to aim
+			// If the defender is a player, they also have a cursor to aim their defense
+			// Shooter shoots
+			// Defender uses speed stat to attempt to close the distance (time limit emposed by shooter power)
+			// If defender reaches, they use they're constitution (and maybe ballhandle) to try to block
+			// Player defender gets a bonus in speed and block if they aimed correctly 
+			//
+			// 日本語 (機械翻訳)
+			// シュートモードは別スクリプトで処理
+			// カメラがシューターに接近し、時間の流れが遅くなる
+			// シューターはカーソルを動かして狙いを定める（カーソルの移動速度はステータスの「スピード」に依存）
+			// ディフェンダーがプレイヤーの場合、同様にカーソルを使って守備位置を狙う
+			// シューターがシュートを放つ
+			// ディフェンダーは「スピード」のステータスを活かして距離を詰めようとする（制限時間はシューターのパワーに依存）
+			// ディフェンダーが到達した場合、「スタミナ（Constitution）」（および場合によっては「ボールハンドリング」）を使ってブロックを試みる
+			// プレイヤーがディフェンダーの場合、狙いが正確であればスピードとブロックにボーナスが加算される
+			// 
+
+			CharacterEventChannel.RaiseShootBegin();
+			isShooting = true;
+			_velocity = Vector3.zero;
+		}
+	}
+
+	public CharacterBase PassTarget(out List<RaycastHit> outBlockers)
     {
         CharacterBase bestCandidate = null;
         float bestDistance = float.MaxValue;
@@ -481,17 +514,18 @@ public class CharacterBase : BallHolder
                 // Kick the ball to Goal
 
                 GameBall.flight shootFlight = new GameBall.flight(this, goalCandidate, 0, 20);
+
+                // シュートの軌道を渡す
+                gameBall.Kick(shootFlight);
 				// シュートがブロックされないかどうか
 				if (IsSuccessShoot(shootFlight.End, out CharacterBase blockCharacter))
                 {
                     // シュート成功
-                    gameBall.Kick(shootFlight);
                     gameBall.SetOwner(goalCandidate);
                 }
                 else
                 {
                     // ブロックされた
-					gameBall.Kick(new GameBall.flight(this, blockCharacter, 0, 20));
 					gameBall.SetOwner(blockCharacter);
 
                     CharacterEventChannel.RaiseShootEnd();
@@ -547,20 +581,29 @@ public class CharacterBase : BallHolder
         animator.SetTrigger("Shoot");
     }
 
-
+    Vector3 debugLineStart, debugLineEnd;
     bool IsSuccessShoot(Vector3 to ,out CharacterBase blockCharacter)
     {
         // シュートのベクトル
         blockCharacter = null;
 
-		// レイキャスト
-		List<RaycastHit> hits = new(Physics.SphereCastAll(new Ray(GetHoldPosition(), to), 1.0f));
+        debugLineStart = GetHoldPosition();
+        debugLineEnd = to;
+
+        // レイキャスト
+        Vector3 direction = to - GetHoldPosition();
+        //Vector3 direction = GetHoldPosition() - to;
+        List<RaycastHit> hits = new List<RaycastHit>(Physics.SphereCastAll(GetHoldPosition(), 0.5f, direction.normalized, direction.magnitude, LayerMask.GetMask("BallHitBox")));
+		//List<RaycastHit> hits = new List<RaycastHit>(Physics.SphereCastAll(new Ray(GetHoldPosition(), to), 1.0f));
+		//List<RaycastHit> hits = new(Physics.SphereCastAll(GetHoldPosition(), 1.0f, direction.normalized, direction.magnitude, -5, QueryTriggerInteraction.Collide));
 
 		// ヒット対象からキャラクター以外とチームメンバーを除外
 		hits.RemoveAll(hit =>
 		{
-			CharacterBase hitCharacter = hit.transform.GetComponent<CharacterBase>();
-			return hitCharacter == null || hitCharacter.team == team;
+			CharacterBase hitCharacter = hit.transform.GetComponentInParent<CharacterBase>();
+           
+			//CharacterBase hitCharacter = hit.transform.GetComponent<CharacterBase>();
+			return hitCharacter == null || hitCharacter.team == team || hitCharacter.isDown;
 		});
 
 		// See if blocked or not
@@ -569,7 +612,9 @@ public class CharacterBase : BallHolder
 			hits.Sort((a, b) => a.distance.CompareTo(b.distance));
 			foreach (RaycastHit blocker in hits)
 			{
-				CharacterBase character = blocker.collider.GetComponent<CharacterBase>();
+                Debug.Log("ヒット名:" + blocker.collider.name);
+			    CharacterBase character = blocker.collider.GetComponentInParent<CharacterBase>();
+				//CharacterBase character = blocker.collider.GetComponent<CharacterBase>();
 				if (character == null) continue;
 				//if (character.BallHandlingSuccess())
 				{
@@ -597,5 +642,12 @@ public class CharacterBase : BallHolder
 
     public void lockMove() { moveLocked = true; }
     public void unlockMove() { moveLocked = false; }
+
+	private void OnDrawGizmosSelected()
+	{
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(debugLineStart, debugLineEnd);
+
+	}
 }
 

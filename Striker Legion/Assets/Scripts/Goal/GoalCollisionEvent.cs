@@ -7,7 +7,8 @@ public class GoalCollisionEvent : MonoBehaviour
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
     {
-		team = LayerMask.LayerToName(gameObject.layer) == "Player" ? CharacterTeam.Player : CharacterTeam.Enemy;
+		team = gameObject.tag == "Player" ? CharacterTeam.Player : CharacterTeam.Enemy;
+		//team = LayerMask.LayerToName(gameObject.layer) == "Player" ? CharacterTeam.Player : CharacterTeam.Enemy;
     }
 
     // Update is called once per frame
