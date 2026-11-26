@@ -16,7 +16,7 @@ public class LoadAllCharacterIcons : MonoBehaviour
 
     public void Awake()
     {
-        CharacterSelectUIScript selectScript = FindAnyObjectByType<CharacterSelectUIScript>();
+        CharacterSelectScene selectScript = FindAnyObjectByType<CharacterSelectScene>();
         int count = 0;
         foreach (CharacterScriptableObject chara in AllCharacters)
         {
@@ -26,8 +26,9 @@ public class LoadAllCharacterIcons : MonoBehaviour
             Vector3 pos = new Vector3(start_x, start_y, 0);
             pos.x += col_offset * (count % col_count);
             pos.y -= row_offset * Mathf.Floor(count / col_count);
-            newIcon.transform.localPosition = pos; 
+            newIcon.transform.localPosition = pos;
 
+            chara.position = Character_Position.None;
             newIcon.name = chara.name;
             newIcon.GetComponent<CharacterSelectButtonScript>().characterData = chara;
             newIcon.GetComponent<Image>().sprite = chara.icon;
@@ -35,12 +36,7 @@ public class LoadAllCharacterIcons : MonoBehaviour
             
             newIcon.SetActive(true);
 
-            // 始めに選択しておくボタンを設定
-            if (count == 0)
-            {
-                selectScript.SetFirstSelectObjectToCharacterSelect(newIcon);
-
-            }
+            selectScript.characterButtonList.Add(newIcon);
             count++;
         }
     }

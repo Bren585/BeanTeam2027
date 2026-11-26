@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class SoloGameUIScript : MonoBehaviour
+public class SoloGameScene : MonoBehaviour
 {
     [SerializeField]
     PauseMenuScript pause;
@@ -34,11 +34,13 @@ public class SoloGameUIScript : MonoBehaviour
         }
     }
 
+    // リザルト画面への遷移
     private void ChangeResultScene()
     {
         SceneTransitionManager.instance.LoadScene((int)SceneID.Result);
     }
 
+    // プレイヤー側のスコア加算
     public void AddPlayerScore()
     {
         int randomRange = Random.Range(0, (CharacterSelectManager.instance.selectedCharacters.Length - 1));
@@ -46,6 +48,7 @@ public class SoloGameUIScript : MonoBehaviour
         Debug.Log("Add PlayerScore");
     }
 
+    // エネミー側のスコア加算
     public void AddEnemyScore()
     {
         GameResultManager.instance.AddScore(GameResultManager.ScoreSide.Enemy, "Bear");

@@ -43,8 +43,8 @@ public class ResultUIScript : MonoBehaviour
         selectCanvasGroup.interactable = false;
         selectCanvasGroup.blocksRaycasts = false;
         selectCanvasObject.SetActive(false);
-        // 初期選択ボタン設定x
-        EventSystem.current.SetSelectedGameObject(firstSelectResultButton);
+        // 初期選択ボタン設定
+        SelectObjectArchive.instance.SetSubstituteObject(firstSelectResultButton);
 
         // 総得点数を代入
         playerTotalPointText.text = GameResultManager.instance.GetPlayerTotalScore().ToString();
@@ -88,7 +88,9 @@ public class ResultUIScript : MonoBehaviour
         selectCanvasGroup.blocksRaycasts = true;
         selectCanvasObject.SetActive(true);
 
-        EventSystem.current.SetSelectedGameObject(firstSelectNextButton);
+        SelectObjectArchive.instance.SetSubstituteObject(firstSelectNextButton);
+        SelectObjectArchive.instance.ClearObjectArchive();
+        EventSystem.current.SetSelectedGameObject(null);
     }
 
     // ゲームのリトライ

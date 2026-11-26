@@ -134,7 +134,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &43166015
 RectTransform:
   m_ObjectHideFlags: 0
@@ -207,7 +207,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -248,6 +248,7 @@ GameObject:
   - component: {fileID: 190038653}
   - component: {fileID: 190038652}
   - component: {fileID: 190038655}
+  - component: {fileID: 190038656}
   m_Layer: 5
   m_Name: Character4 Button
   m_TagString: Untagged
@@ -383,6 +384,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterSelectButtonScript
   characterData: {fileID: 0}
   displayType: 1
+--- !u!114 &190038656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190038650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03cc033e87508c44b27566aa4ad4428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MousePointerSelect
 --- !u!1 &205949449
 GameObject:
   m_ObjectHideFlags: 0
@@ -395,6 +408,7 @@ GameObject:
   - component: {fileID: 205949453}
   - component: {fileID: 205949452}
   - component: {fileID: 205949451}
+  - component: {fileID: 205949454}
   m_Layer: 5
   m_Name: Keeper Button
   m_TagString: Untagged
@@ -447,7 +461,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -516,6 +530,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 205949449}
   m_CullTransparentMesh: 1
+--- !u!114 &205949454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 205949449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03cc033e87508c44b27566aa4ad4428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MousePointerSelect
 --- !u!1 &212840050
 GameObject:
   m_ObjectHideFlags: 0
@@ -809,6 +835,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c744e018ff442144290b27a84be1c4d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SharedUIScript
+  uiInputModule: {fileID: 1516784801}
 --- !u!4 &310869294
 Transform:
   m_ObjectHideFlags: 0
@@ -1147,7 +1174,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1222,7 +1249,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1342,6 +1369,7 @@ GameObject:
   - component: {fileID: 578489234}
   - component: {fileID: 578489233}
   - component: {fileID: 578489232}
+  - component: {fileID: 578489235}
   m_Layer: 5
   m_Name: Next Button
   m_TagString: Untagged
@@ -1366,7 +1394,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -300, y: -300}
+  m_AnchoredPosition: {x: -400, y: -400}
   m_SizeDelta: {x: 350, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &578489232
@@ -1463,6 +1491,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 578489230}
   m_CullTransparentMesh: 1
+--- !u!114 &578489235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 578489230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03cc033e87508c44b27566aa4ad4428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MousePointerSelect
 --- !u!1 &714419245
 GameObject:
   m_ObjectHideFlags: 0
@@ -1722,7 +1762,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1837,6 +1877,7 @@ GameObject:
   - component: {fileID: 912061354}
   - component: {fileID: 912061353}
   - component: {fileID: 912061352}
+  - component: {fileID: 912061355}
   m_Layer: 5
   m_Name: Defender Button
   m_TagString: Untagged
@@ -1889,7 +1930,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -1958,6 +1999,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 912061350}
   m_CullTransparentMesh: 1
+--- !u!114 &912061355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 912061350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03cc033e87508c44b27566aa4ad4428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MousePointerSelect
 --- !u!1 &918005510
 GameObject:
   m_ObjectHideFlags: 0
@@ -1970,6 +2023,7 @@ GameObject:
   - component: {fileID: 918005514}
   - component: {fileID: 918005513}
   - component: {fileID: 918005512}
+  - component: {fileID: 918005515}
   m_Layer: 5
   m_Name: MidFielder Button
   m_TagString: Untagged
@@ -2022,7 +2076,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -2091,6 +2145,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 918005510}
   m_CullTransparentMesh: 1
+--- !u!114 &918005515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 918005510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03cc033e87508c44b27566aa4ad4428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MousePointerSelect
 --- !u!1 &919418219
 GameObject:
   m_ObjectHideFlags: 0
@@ -2104,6 +2170,7 @@ GameObject:
   - component: {fileID: 919418222}
   - component: {fileID: 919418221}
   - component: {fileID: 919418224}
+  - component: {fileID: 919418225}
   m_Layer: 5
   m_Name: Character3 Button
   m_TagString: Untagged
@@ -2239,6 +2306,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterSelectButtonScript
   characterData: {fileID: 0}
   displayType: 1
+--- !u!114 &919418225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919418219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03cc033e87508c44b27566aa4ad4428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MousePointerSelect
 --- !u!1 &950110275
 GameObject:
   m_ObjectHideFlags: 0
@@ -2276,6 +2355,60 @@ RectTransform:
   m_AnchoredPosition: {x: 400, y: -500}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &965882637
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 965882638}
+  - component: {fileID: 965882639}
+  m_Layer: 5
+  m_Name: Characters
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &965882638
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965882637}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1849990059}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &965882639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965882637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a18b55176c3d3a4ca7960a1eb42bcdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlacedCharacterIcons
+  imagePrefab: {fileID: 5364040909454756512, guid: fea008ccebd3f0541bde85dfd133bf0d, type: 3}
+  centerPosition: {x: -100, y: 150}
+  colCount: 2
+  colOffset: 600
+  rowOffset: 300
+  placedEnemySide: 0
 --- !u!1 &970679570
 GameObject:
   m_ObjectHideFlags: 0
@@ -2288,6 +2421,7 @@ GameObject:
   - component: {fileID: 970679574}
   - component: {fileID: 970679573}
   - component: {fileID: 970679572}
+  - component: {fileID: 970679575}
   m_Layer: 5
   m_Name: Buck Button
   m_TagString: Untagged
@@ -2312,7 +2446,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 300, y: -300}
+  m_AnchoredPosition: {x: 400, y: -400}
   m_SizeDelta: {x: 350, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &970679572
@@ -2409,6 +2543,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 970679570}
   m_CullTransparentMesh: 1
+--- !u!114 &970679575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 970679570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03cc033e87508c44b27566aa4ad4428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MousePointerSelect
 --- !u!1 &976813116
 GameObject:
   m_ObjectHideFlags: 0
@@ -2420,7 +2566,7 @@ GameObject:
   - component: {fileID: 976813117}
   - component: {fileID: 976813118}
   m_Layer: 0
-  m_Name: Select UI Script
+  m_Name: Select UIScript
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2458,11 +2604,8 @@ MonoBehaviour:
   positionSelectDisplayObjects: {fileID: 880104098}
   positionButtonCanvasGroup: {fileID: 1708358150}
   characterButtonCanvasGroup: {fileID: 1350184569}
-  firstSelectPositionButton: {fileID: 1690187447}
-  firstSelectCharacterButton: {fileID: 1788672037}
   selectedOutline: {fileID: 1269606349}
   completePanel: {fileID: 1849990058}
-  firstCompletePanelButton: {fileID: 578489230}
   profileImage: {fileID: 1919160143}
   descriptionText: {fileID: 298858336}
   positionButtonImages:
@@ -2477,6 +2620,20 @@ MonoBehaviour:
   - {fileID: 190038652}
   defaultButtonSprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   teamHandoff: {fileID: 11400000, guid: 34759d1ef0698ff4b8f84177669c9a6c, type: 2}
+  characterButtonList: []
+  positionButtonList:
+  - {fileID: 1690187447}
+  - {fileID: 918005510}
+  - {fileID: 912061350}
+  - {fileID: 205949449}
+  memberButtonList:
+  - {fileID: 1788672037}
+  - {fileID: 1683558566}
+  - {fileID: 919418219}
+  - {fileID: 190038650}
+  completeButtonList:
+  - {fileID: 578489230}
+  - {fileID: 970679570}
 --- !u!1 &984603513
 GameObject:
   m_ObjectHideFlags: 0
@@ -2604,12 +2761,12 @@ GameObject:
   - component: {fileID: 1208430542}
   - component: {fileID: 1208430541}
   m_Layer: 0
-  m_Name: CharacterSelect
+  m_Name: CharacterSelect Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1208430541
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3195,7 +3352,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -3274,7 +3431,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -3432,7 +3589,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -3590,7 +3747,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -3764,6 +3921,7 @@ GameObject:
   - component: {fileID: 1683558569}
   - component: {fileID: 1683558568}
   - component: {fileID: 1683558571}
+  - component: {fileID: 1683558572}
   m_Layer: 5
   m_Name: Character2 Button
   m_TagString: Untagged
@@ -3899,6 +4057,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterSelectButtonScript
   characterData: {fileID: 0}
   displayType: 1
+--- !u!114 &1683558572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1683558566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03cc033e87508c44b27566aa4ad4428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MousePointerSelect
 --- !u!1 &1686424330
 GameObject:
   m_ObjectHideFlags: 0
@@ -3987,6 +4157,7 @@ GameObject:
   - component: {fileID: 1690187451}
   - component: {fileID: 1690187450}
   - component: {fileID: 1690187449}
+  - component: {fileID: 1690187452}
   m_Layer: 5
   m_Name: Forward Button
   m_TagString: Untagged
@@ -4036,10 +4207,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -4059,7 +4230,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 976813118}
-        m_TargetAssemblyTypeName: CharacterSelectUIScript, Assembly-CSharp
+        m_TargetAssemblyTypeName: CharacterSelectScene, Assembly-CSharp
         m_MethodName: BindingPositionIndex
         m_Mode: 3
         m_Arguments:
@@ -4108,6 +4279,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1690187447}
   m_CullTransparentMesh: 1
+--- !u!114 &1690187452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1690187447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03cc033e87508c44b27566aa4ad4428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MousePointerSelect
 --- !u!1 &1708358148
 GameObject:
   m_ObjectHideFlags: 0
@@ -4173,6 +4356,7 @@ GameObject:
   - component: {fileID: 1788672040}
   - component: {fileID: 1788672039}
   - component: {fileID: 1788672042}
+  - component: {fileID: 1788672043}
   m_Layer: 5
   m_Name: Character1 Button
   m_TagString: Untagged
@@ -4308,6 +4492,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterSelectButtonScript
   characterData: {fileID: 0}
   displayType: 1
+--- !u!114 &1788672043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1788672037}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03cc033e87508c44b27566aa4ad4428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MousePointerSelect
 --- !u!1 &1814093227
 GameObject:
   m_ObjectHideFlags: 0
@@ -4359,7 +4555,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -4420,6 +4616,7 @@ RectTransform:
   - {fileID: 578489231}
   - {fileID: 970679571}
   - {fileID: 1564067934}
+  - {fileID: 965882638}
   m_Father: {fileID: 212840054}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}

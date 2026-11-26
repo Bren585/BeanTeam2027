@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TrainingUIScript : MonoBehaviour, IPointerEnterHandler
+public class TrainingSelectScene : MonoBehaviour, IPointerEnterHandler
 {
     // ボタンオブジェクト配列
     [SerializeField]
@@ -26,19 +26,19 @@ public class TrainingUIScript : MonoBehaviour, IPointerEnterHandler
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        EventSystem.current.SetSelectedGameObject(Buttons[0]);
+        SelectObjectArchive.instance.SetSubstituteObject(Buttons[0]);
     }
 
     // Update is called once per frame
     void Update()
     {
-        for(int i = 0; i < Buttons.Count; ++i )
+        GameObject selected = SelectObjectArchive.instance.GetObjectArchive();
+        for (int i = 0; i < Buttons.Count; ++i )
         {
             // 選択中のボタンを取得
-            if (EventSystem.current.currentSelectedGameObject == Buttons[i])
+            if (selected == Buttons[i])
             {
                 // アウトラインの位置を設定
-                GameObject selected = EventSystem.current.currentSelectedGameObject;
                 RectTransform selectedButtonTransform = selected.GetComponent<RectTransform>();
                 float3 pos = selectedButtonTransform.position;
                 outline.GetComponent<RectTransform>().position = pos;
@@ -46,7 +46,7 @@ public class TrainingUIScript : MonoBehaviour, IPointerEnterHandler
                 outline.GetComponent<RectTransform>().localScale = scale;
 
                 // 説明の更新
-                if (selected != null && selected.TryGetComponent<ModeButton>(out var modeButton))
+                if (selected.TryGetComponent<ModeButton>(out var modeButton))
                 {
                     SetExplanation(modeButton.GetExplanation());
                 }

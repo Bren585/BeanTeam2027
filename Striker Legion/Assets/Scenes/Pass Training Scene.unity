@@ -511,6 +511,7 @@ GameObject:
   - component: {fileID: 199599966}
   - component: {fileID: 199599965}
   - component: {fileID: 199599964}
+  - component: {fileID: 199599967}
   m_Layer: 5
   m_Name: Option Button
   m_TagString: Untagged
@@ -632,6 +633,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 199599962}
   m_CullTransparentMesh: 1
+--- !u!114 &199599967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 199599962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03cc033e87508c44b27566aa4ad4428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MousePointerSelect
 --- !u!1 &208709605
 GameObject:
   m_ObjectHideFlags: 0
@@ -968,6 +981,7 @@ GameObject:
   - component: {fileID: 671280544}
   - component: {fileID: 671280543}
   - component: {fileID: 671280542}
+  - component: {fileID: 671280545}
   m_Layer: 5
   m_Name: Back Title Button
   m_TagString: Untagged
@@ -1089,6 +1103,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 671280540}
   m_CullTransparentMesh: 1
+--- !u!114 &671280545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 671280540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03cc033e87508c44b27566aa4ad4428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MousePointerSelect
 --- !u!1 &719024006
 GameObject:
   m_ObjectHideFlags: 0
@@ -1118,6 +1144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c744e018ff442144290b27a84be1c4d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SharedUIScript
+  uiInputModule: {fileID: 1657093140}
 --- !u!4 &719024008
 Transform:
   m_ObjectHideFlags: 0
@@ -1224,6 +1251,7 @@ GameObject:
   - component: {fileID: 841111685}
   - component: {fileID: 841111684}
   - component: {fileID: 841111683}
+  - component: {fileID: 841111686}
   m_Layer: 5
   m_Name: Resume Button
   m_TagString: Untagged
@@ -1345,6 +1373,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 841111681}
   m_CullTransparentMesh: 1
+--- !u!114 &841111686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 841111681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03cc033e87508c44b27566aa4ad4428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MousePointerSelect
 --- !u!1 &905457060
 GameObject:
   m_ObjectHideFlags: 0
@@ -1358,7 +1398,7 @@ GameObject:
   - component: {fileID: 905457062}
   - component: {fileID: 905457061}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: PauseCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1426,7 +1466,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1000
   m_TargetDisplay: 0
 --- !u!224 &905457064
 RectTransform:
@@ -2298,7 +2338,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenuScript
   pausePanel: {fileID: 1676437803}
-  firstSelectButton: {fileID: 841111681}
+  substituteButton: {fileID: 841111681}
   isPause: 0
   playerInput: {fileID: 208709606}
 --- !u!4 &1780845209
@@ -2353,6 +2393,51 @@ RectTransform:
   m_AnchoredPosition: {x: 450, y: -500}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1996859812
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1996859814}
+  - component: {fileID: 1996859813}
+  m_Layer: 0
+  m_Name: TrainingGameUIScript
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1996859813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1996859812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e911357f16639814ba37c948aa61cf53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainingGameUIScript
+  pause: {fileID: 1780845208}
+--- !u!4 &1996859814
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1996859812}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1077.081, y: -0.00003, z: 1641.4528}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -2364,3 +2449,4 @@ SceneRoots:
   - {fileID: 208709607}
   - {fileID: 1780845209}
   - {fileID: 719024008}
+  - {fileID: 1996859814}

@@ -211,6 +211,7 @@ GameObject:
   - component: {fileID: 78573896}
   - component: {fileID: 78573895}
   - component: {fileID: 78573898}
+  - component: {fileID: 78573899}
   m_Layer: 5
   m_Name: Shoot Training Button
   m_TagString: Untagged
@@ -333,6 +334,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ModeButton
   explanationObject: {fileID: 11400000, guid: 965db293b4d2e214cbf926c573dc5a42, type: 2}
+--- !u!114 &78573899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 78573893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03cc033e87508c44b27566aa4ad4428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MousePointerSelect
 --- !u!1 &107255976
 GameObject:
   m_ObjectHideFlags: 0
@@ -791,7 +804,7 @@ GameObject:
   - component: {fileID: 504915963}
   - component: {fileID: 504915965}
   m_Layer: 0
-  m_Name: Training UIScript
+  m_Name: TrainingSelectScene UIScript
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -883,6 +896,7 @@ GameObject:
   - component: {fileID: 641488438}
   - component: {fileID: 641488437}
   - component: {fileID: 641488440}
+  - component: {fileID: 641488441}
   m_Layer: 5
   m_Name: Pass Training Button
   m_TagString: Untagged
@@ -931,7 +945,7 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.4867924, g: 0.4867924, b: 0.4867924, a: 1}
+    m_NormalColor: {r: 0.2509804, g: 0.2509804, b: 0.2509804, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0, g: 0, b: 0, a: 1}
@@ -1017,6 +1031,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ModeButton
   explanationObject: {fileID: 11400000, guid: 481250293019b7c479b3299ae68b03e4, type: 2}
+--- !u!114 &641488441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 641488435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03cc033e87508c44b27566aa4ad4428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MousePointerSelect
 --- !u!1 &704303992
 GameObject:
   m_ObjectHideFlags: 0
@@ -2397,6 +2423,7 @@ GameObject:
   - component: {fileID: 1954618870}
   - component: {fileID: 1954618869}
   - component: {fileID: 1954618872}
+  - component: {fileID: 1954618873}
   m_Layer: 5
   m_Name: Back Button
   m_TagString: Untagged
@@ -2531,6 +2558,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ModeButton
   explanationObject: {fileID: 11400000, guid: d35d7cb337862a048b328d24cbf4bd4e, type: 2}
+--- !u!114 &1954618873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1954618866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03cc033e87508c44b27566aa4ad4428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MousePointerSelect
 --- !u!1 &2024162772
 GameObject:
   m_ObjectHideFlags: 0
@@ -2544,6 +2583,7 @@ GameObject:
   - component: {fileID: 2024162776}
   - component: {fileID: 2024162775}
   - component: {fileID: 2024162778}
+  - component: {fileID: 2024162779}
   m_Layer: 5
   m_Name: Technique Training Button
   m_TagString: Untagged
@@ -2666,6 +2706,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ModeButton
   explanationObject: {fileID: 11400000, guid: b889bc87cb383364b8592cb76b67f576, type: 2}
+--- !u!114 &2024162779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2024162772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03cc033e87508c44b27566aa4ad4428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MousePointerSelect
 --- !u!1 &2037890611
 GameObject:
   m_ObjectHideFlags: 0
@@ -2774,6 +2826,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c744e018ff442144290b27a84be1c4d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SharedUIScript
+  uiInputModule: {fileID: 2037890612}
 --- !u!4 &2082754474
 Transform:
   m_ObjectHideFlags: 0
