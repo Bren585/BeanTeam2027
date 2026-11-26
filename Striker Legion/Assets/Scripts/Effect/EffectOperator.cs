@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class EffectOperator : MonoBehaviour
 {
-    private ParticleSystem[] dustParticle;
+    private ParticleSystem dustParticle;
     [SerializeField] private float dustThreshold = 15f;
-    private bool[] isDustPlaying;
+    private bool isDustPlaying = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -17,45 +17,40 @@ public class EffectOperator : MonoBehaviour
     void Update()
     {
         DustParticle_Update();
-
     }
+
 
     // DustParticleの初期化
     void DustParticle_Init()
     {
         //砂埃パーティクルを取得し、初期化する
-        dustParticle = GameObject.FindObjectsByType<ParticleSystem>();
-        foreach (var dust in dustParticle)
-            dust.Stop(); 
-        isDustPlaying = new bool[dustParticle.Length];
+        dustParticle = transform.parent.Find("DustParticle").GetComponent<ParticleSystem>();
+        dustParticle.Stop();
+        isDustPlaying = false;
     }
 
-    // Sceneにある全てのDustParticleの更新
+    // DustParticleの更新
     void DustParticle_Update()
     {
-        for (int i = 0; i < dustParticle.Length; i++)
+        CharacterController characterController = dustParticle.GetComponentInParent<CharacterController>();
+        if (characterController == null) return; //nullチェック
+        if (characterController.velocity.magnitude >= dustThreshold)
         {
-            var dust = dustParticle[i];
-            CharacterController characterController = dust.GetComponentInParent<CharacterController>();
-            if (characterController == null) continue; //nullチェック
-            if (characterController.velocity.magnitude >= dustThreshold)
+            // 速度が閾値以上の場合、パーティクルを再生
+            //Debug.Log(characterController.velocity.magnitude);
+            if (!isDustPlaying)
             {
-                // 速度が閾値以上の場合、パーティクルを再生
-                //Debug.Log(characterController.velocity.magnitude);
-                if (!isDustPlaying[i])
-                {
-                    dust.Play();
-                    isDustPlaying[i] = true;
-                }
+                dustParticle.Play();
+                isDustPlaying = true;
             }
-            else
+        }
+        else
+        {
+            // 速度が閾値未満の場合、パーティクルを停止
+            if (isDustPlaying)
             {
-                // 速度が閾値未満の場合、パーティクルを停止
-                if (isDustPlaying[i])
-                {
-                    dust.Stop();
-                    isDustPlaying[i] = false;
-                }
+                dustParticle.Stop();
+                isDustPlaying = false;
             }
         }
     }
